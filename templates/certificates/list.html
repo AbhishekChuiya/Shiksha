@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% load i18n shiksha static %}
+{% block title %}{% translate "Certificates" %}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{% translate "My certificates" %}</h1><p>{% translate "Earned by completing all steps and passing the quiz. Download them as PDF." %}</p></div></div>
+<div class="quiz-grid">
+{% for c in certificates %}
+  <article class="card quiz-card">
+    <div class="top"><span class="qico" style="background:linear-gradient(135deg,#f7e6b5,#d9b44f);color:#7a5a10">{% icon 'award' %}</span><span class="badge ok">{{ c.issued_at|date:"d M Y" }}</span></div>
+    <h3>{{ c.module.display_title }}</h3>
+    <div class="meta"><span>{% icon 'building' %}{{ c.module.plant.name }}</span>{% if c.score_percent is not None %}<span>{% icon 'star' %}{{ c.score_percent }}%</span>{% endif %}<span>{% icon 'user' %}{{ c.holder_name }}</span></div>
+    <div class="cert-actions" style="margin-top:auto"><a class="btn" style="flex:1" href="{% url 'certificates:download' c.code %}">{% icon 'file' %}{% translate "Download PDF" %}</a><a class="btn secondary" href="{{ c.get_absolute_url }}">{% translate "View" %}</a></div>
+  </article>
+{% empty %}<div class="card empty" style="grid-column:1/-1"><img src="{% static 'img/brand/vivi.png' %}" alt=""><h3>{% translate "No certificates yet" %}</h3><p>{% translate "Complete a module and pass its quiz to earn your first one." %}</p><a class="btn" href="{% url 'learning:module_list' %}">{% translate "Browse modules" %}</a></div>{% endfor %}
+</div>
+{% endblock %}

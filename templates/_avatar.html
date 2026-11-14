@@ -1,0 +1,1 @@
+{% comment %}usage: include "_avatar.html" with u=<user> cls="xl"{% endcomment %}{% if u.photo %}<img class="avatar {{ cls }}" src="{{ u.photo.url }}" alt="" loading="lazy">{% else %}<span class="avatar {{ cls }}">{{ u.initial }}</span>{% endif %}

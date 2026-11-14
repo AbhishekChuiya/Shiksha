@@ -1,0 +1,6 @@
+{% load i18n %}{% translate "Hello" %} {{ user.first_name|default:user.email }},
+
+{% translate "Confirm your email to activate your Project Shiksha account:" %}
+{{ link }}
+
+{% translate "If you did not create this account, ignore this email." %}

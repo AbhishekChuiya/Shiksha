@@ -1,0 +1,15 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+<div class="pn-head"><div><h1>Users</h1><p class="muted">{{ total }} user{{ total|pluralize }}</p></div><div class="row wrap"><a class="btn secondary" href="{% url 'panel:user_import' %}">{% icon 'upload' %}Import from Excel</a><a class="btn" href="{% url 'panel:user_new' %}">{% icon 'plus' %}Add user</a></div></div>
+<form class="pn-filters" method="get"><div class="search"><input type="search" name="q" value="{{ q }}" placeholder="Search name, email or employee ID…">{% icon 'search' %}</div>
+  <select name="role" onchange="this.form.submit()"><option value="">All roles</option><option value="learner" {% if role == "learner" %}selected{% endif %}>Learners</option><option value="admin" {% if role == "admin" %}selected{% endif %}>Admins</option></select>
+  <select name="active" onchange="this.form.submit()"><option value="">Active & inactive</option><option value="1" {% if active == "1" %}selected{% endif %}>Active</option><option value="0" {% if active == "0" %}selected{% endif %}>Inactive</option></select>
+  <select name="plant" onchange="this.form.submit()"><option value="">Any plant</option>{% for p in plants %}<option value="{{ p.pk }}" {% if plant == p.pk|stringformat:'s' %}selected{% endif %}>{{ p.name }}</option>{% endfor %}</select>
+  <button class="btn secondary" type="submit">Search</button>{% if q or role or active or plant %}<a class="btn ghost" href="{% url 'panel:users' %}">Clear</a>{% endif %}</form>
+<div class="card flush table-wrap"><table class="table pn-table"><thead><tr><th>Person</th><th>Employee ID</th><th>Role</th><th>Certificates</th><th>Last sign-in</th><th></th></tr></thead><tbody>
+{% for u in page %}<tr class="{% if not u.is_active %}is-off{% endif %}"><td><a class="pn-title" href="{% url 'panel:user_edit' u.pk %}">{% include "_avatar.html" with u=u cls="sm" %}<span><strong>{{ u.get_full_name|default:u.email }}</strong><small>{{ u.email }}</small></span></a></td>
+  <td>{{ u.employee_id|default:"—" }}</td><td><span class="badge {% if u.role == 'admin' %}info{% else %}grey{% endif %}">{{ u.get_role_display }}</span>{% if not u.is_active %} <span class="badge warn">Inactive</span>{% endif %}</td>
+  <td>{{ u.n_certs }}</td><td class="small muted">{{ u.last_login|date:"d M Y"|default:"Never" }}</td><td class="pn-actions"><a class="btn secondary sm" href="{% url 'panel:user_edit' u.pk %}">{% icon 'edit2' %}Edit</a></td></tr>
+{% empty %}<tr><td colspan="6"><div class="empty"><h3>No users found</h3></div></td></tr>{% endfor %}</tbody></table></div>
+{% include "panel/_pager.html" %}
+{% endblock %}

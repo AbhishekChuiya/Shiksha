@@ -1,0 +1,57 @@
+{% load i18n shiksha %}{% translate 'Delete this post and its replies?' as del_confirm %}
+{% for post in posts %}
+<article class="card post {% if post.is_hidden %}is-hidden{% endif %} {% if post.is_pinned %}is-pinned{% endif %}" id="post-{{ post.id }}">
+  <header class="post-head">
+    {% include "_avatar.html" with u=post.author cls="sm" %}
+    <div class="grow"><strong>{{ post.author.get_full_name|default:post.author.email }}</strong>
+      <div class="tiny muted">{{ post.created_at|ago }}{% if post.module %} · <a href="{{ post.module.get_absolute_url }}">{{ post.module.display_title }}</a>{% endif %}</div></div>
+    {% if post.is_pinned %}<span class="badge info">{% icon 'pin' %}{% translate "Pinned" %}</span>{% endif %}
+    {% if post.is_hidden %}<span class="badge warn">{% translate "Hidden by moderator" %}</span>{% endif %}
+    {% if user.is_shiksha_admin or post.author_id == user.id %}
+    <div class="dd post-menu"><button type="button" class="icon-btn sm" aria-label="{% translate 'Options' %}">{% icon 'more' %}</button>
+      <div class="dd-menu" style="min-width:180px">
+        {% if user.is_shiksha_admin %}
+        <form method="post" action="{% url 'discussion:moderate' post.id %}">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}#post-{{ post.id }}">
+          {% if post.is_pinned %}<button class="dd-item" name="action" value="unpin">{% icon 'pin' %}{% translate "Unpin" %}</button>{% else %}<button class="dd-item" name="action" value="pin">{% icon 'pin' %}{% translate "Pin to top" %}</button>{% endif %}
+          {% if post.is_hidden %}<button class="dd-item" name="action" value="unhide">{% icon 'eye' %}{% translate "Unhide" %}</button>{% else %}<button class="dd-item" name="action" value="hide">{% icon 'eye-off' %}{% translate "Hide" %}</button>{% endif %}
+        </form>{% endif %}
+        <form method="post" action="{% url 'discussion:delete' post.id %}" onsubmit="return confirm('{{ del_confirm|escapejs }}')">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}">
+          <button class="dd-item danger">{% icon 'trash' %}{% translate "Delete" %}</button></form>
+      </div></div>
+    {% endif %}
+  </header>
+  <p class="post-body">{{ post.body|linebreaksbr }}</p>
+  {% if post.reply_list %}
+  <div class="replies">
+    {% for r in post.reply_list %}
+    <div class="reply {% if r.is_hidden %}is-hidden{% endif %}" id="post-{{ r.id }}">
+      {% include "_avatar.html" with u=r.author cls="xs" %}
+      <div class="grow"><div><strong>{{ r.author.get_full_name|default:r.author.email }}</strong> <span class="tiny muted">{{ r.created_at|ago }}</span>{% if r.is_hidden %} <span class="badge warn">{% translate "Hidden by moderator" %}</span>{% endif %}</div>
+        <div>{{ r.body|linebreaksbr }}</div></div>
+      {% if user.is_shiksha_admin or r.author_id == user.id %}
+      <form method="post" action="{% url 'discussion:delete' r.id %}" onsubmit="return confirm('{{ del_confirm|escapejs }}')">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}#post-{{ post.id }}"><button class="icon-btn sm ghosty" aria-label="{% translate 'Delete' %}">{% icon 'trash' %}</button></form>
+      {% if user.is_shiksha_admin and not r.author_id == user.id %}
+      <form method="post" action="{% url 'discussion:moderate' r.id %}">{% csrf_token %}<input type="hidden" name="next" value="{{ next_url }}#post-{{ post.id }}"><button class="icon-btn sm ghosty" name="action" value="{% if r.is_hidden %}unhide{% else %}hide{% endif %}" aria-label="{% translate 'Hide' %}">{% icon 'eye-off' %}</button></form>{% endif %}
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <details class="reply-box">
+    <summary>{% icon 'chat' %}{% blocktranslate count n=post.reply_list|length %}Reply ({{ n }}){% plural %}Reply ({{ n }}){% endblocktranslate %}</summary>
+    <form method="post" action="{% url 'discussion:post' %}">{% csrf_token %}<input type="hidden" name="parent" value="{{ post.id }}"><input type="hidden" name="next" value="{{ next_url }}#post-{{ post.id }}">
+      <textarea name="body" rows="2" maxlength="4000" required placeholder="{% translate 'Write a reply…' %}"></textarea>
+      <button class="btn sm" type="submit">{% translate "Send reply" %}</button>
+    </form>
+  </details>
+</article>
+{% empty %}
+<div class="card empty">{% icon 'chat' %}<h3>{% translate "No discussion yet" %}</h3><p>{% translate "Be the first to ask a question." %}</p></div>
+{% endfor %}
+{% if pager.paginator.num_pages > 1 %}
+<nav class="pager" aria-label="{% translate 'Pages' %}">
+  {% if pager.has_previous %}<a class="btn secondary" href="?{% if module_filter %}module={{ module_filter.slug }}&{% endif %}{% if mine %}mine=1&{% endif %}{% if tab %}tab={{ tab }}&{% endif %}page={{ pager.previous_page_number }}">{% icon 'arrow-left' %}{% translate "Previous" %}</a>{% else %}<span class="btn secondary disabled">{% icon 'arrow-left' %}{% translate "Previous" %}</span>{% endif %}
+  <span class="muted">{% blocktranslate with a=pager.number b=pager.paginator.num_pages %}Page {{ a }} of {{ b }}{% endblocktranslate %}</span>
+  {% if pager.has_next %}<a class="btn secondary" href="?{% if module_filter %}module={{ module_filter.slug }}&{% endif %}{% if mine %}mine=1&{% endif %}{% if tab %}tab={{ tab }}&{% endif %}page={{ pager.next_page_number }}">{% translate "Next" %}{% icon 'arrow-right' %}</a>{% else %}<span class="btn secondary disabled">{% translate "Next" %}{% icon 'arrow-right' %}</span>{% endif %}
+</nav>
+{% endif %}

@@ -1,0 +1,29 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+{% include "panel/_module_head.html" %}
+{% if tab == "steps" %}
+<details class="card pn-bulk" {% if not editors.0.rows %}open{% endif %}>
+  <summary>{% icon 'upload' %}<b>Paste or import many steps at once</b><span class="muted small"> — faster than typing one by one</span>{% icon 'chevron-down' 'chev' %}</summary>
+  <div class="pn-bulk-grid">
+    <form method="post" action="{% url 'panel:module_import' module.pk 'steps' %}">{% csrf_token %}
+      <h4>Paste a list</h4><p class="muted small">One step per line. Numbers at the start of a line (1. 2. 3.) are removed.</p>
+      <textarea name="paste" rows="6" placeholder="Inspect the furnace internally…&#10;Check the cooling water flow…"></textarea>
+      <label class="pn-check sm"><input type="checkbox" name="mode" value="replace"><span>Replace the existing steps (otherwise these are added at the end)</span></label>
+      <button class="btn" type="submit">{% icon 'plus' %}Add these steps</button>
+    </form>
+    <form method="post" action="{% url 'panel:module_import' module.pk 'steps' %}" enctype="multipart/form-data">{% csrf_token %}
+      <h4>Import from Excel / CSV</h4><p class="muted small">Columns: <code>step, text, text_hi</code> (Hindi optional). Save from Excel as <b>CSV UTF-8</b>.</p>
+      <input type="file" name="csv" accept=".csv">
+      <label class="pn-check sm"><input type="checkbox" name="mode" value="replace"><span>Replace the existing steps</span></label>
+      <div class="row wrap"><button class="btn" type="submit">{% icon 'upload' %}Import file</button><a class="btn ghost" href="{% url 'panel:sample_csv' 'steps' %}">{% icon 'download' %}Sample file</a></div>
+    </form>
+  </div>
+</details>
+{% endif %}
+<form method="post" enctype="multipart/form-data" data-dirty-guard>{% csrf_token %}
+  {% if tab == "details" %}{% include "panel/_form_fields.html" %}
+  {% else %}{% for ed in editors %}{% include "panel/_editor.html" with key=ed.key title=ed.title fields=ed.fields rows=ed.rows blank=ed.blank empty_hint=ed.empty_hint add_label=ed.add_label info=ed.info has_hindi=ed.has_hindi %}{% endfor %}{% endif %}
+  <div class="pn-savebar"><button class="btn lg" type="submit">{% icon 'check' %}{% if tab == "details" and not module %}Create module{% else %}Save changes{% endif %}</button><a class="btn ghost" href="{% url 'panel:modules' %}">Back to modules</a>
+    {% if module and tab == "details" %}<span class="grow"></span><a class="btn ghost danger" href="{% url 'panel:module_delete' module.pk %}">{% icon 'trash' %}Delete module</a>{% endif %}</div>
+</form>
+{% endblock %}

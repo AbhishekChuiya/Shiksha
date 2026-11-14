@@ -1,0 +1,8 @@
+{% extends "accounts/base_auth.html" %}{% load i18n shiksha %}
+{% block content %}
+<div class="auth-icon">{% icon 'alert' %}</div>
+<h2>{% translate "Link expired or already used" %}</h2>
+<p class="sub">{% translate "Verification links work once and expire after 3 hours. Create your account again, or sign in if you already verified." %}</p>
+<a class="btn block" href="{% url 'accounts:signup' %}">{% translate "Create account" %}</a>
+<div class="auth-links"><a href="{% url 'accounts:login' %}">{% icon 'arrow-left' %} {% translate "Back to sign in" %}</a></div>
+{% endblock %}

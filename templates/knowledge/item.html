@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{{ it.display_title }}{% endblock %}
+{% block content %}
+<nav class="crumbs"><a href="{% url 'knowledge:home' %}">{% translate "Knowledge Base" %}</a>{% icon 'chevron-right' %}<a href="{% url 'knowledge:home' %}?cat={{ it.category_id }}">{{ it.category.display_name }}</a></nav>
+<div class="page-head"><div><h1>{{ it.display_title }}</h1>{% if it.display_description %}<p>{{ it.display_description }}</p>{% endif %}</div>
+  <div class="row wrap">
+    {% if it.file %}<a class="btn" href="{% url 'knowledge:file' it.pk %}?dl=1">{% icon 'download' %}{% translate "Download" %}</a>{% endif %}
+    {% if it.url and not it.file %}<a class="btn" target="_blank" rel="noopener" href="{{ it.url }}">{% icon 'link' %}{% translate "Open link" %}</a>{% endif %}
+  </div></div>
+<div class="card kb-view">
+  {% if it.kind == 'pdf' and it.file %}<iframe src="{% url 'knowledge:file' it.pk %}" title="{{ it.display_title }}"></iframe>
+  {% elif it.kind == 'video' %}
+    {% if it.file %}<video controls preload="metadata" src="{{ it.file.url }}"></video>
+    {% elif it.embed_url %}<iframe src="{{ it.embed_url }}" allowfullscreen title="{{ it.display_title }}"></iframe>
+    {% else %}<div class="empty">{% icon 'play' %}<p><a class="btn" target="_blank" rel="noopener" href="{{ it.url }}">{% translate "Watch video" %}</a></p></div>{% endif %}
+  {% elif it.kind == 'image' and it.file %}<img src="{{ it.file.url }}" alt="{{ it.display_title }}">
+  {% else %}<div class="empty">{% icon 'file' %}<h3>{% translate "This file opens in its own app" %}</h3><p>{% translate "Download it to read it on your device." %}</p>
+    {% if it.file %}<a class="btn" href="{% url 'knowledge:file' it.pk %}?dl=1">{% icon 'download' %}{% translate "Download" %}</a>{% elif it.url %}<a class="btn" target="_blank" rel="noopener" href="{{ it.url }}">{% icon 'link' %}{% translate "Open link" %}</a>{% endif %}</div>{% endif %}
+</div>
+{% if related %}<div class="section-title">{% translate "More in this category" %}</div>
+<div class="kb-grid">{% for r in related %}<a class="kb-card k-{{ r.kind }} c-{{ it.category.color }}" href="{{ r.get_absolute_url }}"><span class="kb-ico">{% icon 'file' %}<b>{{ r.kind|upper }}</b></span><span class="kb-body"><strong>{{ r.display_title }}</strong><em>{{ it.category.display_name }}</em></span></a>{% endfor %}</div>{% endif %}
+{% endblock %}

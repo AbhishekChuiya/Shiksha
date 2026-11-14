@@ -1,0 +1,35 @@
+{% extends "base.html" %}{% load static shiksha panel %}
+{% block title %}{{ page_title|default:"Admin" }} · Admin panel{% endblock %}
+{% block brand_tag %}Admin panel{% endblock %}
+{% block sidebar_nav %}
+<nav class="nav panel-nav">
+  <a href="{% url 'panel:dashboard' %}" data-tip="Overview" class="{% if request.path == '/manage/' %}active{% endif %}">{% icon 'home' %}<span>Overview</span></a>
+  <div class="nav-label">Content</div>
+  <a href="{% url 'panel:plants' %}" data-tip="Plants" class="{% pn_active '/manage/plants' %}">{% icon 'building' %}<span>Plants</span></a>
+  <a href="{% url 'panel:modules' %}" data-tip="Modules" class="{% pn_active '/manage/modules' %}">{% icon 'layers' %}<span>Modules</span></a>
+  <a href="{% url 'panel:sops' %}" data-tip="SOP library" class="{% pn_active '/manage/sops' %}">{% icon 'file' %}<span>SOP library</span></a>
+  <a href="{% url 'panel:kb' %}" data-tip="Knowledge base" class="{% pn_active '/manage/knowledge' %}">{% icon 'folder' %}<span>Knowledge base</span></a>
+  <a href="{% url 'panel:quizzes' %}" data-tip="Quizzes" class="{% pn_active '/manage/quizzes' %}">{% icon 'gauge' %}<span>Quizzes</span></a>
+  <div class="nav-label">People</div>
+  <a href="{% url 'panel:users' %}" data-tip="Users" class="{% pn_active '/manage/users' %}">{% icon 'users' %}<span>Users</span></a>
+  <a href="{% url 'panel:discussion' %}" data-tip="Discussion" class="{% pn_active '/manage/discussion' %}">{% icon 'chat' %}<span>Discussion</span></a>
+  <a href="{% url 'panel:certificates' %}" data-tip="Certificates" class="{% pn_active '/manage/certificates' %}">{% icon 'award' %}<span>Certificates</span></a>
+  <div class="nav-label">Insights</div>
+  <a href="{% url 'panel:incidents' %}" data-tip="Incidents" class="{% pn_active '/manage/incidents' %}">{% icon 'alert' %}<span>Incidents</span></a>
+  <a href="{% url 'panel:reports' %}" data-tip="Reports" class="{% pn_active '/manage/reports' %}">{% icon 'chart' %}<span>Reports</span></a>
+  <div class="nav-label">More</div>
+  <a href="{% url 'panel:help' %}" data-tip="How to use" class="{% pn_active '/manage/help' %}">{% icon 'info' %}<span>How to use</span></a>
+  <a href="{% url 'core:dashboard' %}" data-tip="Open learner app">{% icon 'play' %}<span>Open learner app</span></a>
+  {% if user.is_superuser %}<a href="{% url 'admin:index' %}" data-tip="Advanced (Django admin)">{% icon 'settings' %}<span>Advanced admin</span></a>{% endif %}
+</nav>
+{% endblock %}
+{% block top_search %}<div class="panel-title">{% icon 'edit' %}<span>Admin panel</span></div>{% endblock %}
+{% block fab %}{% endblock %}
+{% block bottom_nav %}<nav class="bottom-nav" aria-label="Admin navigation">
+  <a href="{% url 'panel:dashboard' %}" class="{% if request.path == '/manage/' %}active{% endif %}"><span class="bn-ico">{% icon 'home' %}</span>Overview</a>
+  <a href="{% url 'panel:modules' %}" class="{% pn_active '/manage/modules' %}"><span class="bn-ico">{% icon 'layers' %}</span>Modules</a>
+  <a href="{% url 'panel:users' %}" class="{% pn_active '/manage/users' %}"><span class="bn-ico">{% icon 'users' %}</span>Users</a>
+  <a href="{% url 'panel:reports' %}" class="{% pn_active '/manage/reports' %}"><span class="bn-ico">{% icon 'chart' %}</span>Reports</a>
+  <button type="button" data-nav-toggle><span class="bn-ico">{% icon 'grid' %}</span>More</button>
+</nav>{% endblock %}
+{% block scripts %}<script src="{% static 'js/panel.js' %}"></script>{% block panel_scripts %}{% endblock %}{% endblock %}

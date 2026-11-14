@@ -1,0 +1,47 @@
+{% load panel shiksha %}
+<div class="ed-row {% if row.errors %}has-error{% endif %}" data-uid="{{ row.uid }}">
+  <div class="ed-tools">
+    <span class="ed-num" data-num></span>
+    <button type="button" class="icon-btn sm" data-up title="Move up" aria-label="Move up">{% icon 'up' %}</button>
+    <button type="button" class="icon-btn sm" data-down title="Move down" aria-label="Move down">{% icon 'down' %}</button>
+    <button type="button" class="icon-btn sm danger" data-del title="Remove" aria-label="Remove">{% icon 'trash' %}</button>
+  </div>
+  <div class="ed-fields">
+    <input type="hidden" name="{{ key }}-{{ row.uid }}-id" value="{{ row.id }}">
+    <div class="pn-grid">
+    {% for f in fields %}{% if not f.hindi %}
+      {% with v=row.vals|get:f.name e=row.errors|get:f.name %}
+      <div class="pn-field {% if e %}has-error{% endif %} {% if f.kind == 'textarea' or f.kind == 'image' or f.kind == 'file' %}wide{% elif f.width != 'half' and f.kind != 'select' and f.kind != 'number' and f.kind != 'date' and f.kind != 'radio' %}wide{% endif %}">
+        {% if f.kind == "radio" %}
+          <label class="pn-check"><input type="radio" name="{{ key }}-{{ f.name }}" value="{{ row.uid }}" {% if v == "1" %}checked{% endif %}><span><strong>{{ f.label }}</strong></span></label>
+        {% elif f.kind == "check" %}
+          <label class="pn-check"><input type="checkbox" name="{{ key }}-{{ row.uid }}-{{ f.name }}" value="1" {% if v == "1" %}checked{% endif %}><span><strong>{{ f.label }}</strong></span></label>
+        {% else %}
+          <label>{{ f.label }}{% if f.required %}<i class="req">*</i>{% endif %}</label>
+          {% if f.kind == "textarea" %}<textarea name="{{ key }}-{{ row.uid }}-{{ f.name }}" rows="{{ f.rows }}">{{ v }}</textarea>
+          {% elif f.kind == "select" %}<select name="{{ key }}-{{ row.uid }}-{{ f.name }}">{% if not f.required %}<option value="">—</option>{% endif %}{% for c in f.choices %}<option value="{{ c.0 }}" {% if v|selected:c.0 %}selected{% endif %}>{{ c.1 }}</option>{% endfor %}</select>
+          {% elif f.kind == "number" %}<input type="number" min="0" name="{{ key }}-{{ row.uid }}-{{ f.name }}" value="{{ v }}">
+          {% elif f.kind == "date" %}<input type="date" name="{{ key }}-{{ row.uid }}-{{ f.name }}" value="{{ v }}">
+          {% elif f.kind == "image" or f.kind == "file" %}
+            {% with cur=row.files|get:f.name %}
+            <div class="pn-file">
+              {% if cur %}<div class="pn-file-cur">{% if cur.image %}<img src="{{ cur.url }}" alt="">{% else %}{% icon 'file' %}{% endif %}<div><a href="{{ cur.url }}" target="_blank" rel="noopener">{{ cur.name }}</a><label class="pn-check sm"><input type="checkbox" name="{{ key }}-{{ row.uid }}-{{ f.name }}-clear" value="1"><span>Remove</span></label></div></div>{% endif %}
+              <label class="pn-drop"><span>{% icon 'upload' %}<b>{% if cur %}Replace{% else %}Choose{% endif %} {% if f.kind == "image" %}photo{% else %}file{% endif %}</b> <small>or drop it here</small></span><input type="file" name="{{ key }}-{{ row.uid }}-{{ f.name }}" {% if f.kind == "image" %}accept="image/*"{% endif %}><img class="pn-newprev" alt="" hidden></label>
+            </div>
+            {% endwith %}
+          {% else %}<input type="text" name="{{ key }}-{{ row.uid }}-{{ f.name }}" value="{{ v }}" placeholder="{{ f.placeholder }}">{% endif %}
+          {% if f.help %}<p class="pn-help">{{ f.help }}</p>{% endif %}
+        {% endif %}
+        {% if e %}<p class="pn-err">{{ e }}</p>{% endif %}
+      </div>{% endwith %}
+    {% endif %}{% endfor %}
+    </div>
+    {% if has_hindi %}
+    <details class="ed-hi" {% if row|has_hindi_value:fields %}open{% endif %}><summary><span class="hi-dot">हि</span>Hindi (optional)</summary>
+      <div class="pn-grid">{% for f in fields %}{% if f.hindi %}{% with v=row.vals|get:f.name e=row.errors|get:f.name %}
+        <div class="pn-field wide {% if e %}has-error{% endif %}"><label>{{ f.label }}</label>
+          {% if f.kind == "textarea" %}<textarea name="{{ key }}-{{ row.uid }}-{{ f.name }}" rows="{{ f.rows }}">{{ v }}</textarea>{% else %}<input type="text" name="{{ key }}-{{ row.uid }}-{{ f.name }}" value="{{ v }}">{% endif %}
+          {% if e %}<p class="pn-err">{{ e }}</p>{% endif %}</div>{% endwith %}{% endif %}{% endfor %}</div>
+    </details>{% endif %}
+  </div>
+</div>

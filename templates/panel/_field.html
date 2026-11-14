@@ -1,0 +1,19 @@
+{% load panel shiksha %}{% if f %}{% with k=f|kind %}
+<div class="pn-field {% if f.errors %}has-error{% endif %} {% if k == 'textarea' or k == 'multi' or k == 'image' or k == 'file' %}wide{% endif %}">
+  {% if k == "check" %}
+    <label class="pn-check">{{ f }}<span><strong>{{ f.label }}</strong>{% if f.help_text %}<small>{{ f.help_text }}</small>{% endif %}</span></label>
+  {% else %}
+    <label for="{{ f.id_for_label }}">{{ f.label }}{% if f.field.required %}<i class="req" title="Required">*</i>{% endif %}</label>
+    {% if k == "image" or k == "file" %}
+      {% with cur=form|fileval:f.name clr=form|clearfield:f.name %}
+      <div class="pn-file">
+        {% if cur %}<div class="pn-file-cur">{% if k == "image" %}<img src="{{ cur.url }}" alt="">{% else %}{% icon 'file' %}{% endif %}<div><a href="{{ cur.url }}" target="_blank" rel="noopener">View current</a>{% if clr %}<label class="pn-check sm">{{ clr }}<span>{{ clr.label }}</span></label>{% endif %}</div></div>{% endif %}
+        <label class="pn-drop"><span>{% icon 'upload' %}<b>{% if cur %}Replace{% else %}Choose{% endif %} {% if k == "image" %}photo{% else %}file{% endif %}</b> <small>or drop it here</small></span>{{ f }}<img class="pn-newprev" alt="" hidden></label>
+      </div>
+      {% endwith %}
+    {% elif k == "multi" %}<div class="pn-multi">{{ f }}</div>
+    {% else %}{{ f }}{% endif %}
+    {% if f.help_text %}<p class="pn-help">{{ f.help_text }}</p>{% endif %}
+  {% endif %}
+  {% if f.errors %}<p class="pn-err">{{ f.errors|join:" " }}</p>{% endif %}
+</div>{% endwith %}{% endif %}

@@ -1,0 +1,14 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+<div class="pn-head"><div><h1>Plants</h1><p class="muted">Each plant has its own photos, departments, modules and SOPs.</p></div><a class="btn" href="{% url 'panel:plant_new' %}">{% icon 'plus' %}Add plant</a></div>
+<form class="pn-filters" method="get"><div class="search"><input type="search" name="q" value="{{ q }}" placeholder="Search plants…">{% icon 'search' %}</div><button class="btn secondary" type="submit">Search</button></form>
+<div class="pn-cards">
+{% for p in plants %}
+  <a class="card hover pn-plant" href="{% url 'panel:plant_edit' p.pk %}">
+    <div class="pn-plant-img" {% if p.banner %}style="background-image:url('{{ p.banner.url }}')"{% endif %}>{% if not p.is_active %}<span class="badge warn">Hidden</span>{% endif %}</div>
+    <div class="pn-plant-body"><h3>{{ p.name }}</h3><p class="muted small">{{ p.location|default:"No location yet" }}</p>
+      <div class="meta"><span>{% icon 'layers' %}{{ p.n_modules }} modules</span><span>{% icon 'users' %}{{ p.n_users }} assigned</span><span>{% icon 'image' %}{{ p.photos.count }} photos</span></div></div>
+  </a>
+{% empty %}<div class="card empty" style="grid-column:1/-1"><h3>No plants yet</h3><a class="btn" href="{% url 'panel:plant_new' %}">Add your first plant</a></div>{% endfor %}
+</div>
+{% endblock %}

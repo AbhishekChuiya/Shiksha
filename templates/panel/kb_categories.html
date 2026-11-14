@@ -1,0 +1,9 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+{% include "panel/_crumbs.html" %}
+<div class="pn-head"><div><h1>Knowledge categories</h1><p class="muted">Group documents so learners can find them quickly.</p></div></div>
+<form method="post" data-dirty-guard>{% csrf_token %}
+  {% for ed in editors %}{% include "panel/_editor.html" with key=ed.key title=ed.title fields=ed.fields rows=ed.rows blank=ed.blank empty_hint=ed.empty_hint add_label=ed.add_label info=ed.info has_hindi=ed.has_hindi %}{% endfor %}
+  <div class="pn-savebar"><button class="btn lg" type="submit">{% icon 'check' %}Save categories</button><a class="btn ghost" href="{% url 'panel:kb' %}">Back</a></div>
+</form>
+{% endblock %}

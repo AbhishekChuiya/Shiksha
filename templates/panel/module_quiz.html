@@ -1,0 +1,37 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+{% include "panel/_module_head.html" %}
+{% if not quiz %}
+<div class="card empty"><h3>This module has no quiz yet</h3><p class="muted">A quiz unlocks after learners finish the SOP steps. Passing it completes the module and issues the certificate.</p>
+  <form method="post">{% csrf_token %}<input type="hidden" name="title" value=""><input type="hidden" name="pass_percent" value="80"><input type="hidden" name="shuffle_questions" value="on"><input type="hidden" name="shuffle_choices" value="on"><input type="hidden" name="requires_all_steps" value="on"><input type="hidden" name="is_active" value="on">
+  <button class="btn lg" type="submit">{% icon 'plus' %}Create quiz</button></form>
+  <p class="muted small" style="margin-top:14px">Or import questions from Excel after creating the quiz.</p></div>
+{% else %}
+<div class="split">
+  <div class="stack">
+    <section class="card">
+      <div class="ed-head"><div><h3>Questions <span class="badge grey">{{ questions|length }}</span></h3><p class="muted small" style="margin:4px 0 0">Every attempt shows the questions (and the answer options) in a new order.</p></div><a class="btn" href="{% url 'panel:question_new' module.pk %}">{% icon 'plus' %}Add question</a></div>
+      {% for q in questions %}
+      <div class="pn-q"><span class="pn-qn">{{ forloop.counter }}</span>
+        <a class="grow" href="{% url 'panel:question_edit' module.pk q.pk %}"><strong>{{ q.text|truncatechars:110 }}</strong><div class="small muted">{{ q.n_choices }} options{% if q.text_hi %} · Hindi ✓{% endif %}{% if q.keep_choice_order %} · fixed option order{% endif %}</div></a>
+        <form method="post" action="{% url 'panel:question_action' module.pk q.pk 'up' %}">{% csrf_token %}<button class="icon-btn sm" aria-label="Move up" {% if forloop.first %}disabled{% endif %}>{% icon 'up' %}</button></form>
+        <form method="post" action="{% url 'panel:question_action' module.pk q.pk 'down' %}">{% csrf_token %}<button class="icon-btn sm" aria-label="Move down" {% if forloop.last %}disabled{% endif %}>{% icon 'down' %}</button></form>
+        <a class="icon-btn sm" href="{% url 'panel:question_edit' module.pk q.pk %}" aria-label="Edit">{% icon 'edit2' %}</a>
+        <form method="post" action="{% url 'panel:question_action' module.pk q.pk 'delete' %}" data-confirm-form="Delete this question?">{% csrf_token %}<button class="icon-btn sm danger" aria-label="Delete">{% icon 'trash' %}</button></form>
+      </div>
+      {% empty %}<div class="ed-empty">No questions yet — add one, or import many from Excel below.</div>{% endfor %}
+    </section>
+    <details class="card pn-bulk"><summary>{% icon 'upload' %}<b>Import questions from Excel / CSV</b>{% icon 'chevron-down' 'chev' %}</summary>
+      <form method="post" action="{% url 'panel:module_import' module.pk 'quiz' %}" enctype="multipart/form-data" style="margin-top:14px">{% csrf_token %}
+        <p class="muted small">Columns: <code>question, option_a … option_d, correct</code> (A–D) and optionally <code>kind, explanation, question_hi, option_a_hi …</code>. Save from Excel as <b>CSV UTF-8</b>.</p>
+        <input type="file" name="csv" accept=".csv"><label class="pn-check sm"><input type="checkbox" name="mode" value="replace"><span>Replace all existing questions (otherwise these are added)</span></label>
+        <div class="row wrap"><button class="btn" type="submit">{% icon 'upload' %}Import file</button><a class="btn ghost" href="{% url 'panel:sample_csv' 'quiz' %}">{% icon 'download' %}Sample file</a></div></form></details>
+  </div>
+  <form class="card" method="post" data-dirty-guard>{% csrf_token %}
+    <h3>Quiz settings</h3>
+    {% for f in form %}{% include "panel/_field.html" with f=f %}{% endfor %}
+    <button class="btn" type="submit">{% icon 'check' %}Save settings</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

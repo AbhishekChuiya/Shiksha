@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% load i18n shiksha static %}
+{% block title %}{% translate "Certificate" %}{% endblock %}
+{% block content %}
+<div class="page-head no-print">
+  <div><a class="btn ghost sm" href="{% url 'certificates:list' %}" style="margin-left:-12px">{% icon 'arrow-left' %}{% translate "All certificates" %}</a></div>
+  <div class="cert-actions">
+    <a class="btn" href="{% url 'certificates:download' cert.code %}">{% icon 'file' %}{% translate "Download PDF" %}</a>
+    <button class="btn secondary" type="button" onclick="window.print()">{% translate "Print" %}</button>
+    <button class="btn secondary" type="button" data-copy="{{ verify_url }}">{% icon 'check-circle' %}{% translate "Copy verification link" %}</button>
+  </div>
+</div>
+{% if cert.user_id == user.id %}<p class="small muted no-print">{% translate "Name wrong or misspelt?" %} <a href="{% url 'accounts:account' %}">{% translate "Update it in My account" %}</a> {% translate "— your certificates use the name in your profile." %}</p>{% endif %}
+<div class="cert">
+  <img class="logo" src="{% static 'img/brand/logo.png' %}" alt="Vishakha">
+  <div style="letter-spacing:.22em;font-size:.78rem;color:#8a6b2a">PROJECT SHIKSHA</div>
+  <h1>Certificate of Completion</h1><p>This is to certify that</p>
+  <div class="name">{{ cert.holder_name }}</div>
+  <p>has successfully completed the learning module</p>
+  <h2 style="font-family:Georgia,serif;font-size:1.7rem">{{ cert.module.title }}</h2>
+  <p>at {{ cert.module.plant.company|default:cert.module.plant.name }} ({{ cert.module.plant.name }}){% if cert.score_percent is not None %} with an assessment score of <strong>{{ cert.score_percent }}%</strong>{% endif %}.</p>
+  <div class="cert-foot"><span>{% translate "Issued" %}: {{ cert.issued_at|date:"d F Y" }}</span><span>{% translate "Certificate ID" %}: {{ cert.short_code }}</span></div>
+</div>
+{% endblock %}

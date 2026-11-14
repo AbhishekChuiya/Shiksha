@@ -1,0 +1,9 @@
+{% extends "accounts/base_auth.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "Verify your email" %}{% endblock %}
+{% block content %}
+<div class="auth-icon">{% icon 'mail' %}</div>
+<h2>{% translate "Check your inbox" %}</h2>
+<p class="sub">{% blocktranslate %}We sent a verification link to <strong>{{ email }}</strong>. Open it to activate your account.{% endblocktranslate %}</p>
+<div class="alert info">{% icon 'info' %}<div>{% translate "The link works for 3 hours. Can't see it? Check your spam folder." %}</div></div>
+<a class="btn secondary block" href="{% url 'accounts:login' %}">{% translate "Back to sign in" %}</a>
+{% endblock %}

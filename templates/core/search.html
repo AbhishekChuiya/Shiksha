@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% load i18n shiksha static %}
+{% block title %}{% translate "Search" %}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{% translate "Search" %}</h1>
+{% if q|length >= 2 %}<p>{% blocktranslate count n=total %}{{ n }} result for “{{ q }}” in {{ current_plant }}{% plural %}{{ n }} results for “{{ q }}” in {{ current_plant }}{% endblocktranslate %}</p>{% else %}<p>{% translate "Type at least 2 characters." %}</p>{% endif %}</div></div>
+{% if q|length >= 2 and not total %}<div class="card empty"><img src="{% static 'img/brand/vivi.png' %}" alt=""><h3>{% translate "Nothing found" %}</h3><p>{% translate "Try a different word, or browse all modules." %}</p><a class="btn" href="{% url 'learning:module_list' %}">{% translate "Browse modules" %}</a></div>{% endif %}
+{% if modules %}<div class="section-title">{% translate "Learning modules" %}</div><div class="card flush"><table class="table"><tbody>{% for m in modules %}<tr><td><a href="{{ m.get_absolute_url }}"><strong>{{ m.display_title }}</strong></a><div class="small muted">{{ m.display_summary|truncatechars:120 }}</div></td><td style="text-align:right"><span class="badge grey">{{ m.department.display_name }}</span></td></tr>{% endfor %}</tbody></table></div>{% endif %}
+{% if sops %}<div class="section-title">{% translate "SOPs" %}</div><div class="card flush"><table class="table"><tbody>{% for s in sops %}<tr><td><a href="{{ s.get_absolute_url }}"><strong>{{ s.display_title }}</strong></a><div class="small muted">{{ s.code }}</div></td><td style="text-align:right"><span class="badge grey">{{ s.department.display_name }}</span></td></tr>{% endfor %}</tbody></table></div>{% endif %}
+{% if videos %}<div class="section-title">{% translate "Videos" %}</div><div class="card flush"><table class="table"><tbody>{% for v in videos %}<tr><td><a href="{% url 'learning:module_detail' v.module.slug %}?tab=videos"><strong>{{ v.title }}</strong></a><div class="small muted">{{ v.module.title }}</div></td></tr>{% endfor %}</tbody></table></div>{% endif %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "Quizzes" %}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{% translate "Quizzes" %}</h1><p>{% translate "Finish a module's SOP steps to unlock its quiz." %}</p></div></div>
+<div class="quiz-grid">
+{% for r in rows %}
+  <article class="card quiz-card">
+    <div class="top">
+      <span class="qico {% if r.passed %}ok{% elif not r.unlocked %}lock{% endif %}">{% if r.passed %}{% icon 'check-circle' %}{% elif r.unlocked %}{% icon 'gauge' %}{% else %}{% icon 'lock' %}{% endif %}</span>
+      {% if r.passed %}<span class="badge ok">{% icon 'check' %}{% translate "Passed" %}</span>{% elif r.unlocked %}<span class="badge info">{% translate "Ready" %}</span>{% else %}<span class="badge grey">{% icon 'lock' %}{% translate "Locked" %}</span>{% endif %}
+    </div>
+    <h3>{{ r.quiz.module.display_title }}</h3>
+    <div class="meta"><span>{% icon 'file' %}{{ r.quiz.question_count }} {% translate "questions" %}</span><span>{% icon 'check-circle' %}{% translate "Pass" %} {{ r.quiz.pass_percent }}%</span>{% if r.best is not None %}<span>{% icon 'star' %}{% translate "Best" %} {{ r.best }}%</span>{% endif %}</div>
+    {% if not r.unlocked %}<p class="lock-note">{% icon 'lock' %}{% blocktranslate with n=r.quiz.module.steps.count %}Complete all {{ n }} steps to unlock{% endblocktranslate %}</p>{% endif %}
+    {% if r.unlocked and r.attempts_left != 0 %}
+      <form method="post" action="{% url 'quizzes:start' r.quiz.module.slug %}">{% csrf_token %}<button class="btn block {% if r.passed %}secondary{% endif %}" type="submit">{% if r.passed %}{% icon 'refresh' %}{% translate "Retake quiz" %}{% else %}{% translate "Start quiz" %}{% icon 'arrow-right' %}{% endif %}</button></form>
+    {% elif not r.unlocked %}<a class="btn secondary" href="{% url 'learning:module_detail' r.quiz.module.slug %}?tab=sops">{% translate "Open module" %}{% icon 'arrow-right' %}</a>
+    {% else %}<span class="badge grey">{% translate "No attempts left" %}</span>{% endif %}
+  </article>
+{% empty %}<div class="card empty" style="grid-column:1/-1"><h3>{% translate "No quizzes for this plant yet" %}</h3></div>{% endfor %}
+</div>
+{% endblock %}

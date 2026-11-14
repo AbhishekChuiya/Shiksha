@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% load i18n shiksha static %}
+{% block title %}{% translate "Incidents" %}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{% if user.is_shiksha_admin %}{% translate "All incidents" %}{% else %}{% translate "My incidents" %}{% endif %}</h1><p>{% translate "Report safety, quality or equipment issues and track their status." %}</p></div>
+  <a class="btn" href="{% url 'incidents:create' %}">{% icon 'plus' %}{% translate "Report incident" %}</a></div>
+<div class="card flush table-wrap"><table class="table">
+  <thead><tr><th>#</th><th>{% translate "Title" %}</th><th>{% translate "Category" %}</th><th>{% translate "Plant" %}</th><th>{% translate "Status" %}</th><th>{% translate "Reported" %}</th></tr></thead>
+  <tbody>{% for i in incidents %}<tr><td class="muted">{{ i.pk }}</td><td><a href="{{ i.get_absolute_url }}"><strong>{{ i.title }}</strong></a></td><td>{{ i.get_category_display }}</td><td>{{ i.plant.name }}</td>
+    <td><span class="badge {% if i.status == 'closed' %}ok{% elif i.status == 'open' %}{% else %}warn{% endif %}">{{ i.get_status_display }}</span></td><td>{{ i.created_at|date:"d M Y" }}</td></tr>
+  {% empty %}<tr><td colspan="6"><div class="empty"><img src="{% static 'img/brand/vivi.png' %}" alt=""><h3>{% translate "No incidents reported" %}</h3><p>{% translate "Spotted something unsafe or wrong? Report it — it helps everyone." %}</p></div></td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}

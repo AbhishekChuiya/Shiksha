@@ -1,0 +1,12 @@
+{% load shiksha panel %}
+{% include "panel/_crumbs.html" %}
+{% if module %}
+<div class="pn-head"><div><div class="row wrap" style="gap:8px"><span class="badge {% if module.status == 'published' %}ok{% else %}warn{% endif %}">{{ module.get_status_display }}</span>{% if module.title_hi %}<span class="badge grey">Hindi ✓</span>{% endif %}</div>
+    <h1 style="margin-top:6px">{{ module.title }}</h1><p class="muted">{{ module.plant.name }} · {{ module.department.name }}</p></div>
+  <div class="row wrap">
+    <a class="btn secondary" target="_blank" href="{{ module.get_absolute_url }}">{% icon 'eye' %}Preview as learner</a>
+    <form method="post" action="{% url 'panel:module_status' module.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.path }}">
+      <button class="btn {% if module.status == 'published' %}secondary{% else %}success{% endif %}" type="submit">{% if module.status == 'published' %}{% icon 'eye-off' %}Hide from learners{% else %}{% icon 'check' %}Publish{% endif %}</button></form>
+  </div></div>
+<nav class="tabs">{% for key, label in tabs %}<a class="{% if tab == key %}on{% endif %}" href="{% url 'panel:module_tab' module.pk key %}">{{ label }}{% if counts|get:key %}<span class="n">{{ counts|get:key }}</span>{% endif %}</a>{% endfor %}</nav>
+{% else %}<div class="pn-head"><div><h1>New module</h1><p class="muted">Start with the basics — you add the SOP steps and quiz right after.</p></div></div>{% endif %}

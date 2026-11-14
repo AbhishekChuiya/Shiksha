@@ -1,0 +1,16 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+<div class="pn-head"><div><h1>SOP library</h1><p class="muted">{{ total }} document{{ total|pluralize }}. Learners only see the current approved version.</p></div><a class="btn" href="{% url 'panel:sop_new' %}">{% icon 'upload' %}Add SOP</a></div>
+<form class="pn-filters" method="get"><div class="search"><input type="search" name="q" value="{{ q }}" placeholder="Search by title, number or tag…">{% icon 'search' %}</div>
+  <select name="plant" onchange="this.form.submit()"><option value="">All plants</option>{% for p in plants %}<option value="{{ p.pk }}" {% if plant == p.pk|stringformat:'s' %}selected{% endif %}>{{ p.name }}</option>{% endfor %}</select>
+  <select name="issue" onchange="this.form.submit()"><option value="">Everything</option><option value="unapproved" {% if issue == "unapproved" %}selected{% endif %}>No approved version</option></select>
+  <button class="btn secondary" type="submit">Search</button>{% if q or plant or issue %}<a class="btn ghost" href="{% url 'panel:sops' %}">Clear</a>{% endif %}</form>
+<div class="card flush table-wrap"><table class="table pn-table"><thead><tr><th>Document</th><th>Plant · Department</th><th>Active version</th><th>Versions</th><th></th></tr></thead><tbody>
+{% for s in page %}{% with v=s.active_version %}<tr>
+  <td><a class="pn-title" href="{% url 'panel:sop_edit' s.pk %}"><span class="pn-thumb">{% icon 'file' %}</span><span><strong>{{ s.title }}</strong><small>{{ s.code }}</small></span></a></td>
+  <td>{{ s.plant.name }}<div class="small muted">{{ s.department.name }}</div></td>
+  <td>{% if v %}<span class="badge ok">v{{ v.version }}</span> <span class="small muted">{{ v.effective_date|date:"d M Y" }}</span>{% else %}<span class="badge warn">None approved</span>{% endif %}</td><td>{{ s.n_versions }}</td>
+  <td class="pn-actions"><a class="btn secondary sm" href="{% url 'panel:sop_edit' s.pk %}">{% icon 'edit2' %}Edit</a></td></tr>{% endwith %}
+{% empty %}<tr><td colspan="5"><div class="empty"><h3>No SOPs found</h3><a class="btn" href="{% url 'panel:sop_new' %}">Add an SOP</a></div></td></tr>{% endfor %}</tbody></table></div>
+{% include "panel/_pager.html" %}
+{% endblock %}

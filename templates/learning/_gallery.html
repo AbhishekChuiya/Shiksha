@@ -1,0 +1,7 @@
+{% load i18n shiksha %}{% if items %}
+<section class="card gallery" data-gallery>
+  <a class="g-main" href="{{ items.0.url }}" data-lightbox="{{ group }}" data-caption="{{ items.0.caption }}"><img src="{{ items.0.url }}" alt="{{ items.0.caption }}" id="g-main-img">
+    <span class="g-zoom">{% icon 'image' %}{% translate "Tap to enlarge" %}</span></a>
+  {% if items|length > 1 %}<div class="g-thumbs">{% for it in items %}<button type="button" class="g-thumb {% if forloop.first %}on{% endif %}" data-src="{{ it.url }}" data-cap="{{ it.caption }}" aria-label="{{ it.caption|default:forloop.counter }}"><img src="{{ it.url }}" alt="" loading="lazy"></button>{% endfor %}</div>{% endif %}
+  <div class="g-hidden" hidden>{% for it in items %}<a href="{{ it.url }}" data-lightbox="{{ group }}" data-caption="{{ it.caption }}"></a>{% endfor %}</div>
+</section>{% endif %}

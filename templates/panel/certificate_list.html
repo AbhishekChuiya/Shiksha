@@ -1,0 +1,11 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+<div class="pn-head"><div><h1>Certificates</h1><p class="muted">{{ total }} issued</p></div></div>
+<form class="pn-filters" method="get"><div class="search"><input type="search" name="q" value="{{ q }}" placeholder="Search by name, email or module…">{% icon 'search' %}</div><button class="btn secondary" type="submit">Search</button></form>
+<div class="card flush table-wrap"><table class="table pn-table"><thead><tr><th>Person</th><th>Module</th><th>Score</th><th>Issued</th><th>ID</th><th></th></tr></thead><tbody>
+{% for c in page %}<tr><td><strong>{{ c.holder_name }}</strong><div class="small muted">{{ c.user.email }}</div></td><td>{{ c.module.title }}<div class="small muted">{{ c.module.plant.name }}</div></td><td>{% if c.score_percent is not None %}{{ c.score_percent }}%{% else %}—{% endif %}</td><td>{{ c.issued_at|date:"d M Y" }}</td><td class="small muted">{{ c.short_code }}</td>
+  <td class="pn-actions"><a class="btn secondary sm" href="{% url 'certificates:download' c.code %}">{% icon 'download' %}PDF</a>
+    <form method="post" action="{% url 'panel:certificate_revoke' c.pk %}" data-confirm-form="Revoke this certificate? The learner can earn it again by passing the quiz.">{% csrf_token %}<button class="btn ghost sm danger">Revoke</button></form></td></tr>
+{% empty %}<tr><td colspan="6"><div class="empty"><h3>No certificates found</h3></div></td></tr>{% endfor %}</tbody></table></div>
+{% include "panel/_pager.html" %}
+{% endblock %}

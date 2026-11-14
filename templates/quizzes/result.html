@@ -1,0 +1,25 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "Quiz result" %}{% endblock %}
+{% block content %}
+<div style="max-width:820px;margin:0 auto">
+<nav class="crumbs"><a href="{% url 'quizzes:list' %}">{% translate "Quizzes" %}</a>{% icon 'chevron-right' %}<b>{{ quiz.module.display_title }}</b></nav>
+<div class="card score-card">
+  <div class="ring" style="--p:{{ attempt.score_percent }};{% if attempt.passed %}--ring-fill:var(--ok){% endif %}"><div><div><strong style="{% if attempt.passed %}color:var(--ok){% endif %}">{{ attempt.score_percent }}%</strong></div></div></div>
+  {% if attempt.passed %}<h2>🎉 {% translate "You passed!" %}</h2>{% else %}<h2>{% translate "Not passed yet" %}</h2>{% endif %}
+  <p class="muted">{{ correct_count }} / {{ attempt.question_ids|length }} {% translate "correct" %} · {% translate "pass mark" %} {{ quiz.pass_percent }}%</p>
+  <div class="row wrap" style="justify-content:center;margin-top:18px">
+    {% if attempt.passed and certificate %}<a class="btn" href="{{ certificate.get_absolute_url }}">{% icon 'award' %}{% translate "View certificate" %}</a>{% endif %}
+    {% if not attempt.passed and state.attempts_left != 0 %}<form method="post" action="{% url 'quizzes:start' quiz.module.slug %}">{% csrf_token %}<button class="btn" type="submit">{% icon 'refresh' %}{% translate "Try again" %}</button></form>{% endif %}
+    <a class="btn secondary" href="{% url 'learning:module_detail' quiz.module.slug %}?tab=sops">{% translate "Back to module" %}</a>
+  </div>
+  {% if not attempt.passed %}<p class="small muted" style="margin-top:16px">{% translate "Tip: review the SOP steps, then try again." %}</p>{% endif %}
+</div>
+<div class="section-title">{% translate "Review your answers" %}</div>
+<div class="card">
+  {% for r in review %}<div class="rev"><strong>{{ forloop.counter }}. {{ r.answer.question.display_text }}</strong>
+    <div class="{% if r.answer.is_correct %}right{% else %}wrong{% endif %}" style="margin-top:6px">{% if r.answer.is_correct %}{% icon 'check-circle' %}{% else %}{% icon 'x' %}{% endif %} {% translate "Your answer" %}: {{ r.answer.choice.display_text }}</div>
+    {% if not r.answer.is_correct and r.correct %}<div class="right">{% icon 'check-circle' %} {% translate "Correct answer" %}: {{ r.correct.display_text }}</div>{% endif %}
+    {% if r.answer.question.display_explanation %}<div class="small muted" style="margin-top:4px">{{ r.answer.question.display_explanation }}</div>{% endif %}</div>{% endfor %}
+</div></div>
+{% include "learning/_celebrate_src.html" %}
+{% endblock %}

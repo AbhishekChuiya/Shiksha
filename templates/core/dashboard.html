@@ -1,0 +1,71 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "Dashboard" %}{% endblock %}
+{% block content %}
+<section class="hero">
+  <div style="position:relative;z-index:1">
+    <span class="eyebrow">{% icon 'building' %}{{ current_plant.name }}</span>
+    <h1>{% trans greeting %}, {{ user.first_name|default:user.email }} 👋</h1>
+    <p>{% if resume %}{% translate "Pick up right where you left off." %}{% elif pending_modules %}{% blocktranslate count n=pending_modules %}You have {{ n }} module waiting for you.{% plural %}You have {{ n }} modules waiting for you.{% endblocktranslate %}{% else %}{% translate "You're all caught up. Great work!" %}{% endif %}</p>
+    <div class="row wrap">
+      {% if resume %}<a class="btn lg" href="{% url 'learning:module_detail' resume.module.slug %}?tab=sops">{% icon 'play' %}{% translate "Resume learning" %}</a>
+      {% else %}<a class="btn lg" href="{% url 'learning:module_list' %}">{% translate "Browse modules" %}{% icon 'arrow-right' %}</a>{% endif %}
+    </div>
+  </div>
+  <div class="ring" style="--p: {{ overall_percent }}"><div><div><strong>{{ overall_percent }}%</strong><span class="tiny">{% translate "completed" %}</span></div></div></div>
+</section>
+
+{% if resume %}
+<a class="card hover resume" href="{% url 'learning:module_detail' resume.module.slug %}?tab=sops">
+  <div class="thumb">{% icon 'play' %}</div>
+  <div class="grow">
+    <div class="overline" style="margin-bottom:2px">{% translate "Continue where you left off" %}</div>
+    <h3 style="margin:0 0 8px">{{ resume.module.display_title }}</h3>
+    <div class="prog-line"><div class="bar"><i style="width:{{ resume.percent }}%"></i></div>{{ resume.steps_done }}/{{ resume.steps_total }} {% translate "steps" %}</div>
+  </div>
+  <span class="btn secondary sm">{% translate "Resume" %}{% icon 'arrow-right' %}</span>
+</a>
+{% endif %}
+
+<div class="grid g4 hscroll stats" style="margin-top:18px">
+  <div class="card stat"><div class="ico">{% icon 'clock' %}</div><div><strong>{{ learning_minutes|minutes_label }}</strong><span>{% translate "Learning time" %}</span></div></div>
+  <div class="card stat"><div class="ico amber">{% icon 'award' %}</div><div><strong>{{ certificate_count }}</strong><span>{% translate "Certificates" %}</span></div></div>
+  <div class="card stat"><div class="ico blue">{% icon 'gauge' %}</div><div><strong>{% if avg_best_score is not None %}{{ avg_best_score }}%{% else %}—{% endif %}</strong><span>{% translate "Avg best score" %}</span></div></div>
+  <div class="card stat"><div class="ico green">{% icon 'check-circle' %}</div><div><strong>{{ completed_modules }}<small class="muted" style="font-size:.9rem;font-weight:600"> / {{ total_modules }}</small></strong><span>{% translate "Modules completed" %}</span></div></div>
+</div>
+
+<div class="section-title">{% translate "What would you like to do?" %}</div>
+<div class="quick quick-big">
+  <a class="q-red" href="{% url 'learning:module_list' %}"><span class="ico">{% icon 'layers' %}</span><b>{% translate "Learn" %}</b><small>{% translate "Open training modules" %}</small></a>
+  <a class="q-blue" href="{% url 'sops:list' %}"><span class="ico">{% icon 'file' %}</span><b>{% translate "My SOPs" %}</b><small>{% translate "Read work instructions" %}</small></a>
+  <a class="q-amber" href="{% url 'quizzes:list' %}"><span class="ico">{% icon 'gauge' %}</span><b>{% translate "Take quiz" %}</b><small>{% translate "Test what you learned" %}</small></a>
+  <a class="q-green" href="{% url 'certificates:list' %}"><span class="ico">{% icon 'award' %}</span><b>{% translate "Certificates" %}</b><small>{% translate "Download your certificates" %}</small></a>
+  <a class="q-rose" href="{% url 'incidents:create' %}"><span class="ico">{% icon 'alert' %}</span><b>{% translate "Report incident" %}</b><small>{% translate "Tell us about a safety issue" %}</small></a>
+  <a class="q-violet" href="{% url 'core:coming_soon' 'ai-assistant' %}"><span class="ico">{% icon 'sparkle' %}</span><b>{% translate "Ask Vishakha AI" %}</b><small>{% translate "Get quick answers" %}</small></a>
+</div>
+
+{% if in_progress %}
+<div class="section-title">{% translate "In progress" %}</div>
+<div class="grid g2 hscroll tiles">
+  {% for p in in_progress %}
+  <a class="card hover" href="{% url 'learning:module_detail' p.module.slug %}?tab=sops">
+    <div class="row between"><strong>{{ p.module.display_title }}</strong><span class="badge info">{{ p.percent }}%</span></div>
+    <div class="prog-line" style="margin-top:12px"><div class="bar"><i style="width:{{ p.percent }}%"></i></div>{{ p.steps_done }}/{{ p.steps_total }}</div>
+  </a>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if recommended %}
+<div class="section-title">{% translate "Recommended for you" %}<a class="swipe-or-link" href="{% url 'learning:module_list' %}">{% translate "View all" %}{% icon 'arrow-right' %}</a></div>
+<div class="mod-grid hscroll">
+  {% for m in recommended %}
+  <article class="mod-card">
+    <div class="mod-cover" {% if m.cover %}style="background-image:url('{{ m.cover.url }}')"{% endif %}><span class="tag">{{ m.department.display_name }}</span></div>
+    <div class="mod-body"><h3>{{ m.display_title }}</h3><p>{{ m.display_summary }}</p>
+      <div class="mod-foot"><div class="meta"><span>{% icon 'file' %}{{ m.steps.count }} {% translate "steps" %}</span><span>{% icon 'clock' %}{{ m.est_minutes }} {% translate "min" %}</span></div>
+      <a class="btn" href="{{ m.get_absolute_url }}">{% icon 'play' %}{% translate "Start" %}</a></div></div>
+  </article>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

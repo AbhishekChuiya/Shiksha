@@ -1,0 +1,73 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "Learning Modules" %}{% endblock %}
+{% block content %}
+{% if grid and current_dept %}
+<nav class="crumbs"><a href="{{ rows_url }}">{% translate "Learning Modules" %}</a>{% icon 'chevron-right' %}<b>{{ current_dept.display_name }}</b></nav>
+{% endif %}
+<div class="page-head">
+  <div>
+    <h1>{% if grid and current_dept %}{{ current_dept.display_name }}{% else %}{% translate "Learning Modules" %}{% endif %}</h1>
+    <p>{{ current_plant.name }} · {{ count }} {% translate "modules" %}{% if user.designation %}{% trans user.designation as desig %} · {% blocktranslate with d=desig %}viewing as {{ d }}{% endblocktranslate %}{% endif %}</p>
+  </div>
+  <div class="row view-switch">
+    {% if grid %}<a class="btn secondary" href="{{ rows_url }}">{% icon 'layers' %}{% translate "Rows view" %}</a>
+    {% else %}<a class="btn secondary" href="{{ grid_url }}">{% icon 'grid' %}{% translate "Grid view" %}</a>{% endif %}
+  </div>
+</div>
+
+<form class="mod-search" method="get" role="search">
+  {% if sel.dept %}<input type="hidden" name="dept" value="{{ sel.dept }}">{% endif %}{% if sel.library %}<input type="hidden" name="library" value="{{ sel.library }}">{% endif %}
+  {% if sel.category %}<input type="hidden" name="category" value="{{ sel.category|escape }}">{% endif %}{% if grid %}<input type="hidden" name="view" value="grid">{% endif %}
+  <div class="search">{% icon 'search' %}<input type="search" name="q" value="{{ q }}" placeholder="{% translate 'Search modules…' %}" aria-label="{% translate 'Search modules…' %}"></div>
+  <button class="btn" type="submit">{% translate "Search" %}</button>
+  {% if has_filters %}<a class="btn ghost" href="{{ clear_url }}">{% icon 'x' %}{% translate "Clear filters" %}</a>{% endif %}
+</form>
+
+<details class="card filter-card" id="filters" open>
+  <summary>{% icon 'grid' %}<span>{% translate "Filters" %}</span>{% if sel.dept or sel.library or sel.category %}<span class="badge">{% translate "active" %}</span>{% endif %}<span class="grow"></span>{% icon 'chevron-down' 'chev' %}</summary>
+  <div class="filters">
+    <span class="lbl">{% translate "Department" %}</span>
+    <div class="chips scroll">{% for label, link, on in dept_chips %}<a class="chip {% if on %}on{% endif %}" href="{{ link }}">{{ label }}</a>{% endfor %}</div>
+    <span class="lbl">{% translate "Library" %}</span>
+    <div class="chips scroll">{% for label, link, on in lib_chips %}<a class="chip {% if on %}on{% endif %}" href="{{ link }}">{% if forloop.first %}{{ label }}{% else %}{% trans label %}{% endif %}</a>{% endfor %}</div>
+    {% if cat_chips|length > 1 %}<span class="lbl">{% translate "Category" %}</span>
+    <div class="chips scroll">{% for label, link, on in cat_chips %}<a class="chip {% if on %}on{% endif %}" href="{{ link }}">{{ label }}</a>{% endfor %}</div>{% endif %}
+  </div>
+</details>
+<script>if (matchMedia("(max-width: 800px)").matches) document.getElementById("filters").removeAttribute("open");</script>
+
+{% if grid %}
+  {% if cards %}
+  <div class="mod-grid grid-all">
+    {% for c in cards %}{% include "learning/_module_card.html" with m=c.module p=c.progress %}{% endfor %}
+  </div>
+  {% if page_obj.paginator.num_pages > 1 %}
+  <nav class="pager" aria-label="{% translate 'Pages' %}">
+    {% if prev_url %}<a class="btn secondary" href="{{ prev_url }}">{% icon 'arrow-left' %}{% translate "Previous" %}</a>{% else %}<span class="btn secondary disabled">{% icon 'arrow-left' %}{% translate "Previous" %}</span>{% endif %}
+    <span class="muted">{% blocktranslate with a=page_obj.number b=page_obj.paginator.num_pages %}Page {{ a }} of {{ b }}{% endblocktranslate %}</span>
+    {% if next_url %}<a class="btn secondary" href="{{ next_url }}">{% translate "Next" %}{% icon 'arrow-right' %}</a>{% else %}<span class="btn secondary disabled">{% translate "Next" %}{% icon 'arrow-right' %}</span>{% endif %}
+  </nav>
+  {% endif %}
+  {% else %}
+  <div class="card empty"><h3>{% translate "No modules match these filters" %}</h3><a class="btn secondary" href="{{ clear_url }}">{% translate "Clear filters" %}</a></div>
+  {% endif %}
+
+{% else %}
+  {% if sections %}
+  {% for s in sections %}
+  <section class="mod-section">
+    <div class="section-title">
+      <span>{{ s.dept.display_name }}<small>{{ s.cards|length }}</small></span>
+      <a class="view-all" href="{{ s.view_all }}">{% translate "View all" %}{% icon 'arrow-right' %}</a>
+    </div>
+    <div class="mod-grid hscroll">
+      {% for c in s.cards %}{% include "learning/_module_card.html" with m=c.module p=c.progress extra=forloop.counter|add:"-8" %}{% endfor %}
+      {% if s.cards|length > 8 %}<a class="view-all-tile" href="{{ s.view_all }}"><span class="vt-n">+{{ s.cards|length|add:"-8" }}</span><strong>{% translate "View all" %}</strong><small>{{ s.dept.display_name }}</small>{% icon 'arrow-right' %}</a>{% endif %}
+    </div>
+  </section>
+  {% endfor %}
+  {% else %}
+  <div class="card empty"><h3>{% translate "No modules match these filters" %}</h3><a class="btn secondary" href="{{ clear_url }}">{% translate "Clear filters" %}</a></div>
+  {% endif %}
+{% endif %}
+{% endblock %}

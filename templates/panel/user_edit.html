@@ -1,0 +1,10 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+{% include "panel/_crumbs.html" %}
+<div class="pn-head"><div class="row" style="gap:16px">{% if u %}{% include "_avatar.html" with u=u cls="lg" %}{% endif %}<div><h1>{% if u %}{{ u.get_full_name|default:u.email }}{% else %}New user{% endif %}</h1>{% if u %}<p class="muted">{{ u.email }}{% if u.last_login %} · last sign-in {{ u.last_login|date:"d M Y" }}{% endif %}</p>{% else %}<p class="muted">They get an email to choose their own password — or you can set one below.</p>{% endif %}</div></div>
+  {% if u %}<form method="post" action="{% url 'panel:user_reset' u.pk %}">{% csrf_token %}<button class="btn secondary" type="submit">{% icon 'mail' %}Send password link</button></form>{% endif %}</div>
+<form method="post" data-dirty-guard>{% csrf_token %}
+  {% include "panel/_form_fields.html" %}
+  <div class="pn-savebar"><button class="btn lg" type="submit">{% icon 'check' %}{% if u %}Save user{% else %}Create user{% endif %}</button><a class="btn ghost" href="{% url 'panel:users' %}">Back to users</a></div>
+</form>
+{% endblock %}

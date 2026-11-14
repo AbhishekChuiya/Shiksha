@@ -1,0 +1,32 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+<div class="pn-head"><div><h1>Welcome, {{ user.first_name|default:"Admin" }}</h1><p class="muted">Everything you manage in Project Shiksha, in one place.</p></div>
+  <div class="row wrap"><a class="btn" href="{% url 'panel:module_new' %}">{% icon 'plus' %}Add module</a><a class="btn secondary" href="{% url 'panel:sop_new' %}">{% icon 'upload' %}Upload SOP</a><a class="btn secondary" href="{% url 'panel:user_new' %}">{% icon 'users' %}Add user</a></div></div>
+
+<div class="pn-stats">{% for s in stats %}<a class="card hover pn-stat" href="{{ s.url }}"><span class="ico">{% icon s.icon %}</span><div><strong>{{ s.value }}</strong><span>{{ s.label }}</span></div></a>{% endfor %}</div>
+
+<div class="split" style="margin-top:20px">
+  <div class="stack">
+    <section class="card"><h3>Needs your attention</h3>
+      {% for a in attention %}<a class="pn-todo {{ a.level }}" href="{{ a.url }}">{% icon 'alert' %}<span>{{ a.text }}</span>{% icon 'chevron-right' %}</a>
+      {% empty %}<div class="empty" style="padding:26px"><h3 style="margin:0">All good 🎉</h3><p class="muted" style="margin:6px 0 0">Nothing needs attention right now.</p></div>{% endfor %}
+      {% if hidden_posts %}<a class="pn-todo info" href="{% url 'panel:discussion' %}?show=hidden">{% icon 'chat' %}<span>{{ hidden_posts }} hidden discussion post(s)</span>{% icon 'chevron-right' %}</a>{% endif %}
+    </section>
+    <section class="card"><h3>Recent changes</h3>
+      <div class="pn-log">{% for a in activity %}<div><span class="muted small">{{ a.at|date:"d M, H:i" }}</span> <strong>{% if a.actor %}{{ a.actor.get_full_name|default:a.actor.email }}{% else %}System{% endif %}</strong> {{ a|describe_action }} <span class="muted">{{ a|describe_object }}</span></div>
+      {% empty %}<p class="muted">No changes recorded yet.</p>{% endfor %}</div></section>
+  </div>
+  <div class="stack">
+    <section class="card"><h3>Quick links</h3>
+      <div class="pn-quick">
+        <a href="{% url 'panel:plants' %}">{% icon 'building' %}Plants & photos</a><a href="{% url 'panel:modules' %}">{% icon 'layers' %}Modules & steps</a>
+        <a href="{% url 'panel:quizzes' %}">{% icon 'gauge' %}Quizzes</a><a href="{% url 'panel:sops' %}">{% icon 'file' %}SOP library</a>
+        <a href="{% url 'panel:users' %}">{% icon 'users' %}Users</a><a href="{% url 'panel:reports' %}">{% icon 'chart' %}Reports</a>
+      </div></section>
+    <section class="card"><h3>New users</h3>
+      {% for u in new_users %}<a class="pn-person" href="{% url 'panel:user_edit' u.pk %}">{% include "_avatar.html" with u=u cls="sm" %}<div><strong>{{ u.get_full_name|default:u.email }}</strong><div class="tiny muted">{{ u.email }}</div></div></a>{% endfor %}
+      <a class="btn ghost sm" href="{% url 'panel:users' %}" style="margin-top:8px">All users {% icon 'arrow-right' %}</a></section>
+    <section class="card pn-tip"><h3>{% icon 'info' %} First time here?</h3><p class="muted" style="margin:0 0 10px">A 2-minute guide to adding a module, steps, a quiz and Hindi text.</p><a class="btn secondary sm" href="{% url 'panel:help' %}">Open the guide</a></section>
+  </div>
+</div>
+{% endblock %}

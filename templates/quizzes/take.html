@@ -1,0 +1,17 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{{ quiz.module.display_title }} — {% translate "Quiz" %}{% endblock %}
+{% block content %}
+<div style="max-width:820px;margin:0 auto">
+<nav class="crumbs"><a href="{% url 'quizzes:list' %}">{% translate "Quizzes" %}</a>{% icon 'chevron-right' %}<b>{{ quiz.module.display_title }}</b></nav>
+<div class="qhead"><span>{% translate "Question" %} {{ number }} / {{ total }}</span><div class="bar"><i style="width:{{ percent }}%"></i></div>
+  <button class="icon-btn" type="button" data-speak="#qblock" title="{% translate 'Read aloud' %}" aria-label="{% translate 'Read question aloud' %}">{% icon 'speaker' %}</button></div>
+<form method="post" class="card" data-quiz-form style="padding:30px">{% csrf_token %}
+  <div id="qblock"><p class="overline" style="color:var(--muted)">{% trans question.kind %}</p><p class="question">{{ question.display_text }}</p></div>
+  {% for c in choices %}
+  <label class="option"><input type="radio" name="choice" value="{{ c.pk }}" required><span class="key">{{ forloop.counter }}</span><span>{{ c.display_text }}</span></label>
+  {% endfor %}
+  <div class="row between quiz-actions" style="margin-top:14px"><span class="hint"><span>{% translate "Tip: press" %} <kbd>1</kbd>–<kbd>{{ choices|length }}</kbd> {% translate "to choose, then" %} <kbd>Enter</kbd></span></span>
+    <button class="btn lg" type="submit" data-quiz-next data-enter-submit disabled>{% if number == total %}{% translate "Submit quiz" %}{% icon 'check' %}{% else %}{% translate "Next" %}{% icon 'arrow-right' %}{% endif %}</button></div>
+</form>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "accounts/base_auth.html" %}{% load i18n %}
+{% block title %}{% translate "No access" %}{% endblock %}
+{% block content %}
+<h2>{% translate "Nothing to show yet" %}</h2>
+<p>{% translate "No plant has been set up yet, or you don't have permission for this page. Please contact the Shiksha admin." %}</p>
+<a class="btn" href="{% url 'core:dashboard' %}">{% translate "Try again" %}</a>
+<form method="post" action="{% url 'accounts:logout' %}" style="margin-top:12px">{% csrf_token %}<button class="btn ghost">{% translate "Sign out" %}</button></form>
+{% endblock %}

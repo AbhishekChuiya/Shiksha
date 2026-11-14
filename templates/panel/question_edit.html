@@ -1,0 +1,13 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+{% include "panel/_crumbs.html" %}
+<div class="pn-head"><div><h1>{% if question %}Edit question{% else %}New question{% endif %}</h1><p class="muted">{{ module.title }}</p></div></div>
+<form method="post" data-dirty-guard>{% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert error">{% icon 'alert' %}<div>{{ form.non_field_errors|join:" " }}</div></div>{% endif %}
+  <section class="card pn-group"><h3>Question</h3><div class="pn-grid">{% include "panel/_field.html" with f=form.text %}{% include "panel/_field.html" with f=form.kind %}{% include "panel/_field.html" with f=form.explanation %}</div></section>
+  {% for ed in editors %}{% include "panel/_editor.html" with key=ed.key title=ed.title fields=ed.fields rows=ed.rows blank=ed.blank empty_hint=ed.empty_hint add_label=ed.add_label info=ed.info has_hindi=ed.has_hindi %}{% endfor %}
+  <section class="card pn-group"><div class="pn-grid">{% include "panel/_field.html" with f=form.keep_choice_order %}</div></section>
+  <details class="card pn-group pn-hindi" {% if form.text_hi.value or form.explanation_hi.value %}open{% endif %}><summary><span class="hi-dot">हि</span>Hindi (optional){% icon 'chevron-down' 'chev' %}</summary><div class="pn-grid">{% include "panel/_field.html" with f=form.text_hi %}{% include "panel/_field.html" with f=form.explanation_hi %}</div></details>
+  <div class="pn-savebar"><button class="btn lg" type="submit">{% icon 'check' %}Save question</button><a class="btn ghost" href="{% url 'panel:module_tab' module.pk 'quiz' %}">Cancel</a></div>
+</form>
+{% endblock %}

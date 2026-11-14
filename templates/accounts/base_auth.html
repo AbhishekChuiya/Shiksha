@@ -1,0 +1,38 @@
+{% load static i18n shiksha %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block title %}{% translate "Sign in" %}{% endblock %} · Project Shiksha</title>
+  <script>document.documentElement.setAttribute("data-theme","light");</script>
+  {% include "_favicons.html" %}
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="{% static 'css/shiksha.css' %}">
+</head>
+<body>
+<div class="auth">
+  <section class="auth-brand">
+    <a href="{% url 'core:dashboard' %}"><img class="wm" src="{% static 'img/brand/logo-white.png' %}" alt="Vishakha"></a>
+    <div class="auth-copy">
+      <h1>{% translate "Learn the right way. Every shift." %}</h1>
+      <p>{% translate "Plant SOPs, step-by-step training, quizzes and certificates — in English and हिन्दी." %}</p>
+      <ul class="auth-points">
+        <li>{% icon 'shield' %}{% translate "Safety-first guided procedures" %}</li>
+        <li>{% icon 'speaker' %}{% translate "Listen to any step in your language" %}</li>
+        <li>{% icon 'award' %}{% translate "Earn certificates as you complete modules" %}</li>
+      </ul>
+    </div>
+    <img class="auth-mascot" src="{% static 'img/brand/vivi.png' %}" alt="">
+    <div class="auth-foot">© Vishakha Group · Project Shiksha</div>
+  </section>
+  <section class="auth-main">
+    <div class="auth-box">
+      <img class="logo-m" src="{% static 'img/brand/logo.png' %}" alt="Vishakha">
+      {% for m in messages %}<div class="alert {{ m.level_tag }}">{% if m.level_tag == 'success' %}{% icon 'check-circle' %}{% elif m.level_tag == 'error' %}{% icon 'alert' %}{% else %}{% icon 'info' %}{% endif %}<div>{{ m }}</div></div>{% endfor %}
+      {% block content %}{% endblock %}
+    </div>
+  </section>
+</div>
+<script src="{% static 'js/shiksha.js' %}"></script>
+</body>
+</html>

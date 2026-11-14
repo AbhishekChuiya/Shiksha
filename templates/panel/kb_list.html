@@ -1,0 +1,16 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+<div class="pn-head"><div><h1>Knowledge base</h1><p class="muted">{{ total }} item{{ total|pluralize }}. SOP documents and module videos show up automatically — add everything else here.</p></div>
+  <div class="row wrap"><a class="btn secondary" href="{% url 'panel:kb_categories' %}">{% icon 'folder' %}Categories</a><a class="btn" href="{% url 'panel:kb_new' %}">{% icon 'upload' %}Add document</a></div></div>
+<form class="pn-filters" method="get"><div class="search"><input type="search" name="q" value="{{ q }}" placeholder="Search by title…">{% icon 'search' %}</div>
+  <select name="cat" onchange="this.form.submit()"><option value="">All categories</option>{% for c in cats %}<option value="{{ c.pk }}" {% if cat == c.pk|stringformat:'s' %}selected{% endif %}>{{ c.name }} ({{ c.n }})</option>{% endfor %}</select>
+  <select name="kind" onchange="this.form.submit()"><option value="">All types</option>{% for k, l in kinds %}<option value="{{ k }}" {% if kind == k %}selected{% endif %}>{{ l }}</option>{% endfor %}</select>
+  <button class="btn secondary" type="submit">Search</button>{% if q or cat or kind %}<a class="btn ghost" href="{% url 'panel:kb' %}">Clear</a>{% endif %}</form>
+<div class="card flush table-wrap"><table class="table pn-table"><thead><tr><th>Title</th><th>Category</th><th>Type</th><th>Shown at</th><th></th></tr></thead><tbody>
+{% for i in page %}<tr>
+  <td><a class="pn-title" href="{% url 'panel:kb_edit' i.pk %}"><span class="pn-thumb">{% icon 'file' %}</span><span><strong>{{ i.title }}</strong>{% if not i.is_active %}<small>Hidden from learners</small>{% endif %}</span></a></td>
+  <td>{{ i.category.name }}</td><td><span class="badge grey">{{ i.get_kind_display }}</span></td><td>{{ i.plant.name|default:"Every plant" }}</td>
+  <td class="pn-actions"><a class="btn secondary sm" href="{% url 'panel:kb_edit' i.pk %}">{% icon 'edit2' %}Edit</a></td></tr>
+{% empty %}<tr><td colspan="5"><div class="empty"><h3>Nothing here yet</h3><a class="btn" href="{% url 'panel:kb_new' %}">Add the first document</a></div></td></tr>{% endfor %}</tbody></table></div>
+{% include "panel/_pager.html" %}
+{% endblock %}

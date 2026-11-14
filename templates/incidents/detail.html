@@ -1,0 +1,29 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}#{{ incident.pk }} {{ incident.title }}{% endblock %}
+{% block content %}
+<nav class="crumbs"><a href="{% url 'incidents:list' %}">{% translate "Incidents" %}</a>{% icon 'chevron-right' %}<b>#{{ incident.pk }}</b></nav>
+<div class="split">
+  <div class="card">
+    <span class="badge {% if incident.status == 'closed' %}ok{% else %}warn{% endif %}">{{ incident.get_status_display }}</span>
+    <h1 style="margin-top:12px">{{ incident.title }}</h1>
+    <div class="prose">{{ incident.description|linebreaks }}</div>
+    {% if incident.attachment %}<a class="btn secondary sm" href="{{ incident.attachment.url }}" target="_blank" rel="noopener">{% icon 'paperclip' %}{% translate "View attachment" %}</a>{% endif %}
+    {% if incident.closure_notes %}<div class="alert success" style="margin-top:18px">{% icon 'check-circle' %}<div><strong>{% translate "Closure notes" %}:</strong> {{ incident.closure_notes|linebreaksbr }}</div></div>{% endif %}
+    {% if user.is_shiksha_admin %}
+    <form method="post" style="margin-top:24px;border-top:1px solid var(--line);padding-top:18px">{% csrf_token %}
+      <h3>{% translate "Update status" %}</h3>
+      <div class="form-row"><select name="status">{% for v, l in statuses %}<option value="{{ v }}" {% if v == incident.status %}selected{% endif %}>{{ l }}</option>{% endfor %}</select></div>
+      <div class="form-row"><textarea name="closure_notes" rows="3" placeholder="{% translate 'Notes / closure remarks' %}">{{ incident.closure_notes }}</textarea></div>
+      <button class="btn" type="submit">{% translate "Save" %}</button>
+    </form>{% endif %}
+  </div>
+  <div class="stack">
+    <div class="card details"><dl>
+      <dt>{% translate "Category" %}</dt><dd>{{ incident.get_category_display }}</dd><dt>{% translate "Plant" %}</dt><dd>{{ incident.plant.name }}</dd>
+      <dt>{% translate "Department" %}</dt><dd>{{ incident.department.display_name|default:"—" }}</dd><dt>{% translate "Process" %}</dt><dd>{{ incident.process.display_name|default:"—" }}</dd>
+      <dt>{% translate "When" %}</dt><dd>{{ incident.occurred_at|date:"d M Y, H:i" }}</dd><dt>{% translate "Reported by" %}</dt><dd>{{ incident.reported_by }}</dd></dl></div>
+    <div class="card"><h3>{% translate "History" %}</h3>
+      {% for h in history %}<div class="small" style="padding:8px 0;border-bottom:1px solid var(--line-2)">{{ h.at|date:"d M, H:i" }} — {{ h.actor }}: {% if h.detail.new %}{{ h.detail.old }} → {{ h.detail.new }}{% else %}{{ h.action }}{% endif %}</div>{% endfor %}</div>
+  </div>
+</div>
+{% endblock %}

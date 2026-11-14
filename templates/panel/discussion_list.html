@@ -1,0 +1,16 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+<div class="pn-head"><div><h1>Discussion moderation</h1><p class="muted">{{ total }} post{{ total|pluralize }} · hide, pin or delete anything that shouldn't be there.</p></div><a class="btn secondary" target="_blank" href="{% url 'discussion:feed' %}">{% icon 'eye' %}Open discussion</a></div>
+<form class="pn-filters" method="get"><div class="search"><input type="search" name="q" value="{{ q }}" placeholder="Search posts or people…">{% icon 'search' %}</div>
+  <select name="show" onchange="this.form.submit()"><option value="">All</option><option value="posts" {% if show == "posts" %}selected{% endif %}>Posts only (no replies)</option><option value="hidden" {% if show == "hidden" %}selected{% endif %}>Hidden</option><option value="pinned" {% if show == "pinned" %}selected{% endif %}>Pinned</option></select><button class="btn secondary" type="submit">Search</button></form>
+{% for p in page %}
+<article class="card pn-post {% if p.is_hidden %}is-hidden{% endif %}"><div class="post-head">{% include "_avatar.html" with u=p.author cls="sm" %}<div class="grow"><strong>{{ p.author.get_full_name|default:p.author.email }}</strong><div class="tiny muted">{{ p.created_at|date:"d M Y, H:i" }}{% if p.parent %} · reply to {{ p.parent.author.get_full_name|default:p.parent.author.email }}{% endif %}{% if p.module %} · {{ p.module.title }}{% endif %}</div></div>
+  {% if p.is_pinned %}<span class="badge info">Pinned</span>{% endif %}{% if p.is_hidden %}<span class="badge warn">Hidden</span>{% endif %}</div>
+  <p class="post-body">{{ p.body|linebreaksbr }}</p>
+  <div class="row wrap">
+    <form method="post" action="{% url 'discussion:moderate' p.pk %}">{% csrf_token %}<input type="hidden" name="next" value="{{ base }}">{% if p.is_hidden %}<button class="btn secondary sm" name="action" value="unhide">{% icon 'eye' %}Unhide</button>{% else %}<button class="btn secondary sm" name="action" value="hide">{% icon 'eye-off' %}Hide</button>{% endif %}
+      {% if not p.parent %}{% if p.is_pinned %}<button class="btn secondary sm" name="action" value="unpin">Unpin</button>{% else %}<button class="btn secondary sm" name="action" value="pin">{% icon 'pin' %}Pin</button>{% endif %}{% endif %}</form>
+    <form method="post" action="{% url 'discussion:delete' p.pk %}" data-confirm-form="Delete this post{% if not p.parent %} and its replies{% endif %}?">{% csrf_token %}<input type="hidden" name="next" value="{{ base }}"><button class="btn ghost sm danger">{% icon 'trash' %}Delete</button></form></div></article>
+{% empty %}<div class="card empty"><h3>Nothing here</h3></div>{% endfor %}
+{% include "panel/_pager.html" %}
+{% endblock %}

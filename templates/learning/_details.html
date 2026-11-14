@@ -1,0 +1,10 @@
+{% load i18n %}
+<aside class="card details">
+  <h3>{% translate "Module details" %}</h3>
+  <dl>
+    <dt>{% translate "Est. time" %}</dt><dd>{{ module.est_minutes }} {% translate "min" %}</dd>
+    <dt>{% translate "Process" %}</dt><dd>{{ module.process.display_name|default:_("General") }}</dd>
+    <dt>{% translate "Instructor" %}</dt><dd>{{ module.instructor|default:_("TBD") }}</dd>
+    {% if module.sop_document %}<dt>{% translate "SOP" %}</dt><dd><a href="{{ module.sop_document.get_absolute_url }}">{{ module.sop_document.code }}</a></dd>{% endif %}
+  </dl>
+</aside>

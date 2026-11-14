@@ -1,0 +1,14 @@
+{% load panel shiksha %}{# usage: include with form= groups= #}
+{% if form.non_field_errors %}<div class="alert error">{% icon 'alert' %}<div>{{ form.non_field_errors|join:" " }}</div></div>{% endif %}
+{% for title, names in groups %}
+{% if "Hindi" in title %}
+<details class="card pn-group pn-hindi" {% for n in names %}{% with f=form|field:n %}{% if f.errors or f.value %}open{% endif %}{% endwith %}{% endfor %}>
+  <summary><span class="hi-dot">हि</span>{{ title }} <span class="muted small">— add Hindi text so Hindi-language users see it</span>{% icon 'chevron-down' 'chev' %}</summary>
+  <div class="pn-grid">{% for n in names %}{% include "panel/_field.html" with f=form|field:n %}{% endfor %}</div>
+</details>
+{% else %}
+<section class="card pn-group"><h3>{{ title }}</h3>
+  <div class="pn-grid">{% for n in names %}{% include "panel/_field.html" with f=form|field:n %}{% endfor %}</div>
+</section>
+{% endif %}
+{% endfor %}

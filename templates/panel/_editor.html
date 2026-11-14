@@ -1,0 +1,11 @@
+{% load panel shiksha %}
+<section class="card ed" data-editor="{{ key }}">
+  <div class="ed-head">
+    <div><h3>{{ title }} <span class="badge grey ed-count" data-count></span></h3>{% if info %}<p class="muted small" style="margin:4px 0 0">{{ info }}</p>{% endif %}</div>
+  </div>
+  <input type="hidden" name="{{ key }}-order" value="{% for r in rows %}{{ r.uid }}{% if not forloop.last %},{% endif %}{% endfor %}" data-order>
+  <div class="ed-rows" data-rows>{% for row in rows %}{% include "panel/_editor_row.html" %}{% endfor %}</div>
+  <div class="ed-empty" data-empty {% if rows %}hidden{% endif %}>{{ empty_hint|default:"Nothing here yet." }}</div>
+  <div class="ed-foot"><button type="button" class="btn secondary" data-add>{% icon 'plus' %}{{ add_label }}</button></div>
+  <template data-tpl>{% include "panel/_editor_row.html" with row=blank %}</template>
+</section>

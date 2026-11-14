@@ -1,0 +1,23 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{{ sop.display_title }}{% endblock %}
+{% block content %}
+<nav class="crumbs"><a href="{% url 'sops:list' %}">{% translate "SOP Library" %}</a>{% icon 'chevron-right' %}<b>{{ sop.code }}</b></nav>
+<div class="split">
+  <div class="card">
+    <div class="row between wrap"><span class="badge ok">{% icon 'check' %}{% translate "Active" %} · v{{ active.version }}</span>
+      {% if active.content %}<button class="btn secondary sm" data-speak="#sop-content" data-lang="{% if sop.language == 'hi' %}hi-IN{% elif sop.language == 'gu' %}gu-IN{% else %}en-IN{% endif %}">{% icon 'speaker' %}{% translate "Listen" %}</button>{% endif %}</div>
+    <h1 style="margin-top:12px">{{ sop.display_title }}</h1><p class="muted">{{ sop.code }}</p>
+    {% if active.file and active.file.name|lower|slice:"-4:" == ".pdf" %}<iframe src="{{ active.file.url }}#toolbar=0" title="{{ sop.display_title }}" style="width:100%;height:75vh;border:1px solid var(--line);border-radius:12px"></iframe>{% endif %}
+    {% if active.content %}<div class="prose" id="sop-content">{{ active.content|linebreaks }}</div>{% endif %}
+  </div>
+  <div class="stack">
+    <div class="card details"><h3>{% translate "Document control" %}</h3><dl>
+      <dt>{% translate "Version" %}</dt><dd>v{{ active.version }}</dd><dt>{% translate "Effective" %}</dt><dd>{{ active.effective_date|date:"d M Y" }}</dd>
+      <dt>{% translate "Department" %}</dt><dd>{{ sop.department.display_name }}</dd>
+      {% if sop.owner %}<dt>{% translate "Owner" %}</dt><dd>{{ sop.owner }}</dd>{% endif %}{% if active.approved_by %}<dt>{% translate "Approved by" %}</dt><dd>{{ active.approved_by }}</dd>{% endif %}</dl>
+      {% if active.file and sop.allow_download or active.file and user.is_shiksha_admin %}<a class="btn block" style="margin-top:14px" href="{% url 'sops:download' sop.pk %}">{% icon 'file' %}{% translate "Download" %}</a>{% endif %}</div>
+    <div class="card"><h3>{% translate "Revision history" %}</h3>
+      {% for v in history %}<div style="padding:10px 0;border-bottom:1px solid var(--line-2)"><div class="row"><strong>v{{ v.version }}</strong><span class="badge {% if v.status == 'approved' %}ok{% else %}grey{% endif %}">{{ v.get_status_display }}</span></div><div class="small muted">{{ v.effective_date|date:"d M Y" }}{% if v.change_summary %} — {{ v.change_summary }}{% endif %}</div></div>{% endfor %}</div>
+  </div>
+</div>
+{% endblock %}

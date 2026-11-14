@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{{ plant.name }}{% endblock %}
+{% block content %}
+<section class="plant-banner" {% if plant.banner %}style="--banner:url('{{ plant.banner.url }}')"{% endif %}>
+  <h1>{{ plant.name }}</h1>
+  {% if plant.display_tagline %}<div style="max-width:640px;opacity:.92">{{ plant.display_tagline }}</div>{% endif %}
+  {% if plant.location %}<div class="loc small" style="margin-top:10px">{% icon 'building' %}{{ plant.display_location }}</div>{% endif %}
+</section>
+<div class="split">
+  <div class="stack">
+    <div class="card"><h3>{% translate "About" %}</h3><div class="prose">{{ plant.display_about|linebreaks }}</div></div>
+    {% if plant.photos.exists %}<div class="card"><h3>{% translate "Photo gallery" %}</h3>
+      <div class="photo-grid">{% for ph in plant.photos.all %}<figure style="margin:0"><a href="{{ ph.image.url }}" data-lightbox="plant" data-caption="{{ ph.display_caption }}"><img src="{{ ph.image.url }}" alt="{{ ph.display_caption }}" loading="lazy"></a>{% if ph.display_caption %}<figcaption class="small muted">{{ ph.display_caption }}</figcaption>{% endif %}</figure>{% endfor %}</div></div>{% endif %}
+  </div>
+  <div class="stack">
+    <div class="card details"><h3>{% translate "At a glance" %}</h3><dl>
+      {% if plant.company %}<dt>{% translate "Company" %}</dt><dd>{{ plant.company }}</dd>{% endif %}
+      <dt>{% translate "Departments" %}</dt><dd>{{ departments|length }}</dd>
+      <dt>{% translate "Learning modules" %}</dt><dd>{{ module_count }}</dd>
+      <dt>{% translate "SOPs" %}</dt><dd>{{ sop_count }}</dd></dl></div>
+    <div class="card"><h3>{% translate "Departments & processes" %}</h3>
+      {% for d in departments %}<p style="margin:14px 0 8px"><strong>{{ d.display_name }}</strong></p>
+        <div class="chips">{% for pr in d.processes.all %}<span class="badge grey">{{ pr.display_name }}</span>{% empty %}<span class="muted small">—</span>{% endfor %}</div>
+      {% empty %}<p class="muted">{% translate "No departments configured yet." %}</p>{% endfor %}</div>
+  </div>
+</div>
+{% endblock %}

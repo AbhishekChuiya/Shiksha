@@ -1,0 +1,11 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+{% include "panel/_crumbs.html" %}
+<div class="pn-head"><div><h1>{{ obj.title|default:"Add to knowledge base" }}</h1>{% if obj %}<p class="muted">{{ obj.category.name }} · {{ obj.get_kind_display }}</p>{% endif %}</div>
+  {% if obj %}<a class="btn secondary" target="_blank" href="{{ obj.get_absolute_url }}">{% icon 'eye' %}Open as learner</a>{% endif %}</div>
+<form method="post" enctype="multipart/form-data" data-dirty-guard>{% csrf_token %}
+  {% include "panel/_form_fields.html" %}
+  <div class="pn-savebar"><button class="btn lg" type="submit">{% icon 'check' %}{% if obj %}Save{% else %}Add{% endif %}</button><a class="btn ghost" href="{% url 'panel:kb' %}">Back</a>
+    {% if obj %}<span class="grow"></span><a class="btn ghost danger" href="{% url 'panel:kb_delete' obj.pk %}">{% icon 'trash' %}Delete</a>{% endif %}</div>
+</form>
+{% endblock %}

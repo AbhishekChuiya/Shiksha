@@ -1,0 +1,10 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+{% include "panel/_crumbs.html" %}
+<div class="pn-head"><div><h1>Import users</h1><p class="muted">Add many people at once from an Excel / CSV file.</p></div></div>
+<div class="split"><form class="card" method="post" enctype="multipart/form-data">{% csrf_token %}
+  <h3>Upload file</h3><p class="muted small">Columns: <code>email, first_name, last_name, employee_id, designation, role</code>. Only company addresses are accepted; existing emails are skipped. Save from Excel as <b>CSV UTF-8</b>.</p>
+  <input type="file" name="csv" accept=".csv" required><div class="row wrap" style="margin-top:14px"><button class="btn lg" type="submit">{% icon 'upload' %}Import</button><a class="btn ghost" href="{% url 'panel:sample_users' %}">{% icon 'download' %}Sample file</a></div></form>
+  <div class="card"><h3>How people sign in</h3><p class="muted">Imported users have no password yet. They can use <b>Continue with Microsoft</b>, or <b>Forgot password</b> on the sign-in page to set one.</p></div></div>
+{% if skipped %}<section class="card" style="margin-top:18px"><h3>Skipped rows <span class="badge warn">{{ skipped|length }}</span></h3><ul class="muted small">{% for s in skipped %}<li>{{ s }}</li>{% endfor %}</ul></section>{% endif %}
+{% endblock %}

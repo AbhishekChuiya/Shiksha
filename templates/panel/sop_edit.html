@@ -1,0 +1,16 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+{% include "panel/_crumbs.html" %}
+<div class="pn-head"><div><h1>{{ sop.title|default:"New SOP" }}</h1>{% if sop %}<p class="muted">{{ sop.code }} · {{ sop.plant.name }}{% if sop.active_version %} · active v{{ sop.active_version.version }}{% endif %}</p>{% endif %}</div>
+  {% if sop and sop.active_version %}<a class="btn secondary" target="_blank" href="{{ sop.get_absolute_url }}">{% icon 'eye' %}Open as learner</a>{% endif %}</div>
+<form method="post" data-dirty-guard>{% csrf_token %}<input type="hidden" name="form" value="details">
+  {% include "panel/_form_fields.html" %}
+  <div class="pn-savebar"><button class="btn lg" type="submit">{% icon 'check' %}{% if sop %}Save details{% else %}Create SOP{% endif %}</button><a class="btn ghost" href="{% url 'panel:sops' %}">Back to SOP library</a>
+    {% if sop %}<span class="grow"></span><a class="btn ghost danger" href="{% url 'panel:sop_delete' sop.pk %}">{% icon 'trash' %}Delete SOP</a>{% endif %}</div>
+</form>
+{% if sop %}
+<form method="post" enctype="multipart/form-data" data-dirty-guard style="margin-top:24px">{% csrf_token %}
+  {% for ed in editors %}{% include "panel/_editor.html" with key=ed.key title=ed.title fields=ed.fields rows=ed.rows blank=ed.blank empty_hint=ed.empty_hint add_label=ed.add_label info=ed.info has_hindi=ed.has_hindi %}{% endfor %}
+  <div class="pn-savebar"><button class="btn lg" type="submit">{% icon 'check' %}Save versions</button></div>
+</form>{% endif %}
+{% endblock %}

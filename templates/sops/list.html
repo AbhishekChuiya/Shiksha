@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "SOP Library" %}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{% translate "SOP Library" %}</h1><p>{{ current_plant.name }} · {% translate "approved, current versions only" %}</p></div></div>
+<form class="card toolbar" method="get" style="padding:14px 16px">
+  <div class="search grow" style="max-width:none">{% icon 'search' %}<input type="search" name="q" value="{{ q }}" placeholder="{% translate 'Search by title, number or tag' %}"></div>
+  <select name="dept" style="width:auto;min-width:190px" onchange="this.form.submit()"><option value="">{% translate "All departments" %}</option>{% for d in departments %}<option value="{{ d.pk }}" {% if dept == d.pk|stringformat:'s' %}selected{% endif %}>{{ d.display_name }}</option>{% endfor %}</select>
+  <button class="btn" type="submit">{% translate "Search" %}</button>
+</form>
+<div class="card flush table-wrap" style="margin-top:16px"><table class="table">
+  <thead><tr><th>{% translate "SOP" %}</th><th>{% translate "Department" %}</th><th>{% translate "Version" %}</th><th>{% translate "Effective" %}</th><th></th></tr></thead>
+  <tbody>{% for s in sops %}{% with v=s.active_version %}
+    <tr><td><a href="{{ s.get_absolute_url }}"><strong>{{ s.display_title }}</strong></a><div class="small muted">{{ s.code }}{% for t in s.tag_list %} · #{{ t }}{% endfor %}</div></td>
+      <td><span class="badge grey">{{ s.department.display_name }}</span></td><td><span class="badge ok">v{{ v.version }}</span></td><td>{{ v.effective_date|date:"d M Y" }}</td>
+      <td style="text-align:right"><a class="btn secondary sm" href="{{ s.get_absolute_url }}">{% translate "Open" %}{% icon 'arrow-right' %}</a></td></tr>
+  {% endwith %}{% empty %}<tr><td colspan="5"><div class="empty"><h3>{% translate "No approved SOPs found" %}</h3></div></td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% load i18n %}{# usage: include with f=<bound field> icon=<icon name> password=1 #}
+{% load shiksha %}
+<div class="field">
+  <label for="{{ f.id_for_label }}">{{ f.label }}</label>
+  <div class="input-icon {% if password %}has-eye{% endif %}">
+    {% icon icon %}{{ f }}
+    {% if password %}<button type="button" class="eye" data-toggle-password="{{ f.id_for_label }}" aria-label="{% translate 'Show password' %}">
+      <span class="on-eye">{% icon 'eye' %}</span><span class="off-eye" hidden>{% icon 'eye-off' %}</span></button>{% endif %}
+  </div>
+  {% if strength %}<div class="strength" data-strength-for="{{ f.id_for_label }}" data-s="0"><i></i><i></i><i></i><i></i></div><div class="strength-label"></div>{% endif %}
+  {% if not hide_errors %}{{ f.errors }}{% endif %}{% if f.help_text and help %}<div class="helptext">{{ f.help_text|safe }}</div>{% endif %}
+</div>

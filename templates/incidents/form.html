@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "Report incident" %}{% endblock %}
+{% block content %}
+<nav class="crumbs"><a href="{% url 'incidents:list' %}">{% translate "Incidents" %}</a>{% icon 'chevron-right' %}<b>{% translate "New report" %}</b></nav>
+<div class="page-head"><div><h1>{% translate "Report an incident" %}</h1><p>{{ current_plant.name }}{% if module %} · {{ module.title }}{% endif %}</p></div></div>
+<form class="card" method="post" enctype="multipart/form-data" style="max-width:780px" novalidate>{% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert error">{% icon 'alert' %}<div>{{ form.non_field_errors|join:" " }}</div></div>{% endif %}
+  <div class="two"><div class="form-row"><label for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>{{ form.category }}{{ form.category.errors }}</div>
+    <div class="form-row"><label for="{{ form.occurred_at.id_for_label }}">{{ form.occurred_at.label }}</label>{{ form.occurred_at }}{{ form.occurred_at.errors }}</div></div>
+  <div class="two"><div class="form-row"><label for="{{ form.department.id_for_label }}">{{ form.department.label }}</label>{{ form.department }}{{ form.department.errors }}</div>
+    <div class="form-row"><label for="{{ form.process.id_for_label }}">{{ form.process.label }}</label>{{ form.process }}{{ form.process.errors }}</div></div>
+  {% for f in form %}{% if f.name in "title description attachment" %}<div class="form-row"><label for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}{% if f.help_text %}<div class="helptext">{{ f.help_text }}</div>{% endif %}{{ f.errors }}</div>{% endif %}{% endfor %}
+  <div class="row"><button class="btn lg" type="submit">{% translate "Submit report" %}{% icon 'arrow-right' %}</button><a class="btn ghost lg" href="{% url 'incidents:list' %}">{% translate "Cancel" %}</a></div>
+</form>
+{% endblock %}

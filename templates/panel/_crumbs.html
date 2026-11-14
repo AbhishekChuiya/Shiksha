@@ -1,0 +1,1 @@
+{% load shiksha %}{% if crumbs %}<nav class="crumbs">{% for c in crumbs %}{% if c.url %}<a href="{{ c.url }}">{{ c.label }}</a>{% icon 'chevron-right' %}{% else %}<b>{{ c.label }}</b>{% endif %}{% endfor %}</nav>{% endif %}

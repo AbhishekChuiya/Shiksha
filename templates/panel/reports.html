@@ -1,0 +1,17 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+<div class="pn-head"><div><h1>Reports</h1><p class="muted">How learning is going. Download any table for Excel.</p></div>
+  <form method="get"><select name="plant" onchange="this.form.submit()"><option value="">All plants</option>{% for p in plants %}<option value="{{ p.pk }}" {% if plant == p.pk|stringformat:'s' %}selected{% endif %}>{{ p.name }}</option>{% endfor %}</select></form></div>
+<div class="pn-stats"><div class="card pn-stat"><span class="ico">{% icon 'play' %}</span><div><strong>{{ totals.started }}</strong><span>Modules started</span></div></div><div class="card pn-stat"><span class="ico">{% icon 'check-circle' %}</span><div><strong>{{ totals.completed }}</strong><span>Modules completed</span></div></div>
+  <div class="card pn-stat"><span class="ico">{% icon 'clock' %}</span><div><strong>{{ totals.hours }}h</strong><span>Learning time</span></div></div><div class="card pn-stat"><span class="ico">{% icon 'award' %}</span><div><strong>{{ totals.certs }}</strong><span>Certificates issued</span></div></div></div>
+<section class="card flush table-wrap" style="margin-top:20px"><div class="ed-head" style="padding:18px 20px 0"><h3>By module</h3><a class="btn secondary sm" href="{% url 'panel:report_export' 'modules' %}{% if plant %}?plant={{ plant }}{% endif %}">{% icon 'download' %}Download CSV</a></div>
+<table class="table pn-table"><thead><tr><th>Module</th><th>Started</th><th>Completed</th><th>Completion</th><th>Avg score</th><th>Pass rate</th><th>Hours</th></tr></thead><tbody>
+{% for r in modules %}<tr><td><strong>{{ r.module.title }}</strong><div class="small muted">{{ r.module.plant.name }} · {{ r.module.department.name }}</div></td><td>{{ r.started }}</td><td>{{ r.completed }}</td>
+  <td>{% if r.rate is not None %}<div class="prog-line"><div class="bar"><i style="width:{{ r.rate }}%"></i></div>{{ r.rate }}%</div>{% else %}—{% endif %}</td><td>{% if r.avg is not None %}{{ r.avg }}%{% else %}—{% endif %}</td><td>{% if r.pass_rate is not None %}{{ r.pass_rate }}%{% else %}—{% endif %}</td><td>{{ r.hours }}</td></tr>
+{% empty %}<tr><td colspan="7"><div class="empty"><h3>No published modules</h3></div></td></tr>{% endfor %}</tbody></table></section>
+<section class="card flush table-wrap" style="margin-top:20px"><div class="ed-head" style="padding:18px 20px 0"><h3>By learner <span class="badge grey">{{ learner_total }}</span></h3><a class="btn secondary sm" href="{% url 'panel:report_export' 'learners' %}{% if plant %}?plant={{ plant }}{% endif %}">{% icon 'download' %}Download CSV</a></div>
+<table class="table pn-table"><thead><tr><th>Learner</th><th>Started</th><th>Completed</th><th>Hours</th><th>Avg best score</th><th>Certificates</th><th>Last active</th></tr></thead><tbody>
+{% for r in learners %}<tr><td><strong>{{ r.user.get_full_name|default:r.user.email }}</strong><div class="small muted">{{ r.user.employee_id|default:r.user.email }}</div></td><td>{{ r.started }}</td><td>{{ r.completed }}</td><td>{{ r.hours }}</td><td>{% if r.avg_best is not None %}{{ r.avg_best }}%{% else %}—{% endif %}</td><td>{{ r.certs }}</td><td class="small muted">{{ r.last|date:"d M Y"|default:"—" }}</td></tr>
+{% empty %}<tr><td colspan="7"><div class="empty"><h3>No learners yet</h3></div></td></tr>{% endfor %}</tbody></table>
+{% if learner_total > 200 %}<p class="muted small" style="padding:0 20px 16px">Showing the first 200 — download the CSV for everyone.</p>{% endif %}</section>
+{% endblock %}

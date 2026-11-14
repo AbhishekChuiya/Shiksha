@@ -1,0 +1,34 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "Knowledge Base" %}{% endblock %}
+{% block content %}
+<section class="kb-hero">
+  <div><span class="eyebrow">{% icon 'folder' %}{{ current_plant.name }}</span>
+    <h1>{% translate "Knowledge Base" %}</h1>
+    <p>{% translate "All SOPs, manuals, documents and videos in one place." %}</p></div>
+  <form method="get" class="kb-search">{% if cat %}<input type="hidden" name="cat" value="{{ cat }}">{% endif %}{% if kind %}<input type="hidden" name="kind" value="{{ kind }}">{% endif %}
+    {% icon 'search' %}<input type="search" name="q" value="{{ q }}" placeholder="{% translate 'Search documents, SOPs, videos…' %}" autocomplete="off"></form>
+</section>
+
+<div class="kb-cats hscroll">
+  <a class="kb-cat {% if not cat %}on{% endif %}" href="?{% if q %}q={{ q }}{% endif %}">{% icon 'grid' %}<span>{% translate "All" %}</span><em>{{ total }}</em></a>
+  {% for c in cats %}<a class="kb-cat c-{{ c.color }} {% if cat == c.key %}on{% endif %}" href="?cat={{ c.key }}{% if q %}&q={{ q }}{% endif %}">{% icon c.icon %}<span>{{ c.name }}</span><em>{{ c.count }}</em></a>{% endfor %}
+</div>
+
+<div class="kb-kinds">
+  <a class="chip {% if not kind %}on{% endif %}" href="?{% if cat %}cat={{ cat }}&{% endif %}{% if q %}q={{ q }}{% endif %}">{% translate "Everything" %}</a>
+  {% for k, label in kinds %}<a class="chip {% if kind == k %}on{% endif %}" href="?kind={{ k }}{% if cat %}&cat={{ cat }}{% endif %}{% if q %}&q={{ q }}{% endif %}">{% trans label %}</a>{% endfor %}
+</div>
+
+{% if flat %}
+  {% if entries %}<p class="muted small" style="margin:6px 2px 12px">{% blocktranslate with n=found %}{{ n }} found{% endblocktranslate %}</p>
+  <div class="kb-grid">{% for e in entries %}{% include "knowledge/_card.html" %}{% endfor %}</div>
+  {% else %}<div class="card empty">{% icon 'search' %}<h3>{% translate "Nothing found" %}</h3><p>{% translate "Try a different word or clear the filters." %}</p><a class="btn" href="{% url 'knowledge:home' %}">{% translate "Show everything" %}</a></div>{% endif %}
+{% else %}
+  {% for s in sections %}{% if s.entries %}
+  <div class="section-title c-{{ s.color }}"><span class="kb-dot">{% icon s.icon %}</span>{{ s.name }}<a class="swipe-or-link" href="?cat={{ s.key }}">{% translate "View all" %} ({{ s.count }}){% icon 'arrow-right' %}</a></div>
+  <div class="kb-grid hscroll">{% for e in s.entries|slice:":8" %}{% include "knowledge/_card.html" %}{% endfor %}</div>
+  {% endif %}{% empty %}
+  <div class="card empty">{% icon 'folder' %}<h3>{% translate "Nothing here yet" %}</h3><p>{% translate "Documents added by your admin will show up here." %}</p></div>
+  {% endfor %}
+{% endif %}
+{% endblock %}

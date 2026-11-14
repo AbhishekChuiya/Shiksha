@@ -1,0 +1,7 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+<div class="card" style="max-width:640px;margin:30px auto"><div class="auth-icon">{% icon 'alert' %}</div>
+  <h2>Delete “{{ obj_name }}”?</h2><p class="muted">{{ warning }}</p>
+  <form method="post" class="row wrap">{% csrf_token %}<button class="btn lg danger-solid" type="submit">{% icon 'trash' %}Yes, delete it</button><a class="btn secondary lg" href="{{ back }}">No, go back</a></form>
+  {% if alt %}<form method="post" action="{{ alt.1 }}" style="margin-top:14px">{% csrf_token %}<button class="btn ghost" type="submit">{{ alt.0 }}</button></form>{% endif %}</div>
+{% endblock %}

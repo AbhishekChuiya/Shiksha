@@ -1,0 +1,7 @@
+{% extends "accounts/emails/_layout.html" %}{% load i18n %}
+{% block preheader %}{% translate "Confirm your email to activate your account." %}{% endblock %}
+{% block heading %}{% blocktranslate with name=user.first_name|default:user.email %}Welcome, {{ name }}!{% endblocktranslate %}{% endblock %}
+{% block body %}{% translate "Thanks for creating your Project Shiksha account. Please confirm that this is your company email address to activate it." %}{% endblock %}
+{% block cta_url %}{{ link }}{% endblock %}{% block cta_label %}{% translate "Verify my email" %}{% endblock %}
+{% block link_url %}{{ link }}{% endblock %}{% block link_text %}{{ link }}{% endblock %}
+{% block footnote %}{% translate "This link is valid for 3 hours. If you didn't create this account, you can safely ignore this email." %}{% endblock %}

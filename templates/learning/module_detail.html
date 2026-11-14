@@ -1,0 +1,92 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{{ module.display_title }}{% endblock %}
+{% block content %}
+<nav class="crumbs" aria-label="breadcrumb">
+  <a href="{% url 'learning:module_list' %}">{% translate "Learning Modules" %}</a>{% icon 'chevron-right' %}<span>{{ module.department.display_name }}</span>{% icon 'chevron-right' %}<b>{{ module.display_title }}</b>
+</nav>
+
+<div class="card" id="mod-head" data-heartbeat="{% url 'learning:heartbeat' module.slug %}" data-csrf="{{ csrf_token }}">
+  <div class="mod-head">
+    <div class="grow">
+      <div class="row wrap"><span class="pill">{{ module.department.display_name }}</span>{% if progress.completed_at %}<span class="badge ok">{% icon 'check' %}{% translate "Completed" %}</span>{% endif %}</div>
+      <h1>{{ module.display_title }}</h1>
+      <div class="meta" style="margin-top:10px"><span>{% icon 'file' %}{{ steps_total }} {% translate "steps" %}</span><span>{% icon 'clock' %}{{ module.est_minutes }} {% translate "min" %}</span>{% if module.instructor %}<span>{% icon 'user' %}{{ module.instructor }}</span>{% endif %}</div>
+    </div>
+    <div class="row" style="gap:18px">
+      <a class="btn subtle" href="{% url 'incidents:create' %}?module={{ module.slug }}">{% icon 'flag-alt' %}{% translate "Report an issue" %}</a>
+      <div class="ring" style="--p:{{ progress.percent }}"><div><div><strong>{{ progress.percent }}%</strong></div></div></div>
+    </div>
+  </div>
+</div>
+
+<nav class="tabs" id="mod-tabs" aria-label="{% translate 'Module sections' %}">
+  {% url 'learning:module_detail' module.slug as base %}
+  <a class="{% if tab == 'overview' %}on{% endif %}" href="{{ base }}?tab=overview">{% translate "Overview" %}</a>
+  <a class="{% if tab == 'videos' %}on{% endif %}" href="{{ base }}?tab=videos">{% translate "Videos" %}{% if video_count %}<span class="n">{{ video_count }}</span>{% endif %}</a>
+  <a class="{% if tab == 'sops' %}on{% endif %}" href="{{ base }}?tab=sops">{% translate "SOP steps" %}<span class="n">{{ steps_done }}/{{ steps_total }}</span></a>
+  {% if quiz %}<a class="{% if tab == 'quiz' %}on{% endif %}" href="{{ base }}?tab=quiz">{% translate "Quiz" %}{% if not quiz_unlocked %}{% icon 'lock' %}{% endif %}</a>{% endif %}
+  <a class="{% if tab == 'problems' %}on{% endif %}" href="{{ base }}?tab=problems">{% translate "Problems & solutions" %}<span class="n">{{ problem_count }}</span></a>
+  <a class="{% if tab == 'discussion' %}on{% endif %}" href="{{ base }}?tab=discussion">{% translate "Discussion" %}</a>
+</nav>
+
+{% if tab == "overview" %}
+{% include "learning/_gallery.html" with items=gallery group="module" %}
+<div class="split">
+  <div class="card">
+    <div class="row between"><p class="overline" style="margin:0">{% translate "Module overview" %}</p><button class="btn secondary sm" data-speak="#overview-text">{% icon 'speaker' %}{% translate "Listen" %}</button></div>
+    <div class="prose" id="overview-text" style="margin-top:12px">{{ module.display_overview|linebreaks }}</div>
+    {% if LANG == "hi" and not module.overview_hi %}<p class="small muted"><span class="badge grey">EN</span> {% translate "Hindi translation not available — showing English" %}</p>{% endif %}
+    {% if module.objective_list %}<p class="overline" style="margin-top:22px">{% translate "Learning objectives" %}</p>
+    <ul style="padding:0;list-style:none;display:grid;gap:10px">{% for o in module.objective_list %}<li class="row" style="align-items:flex-start">{% icon 'check-circle' 'ok-i' %}<span>{{ o }}</span></li>{% endfor %}</ul>{% endif %}
+  </div>
+  {% include "learning/_details.html" %}
+</div>
+
+{% elif tab == "videos" %}
+<div class="split"><div class="stack">
+  {% for v in videos %}<div class="card"><h3>{{ v.title }}</h3>{% if v.source %}<video controls preload="metadata" style="width:100%;border-radius:12px;background:#000" src="{{ v.source }}"></video>{% endif %}{% if v.duration_minutes %}<p class="small muted" style="margin:10px 0 0">{% icon 'clock' %} {{ v.duration_minutes }} {% translate "min" %}</p>{% endif %}</div>
+  {% empty %}<div class="card empty">{% icon 'video' %}<h3>{% translate "Video lessons are coming soon" %}</h3><p>{% translate "Meanwhile, learn this process step-by-step in the SOP steps tab." %}</p><a class="btn" href="?tab=sops">{% translate "Go to SOP steps" %}{% icon 'arrow-right' %}</a></div>{% endfor %}
+</div>{% include "learning/_details.html" %}</div>
+
+{% elif tab == "sops" %}
+  {% include "learning/_sop_steps.html" %}
+
+{% elif tab == "quiz" %}
+<div class="split">
+  <div class="card flush">
+    <div class="quiz-hero"><h2>{{ quiz.display_title }}</h2><p>{% translate "Answer the questions to complete this module." %}</p></div>
+    <div style="padding:24px">
+      <div class="quiz-stats"><div><strong>{{ quiz.question_count }}</strong>{% translate "Questions" %}</div><div><strong>{{ quiz.pass_percent }}%</strong>{% translate "To pass" %}</div><div><strong>{% if quiz.time_limit_minutes %}{{ quiz.time_limit_minutes }}m{% else %}∞{% endif %}</strong>{% translate "Time limit" %}</div></div>
+      {% if quiz_unlocked %}
+        <form method="post" action="{% url 'quizzes:start' module.slug %}">{% csrf_token %}<button class="btn lg">{% translate "Start quiz" %}{% icon 'arrow-right' %}</button></form>
+      {% else %}
+        <div class="alert warning">{% icon 'lock' %}<div>{% blocktranslate with n=steps_total %}Complete all {{ n }} SOP steps to unlock this quiz.{% endblocktranslate %}</div></div>
+        <a class="btn secondary" href="?tab=sops">{% translate "Go to SOP steps" %}{% icon 'arrow-right' %}</a>
+      {% endif %}
+      {% if attempts %}<div class="section-title" style="margin-top:28px">{% translate "Your attempts" %}</div>
+      <table class="table"><tbody>{% for a in attempts %}<tr><td>{{ a.finished_at|date:"d M Y, H:i" }}</td><td><strong>{{ a.score_percent }}%</strong></td><td>{% if a.passed %}<span class="badge ok">{% translate "Passed" %}</span>{% else %}<span class="badge">{% translate "Not passed" %}</span>{% endif %}</td><td style="text-align:right"><a href="{% url 'quizzes:result' a.pk %}">{% translate "Review" %}</a></td></tr>{% endfor %}</tbody></table>{% endif %}
+    </div>
+  </div>
+  {% include "learning/_details.html" %}
+</div>
+
+{% elif tab == "problems" %}
+<div class="split"><div class="stack">
+  {% for ps in problems %}<div class="card"><p class="overline">{% translate "Problem" %} {{ forloop.counter }}</p><h3>{{ ps.display_problem }}</h3>
+    {% if ps.display_cause %}<p><strong>{% translate "Cause" %}:</strong> {{ ps.display_cause|linebreaksbr }}</p>{% endif %}
+    <div class="alert success" style="margin:0">{% icon 'check-circle' %}<div><strong>{% translate "Solution" %}:</strong> {{ ps.display_solution|linebreaksbr }}</div></div></div>
+  {% empty %}<div class="card empty"><h3>{% translate "No problem–solution statements yet" %}</h3></div>{% endfor %}
+</div>{% include "learning/_details.html" %}</div>
+
+{% elif tab == "discussion" %}
+<div class="split"><div class="stack">
+  <form class="card composer" method="post" action="{% url 'discussion:post' %}">{% csrf_token %}
+    <input type="hidden" name="module" value="{{ module.slug }}"><input type="hidden" name="next" value="{{ request.get_full_path }}">
+    <div class="row" style="align-items:flex-start">{% include "_avatar.html" with u=user %}<textarea name="body" rows="3" maxlength="4000" required placeholder="{% translate 'Ask a question or share a practical tip for this process…' %}"></textarea></div>
+    <div class="row between wrap" style="margin-top:12px"><a class="btn ghost sm" href="{% url 'discussion:feed' %}">{% translate "Open global discussion" %}{% icon 'arrow-right' %}</a><button class="btn" type="submit">{% translate "Post" %}</button></div>
+  </form>
+  {% include "learning/_discussion_feed.html" with next_url=request.get_full_path module_filter=module tab="discussion" %}
+</div>{% include "learning/_details.html" %}</div>
+{% endif %}
+{% include "learning/_celebrate_src.html" %}
+{% endblock %}

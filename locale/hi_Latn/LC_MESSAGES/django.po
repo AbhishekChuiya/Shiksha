@@ -1,0 +1,1360 @@
+#
+msgid ""
+msgstr ""
+"Language: hi_Latn\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Plant Overview"
+msgstr "Plant Overview"
+
+msgid "Learning Modules"
+msgstr "Learning Modules"
+
+msgid "SOP Library"
+msgstr "SOP Library"
+
+msgid "Quizzes"
+msgstr "Quizzes"
+
+msgid "Certificates"
+msgstr "Certificates"
+
+msgid "Incidents"
+msgstr "Incidents"
+
+msgid "AI Assistant"
+msgstr "AI Assistant"
+
+msgid "Learning Book"
+msgstr "Learning Book"
+
+msgid "Manage Content"
+msgstr "Content Manage karein"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "Search processes, SOPs, videos…"
+msgstr "Process, SOP, video search karein…"
+
+msgid "Sign out"
+msgstr "Sign out"
+
+msgid "Sign in"
+msgstr "Sign in"
+
+msgid "Browse modules"
+msgstr "Modules dekhein"
+
+msgid "Change Plant"
+msgstr "Plant badlein"
+
+msgid "Overall"
+msgstr "Overall"
+
+msgid "Learning time"
+msgstr "Learning time"
+
+msgid "Avg best score"
+msgstr "Avg best score"
+
+msgid "Modules completed"
+msgstr "Modules complete"
+
+msgid "Quick Actions"
+msgstr "Quick Actions"
+
+msgid "Continue Learning"
+msgstr "Learning continue karein"
+
+msgid "My SOPs"
+msgstr "Mere SOPs"
+
+msgid "Watch Videos"
+msgstr "Videos dekhein"
+
+msgid "Take Quiz"
+msgstr "Quiz dein"
+
+msgid "Report Incident"
+msgstr "Incident report karein"
+
+msgid "Nothing in progress — open a module to start."
+msgstr "Abhi kuch progress mein nahi — shuru karne ke liye module kholein."
+
+msgid "Department"
+msgstr "Department"
+
+msgid "Library"
+msgstr "Library"
+
+msgid "Category"
+msgstr "Category"
+
+msgid "All"
+msgstr "Sab"
+
+msgid "steps"
+msgstr "steps"
+
+msgid "mins"
+msgstr "mins"
+
+msgid "min"
+msgstr "min"
+
+msgid "Progress"
+msgstr "Progress"
+
+msgid "Continue"
+msgstr "Continue"
+
+msgid "Start"
+msgstr "Shuru karein"
+
+msgid "Review"
+msgstr "Review"
+
+msgid "Overview"
+msgstr "Overview"
+
+msgid "Video Lessons"
+msgstr "Video Lessons"
+
+msgid "SOPs"
+msgstr "SOPs"
+
+msgid "Quiz"
+msgstr "Quiz"
+
+msgid "Problem Solution Statements"
+msgstr "Problem Solution Statements"
+
+msgid "Discussion"
+msgstr "Discussion"
+
+msgid "Report an issue"
+msgstr "Issue report karein"
+
+msgid "Module overview"
+msgstr "Module overview"
+
+msgid "Learning objectives"
+msgstr "Learning objectives"
+
+msgid "Listen"
+msgstr "Sunein"
+
+msgid "Module Details"
+msgstr "Module Details"
+
+msgid "Est. time"
+msgstr "Est. time"
+
+msgid "Process"
+msgstr "Process"
+
+msgid "Instructor"
+msgstr "Instructor"
+
+msgid "General"
+msgstr "General"
+
+msgid "Safety"
+msgstr "Safety"
+
+msgid "Environment, Quality & Discipline"
+msgstr "Environment, Quality & Discipline"
+
+msgid "Confirm safety guidelines"
+msgstr "Safety guidelines confirm karein"
+
+msgid "Agree"
+msgstr "Agree"
+
+msgid "Safety guidelines acknowledged — SOP steps unlocked."
+msgstr "Safety guidelines accept ho gayi — SOP steps unlock ho gaye."
+
+msgid ""
+"Read the safety guidelines above. You must agree to all safety steps before "
+"the SOP procedure unlocks."
+msgstr ""
+"Upar ki safety guidelines padhein. SOP procedure unlock hone se pehle sabhi "
+"safety steps se agree karna zaroori hai."
+
+msgid "SOP Steps Locked"
+msgstr "SOP Steps Locked"
+
+msgid "Your progress"
+msgstr "Aapki progress"
+
+msgid "Step"
+msgstr "Step"
+
+msgid "Mark complete"
+msgstr "Complete mark karein"
+
+msgid "Unmark"
+msgstr "Unmark"
+
+msgid "Previous"
+msgstr "Pichla"
+
+msgid "Next"
+msgstr "Agla"
+
+msgid "Take quiz"
+msgstr "Quiz dein"
+
+msgid "Read each step aloud automatically"
+msgstr "Har step automatically padh kar sunayein"
+
+msgid "Photo coming soon"
+msgstr "Photo jaldi aayega"
+
+msgid "Questions"
+msgstr "Questions"
+
+msgid "Passing"
+msgstr "Passing"
+
+msgid "Time limit"
+msgstr "Time limit"
+
+msgid "None"
+msgstr "None"
+
+msgid "Start quiz"
+msgstr "Quiz shuru karein"
+
+msgid "Answer the questions to complete this module."
+msgstr "Module complete karne ke liye questions ke answer dein."
+
+msgid "Submit"
+msgstr "Submit karein"
+
+msgid "Passed!"
+msgstr "Pass!"
+
+msgid "Not passed yet"
+msgstr "Abhi pass nahi hua"
+
+msgid "Try again"
+msgstr "Dobara try karein"
+
+msgid "View certificate"
+msgstr "Certificate dekhein"
+
+msgid "Report incident"
+msgstr "Incident report karein"
+
+msgid "My incidents"
+msgstr "Mere incidents"
+
+msgid "My certificates"
+msgstr "Mere certificates"
+
+msgid "Change password"
+msgstr "Password badlein"
+
+msgid "About"
+msgstr "About"
+
+msgid "Download"
+msgstr "Download"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Filters"
+msgstr "Filters"
+
+msgid "Swipe"
+msgstr "Swipe karein"
+
+msgid "Preview as learner"
+msgstr "Learner view dekhein"
+
+msgid "Back to admin view"
+msgstr "Admin view par wapas"
+
+msgid "Download PDF"
+msgstr "PDF download karein"
+
+msgid "Copy verification link"
+msgstr "Verification link copy karein"
+
+msgid "Save name"
+msgstr "Name save karein"
+
+msgid "Profile"
+msgstr "Profile"
+
+msgid "Ready"
+msgstr "Ready"
+
+msgid "Locked"
+msgstr "Locked"
+
+msgid "Retake quiz"
+msgstr "Quiz dobara dein"
+
+msgid "Good morning"
+msgstr "Good morning"
+
+msgid "Good afternoon"
+msgstr "Good afternoon"
+
+msgid "Good evening"
+msgstr "Good evening"
+
+msgid "Learn"
+msgstr "Seekhein"
+
+msgid "Support"
+msgstr "Support"
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "Home"
+msgstr "Home"
+
+msgid "Modules"
+msgstr "Modules"
+
+msgid "More"
+msgstr "More"
+
+msgid "Resume learning"
+msgstr "Learning resume karein"
+
+msgid "Resume"
+msgstr "Resume"
+
+msgid "Continue where you left off"
+msgstr "Jahan chhoda wahin se shuru karein"
+
+msgid "Recommended for you"
+msgstr "Aapke liye suggestions"
+
+msgid "In progress"
+msgstr "In progress"
+
+msgid "Completed"
+msgstr "Completed"
+
+msgid "View all"
+msgstr "Sab dekhein"
+
+msgid "Quick actions"
+msgstr "Quick actions"
+
+msgid "Ask Vishakha AI"
+msgstr "Vishakha AI se poochhein"
+
+msgid "Switch account"
+msgstr "Account badlein"
+
+msgid "Your plants"
+msgstr "Aapke plants"
+
+msgid "Language"
+msgstr "Language"
+
+msgid "Welcome back"
+msgstr "Wapas aane par swagat hai"
+
+msgid "Create account"
+msgstr "Account banayein"
+
+msgid "Forgot password?"
+msgstr "Password bhool gaye?"
+
+msgid "Send reset link"
+msgstr "Reset link bhejein"
+
+msgid "Check your inbox"
+msgstr "Apna inbox check karein"
+
+msgid "Back to sign in"
+msgstr "Sign in par wapas"
+
+msgid "I agree — unlock steps"
+msgstr "Main agree karta hoon — steps unlock karein"
+
+msgid "Mark complete & next"
+msgstr "Complete karein & agla"
+
+msgid "SOP steps"
+msgstr "SOP steps"
+
+msgid "Steps"
+msgstr "Steps"
+
+msgid "Videos"
+msgstr "Videos"
+
+msgid "Submit report"
+msgstr "Report submit karein"
+
+msgid "Submit quiz"
+msgstr "Quiz submit karein"
+
+msgid "You passed!"
+msgstr "Aap pass ho gaye!"
+
+msgid "Review your answers"
+msgstr "Apne answers review karein"
+
+msgid "Search modules, SOPs, videos…"
+msgstr "Module, SOP, video search karein…"
+
+msgid "Account menu"
+msgstr "Account menu"
+
+msgid "Action in progress"
+msgstr "Action in progress"
+
+msgid "Active"
+msgstr "Active"
+
+msgid "All certificates"
+msgstr "Sabhi certificates"
+
+msgid "All departments"
+msgstr "Sabhi departments"
+
+msgid "All incidents"
+msgstr "Sabhi incidents"
+
+msgid "All steps complete!"
+msgstr "Sabhi steps complete ho gaye!"
+
+msgid ""
+"An account with this email already exists. Try signing in or resetting your "
+"password."
+msgstr ""
+"Is email se account pehle se hai. Sign in karein ya password reset karein."
+
+msgid "Approved by"
+msgstr "Approved by"
+
+msgid "Ask a question or share a practical tip for this process…"
+msgstr ""
+"Is process ke baare mein sawaal poochhein ya koi practical tip share karein…"
+
+msgid ""
+"Ask questions about SOPs and procedures. Answers come only from approved "
+"plant content, with source references."
+msgstr ""
+"SOP aur procedures ke baare mein sawaal poochhein. Jawab sirf approved plant"
+" content se, source ke saath milenge."
+
+msgid "At a glance"
+msgstr "Ek nazar mein"
+
+msgid "Awarded to"
+msgstr "Awarded to"
+
+msgid "Back to dashboard"
+msgstr "Dashboard par wapas"
+
+msgid "Back to module"
+msgstr "Module par wapas"
+
+msgid "Be the first to ask a question."
+msgstr "Sabse pehle sawaal poochhein."
+
+msgid "Best"
+msgstr "Best"
+
+msgid "Button not working? Copy this link into your browser:"
+msgstr "Button kaam nahi kar raha? Ye link apne browser mein copy karein:"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Cause"
+msgstr "Karan"
+
+msgid "Certificate"
+msgstr "Certificate"
+
+msgid "Certificate ID"
+msgstr "Certificate ID"
+
+msgid "Certificate not found"
+msgstr "Certificate nahi mila"
+
+msgid "Check your email"
+msgstr "Apna email check karein"
+
+msgid "Choose a new password"
+msgstr "Naya password chunein"
+
+msgid "Clear filters"
+msgstr "Filters hatayein"
+
+msgid "Closed"
+msgstr "Closed"
+
+msgid "Closure notes"
+msgstr "Closure notes"
+
+msgid "Collapse menu"
+msgstr "Menu chhota karein"
+
+msgid "Coming soon"
+msgstr "Jaldi aa raha hai"
+
+msgid "Company"
+msgstr "Company"
+
+msgid "Company email"
+msgstr "Company email"
+
+msgid "Company email or Employee ID"
+msgstr "Company email ya Employee ID"
+
+msgid "Complete a module and pass its quiz to earn your first one."
+msgstr ""
+"Pehla certificate paane ke liye koi module complete karein aur uska quiz "
+"pass karein."
+
+msgid "Complete all %(n)s SOP steps to unlock this quiz."
+msgstr ""
+"Is quiz ko unlock karne ke liye sabhi %(n)s SOP steps complete karein."
+
+msgid "Complete all %(n)s steps to unlock"
+msgstr "Unlock karne ke liye sabhi %(n)s steps complete karein"
+
+msgid "Complete all SOP steps to unlock this quiz."
+msgstr "Is quiz ko unlock karne ke liye sabhi SOP steps complete karein."
+
+msgid "Confirm password"
+msgstr "Password confirm karein"
+
+msgid ""
+"Confirm the safety guidelines above to unlock the %(n)s-step procedure."
+msgstr ""
+"%(n)s-step procedure unlock karne ke liye upar di safety guidelines confirm "
+"karein."
+
+msgid "Confirm your email to activate your Project Shiksha account:"
+msgstr ""
+"Apna Project Shiksha account activate karne ke liye email confirm karein:"
+
+msgid "Confirm your email to activate your account."
+msgstr "Account activate karne ke liye email confirm karein."
+
+msgid "Continue with Microsoft"
+msgstr "Microsoft se continue karein"
+
+msgid "Correct answer"
+msgstr "Sahi jawab"
+
+msgid "Create your account"
+msgstr "Apna account banayein"
+
+msgid "Dark / light mode"
+msgstr "Dark / light mode"
+
+msgid "Departments"
+msgstr "Departments"
+
+msgid "Departments & processes"
+msgstr "Departments & processes"
+
+msgid "Document control"
+msgstr "Document control"
+
+msgid "Done"
+msgstr "Done"
+
+msgid "Earn certificates as you complete modules"
+msgstr "Modules complete karte hi certificates paayein"
+
+msgid ""
+"Earned by completing all steps and passing the quiz. Download them as PDF."
+msgstr ""
+"Sabhi steps complete karne aur quiz pass karne par milte hain. Inhe PDF mein"
+" download karein."
+
+msgid "Effective"
+msgstr "Effective"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Email verified. You can sign in now."
+msgstr "Email verify ho gaya. Ab aap sign in kar sakte hain."
+
+msgid "Employee ID"
+msgstr "Employee ID"
+
+msgid "Employee ID (optional)"
+msgstr "Employee ID (optional)"
+
+msgid "Enter your company email and we'll send you a link to reset it."
+msgstr "Apna company email daalein, hum reset link bhej denge."
+
+msgid "Environment / spillage"
+msgstr "Environment / spillage"
+
+msgid "Environment, quality & discipline"
+msgstr "Environment, quality & discipline"
+
+msgid "Equipment / breakdown"
+msgstr "Equipment / breakdown"
+
+msgid "Filter by name…"
+msgstr "Naam se filter karein…"
+
+msgid "Filter modules"
+msgstr "Modules filter karein"
+
+msgid "Finish a module's SOP steps to unlock its quiz."
+msgstr "Quiz unlock karne ke liye module ke SOP steps complete karein."
+
+msgid "First name"
+msgstr "Pehla naam"
+
+msgid "Forgot password"
+msgstr "Password bhool gaye"
+
+msgid "Forgot your password?"
+msgstr "Password bhool gaye?"
+
+msgid "Go to SOP steps"
+msgstr "SOP steps par jaayein"
+
+msgid "Great work."
+msgstr "Bahut badhiya."
+
+msgid "Great work. The quiz is now unlocked."
+msgstr "Bahut badhiya. Quiz ab unlock ho gaya hai."
+
+msgid "Hi %(name)s,"
+msgstr "Namaste %(name)s,"
+
+msgid ""
+"Hi %(name)s, we received a request to reset the password of your Project "
+"Shiksha account. Click the button below to choose a new one."
+msgstr ""
+"Namaste %(name)s, humein aapke Project Shiksha account ka password reset "
+"karne ki request mili hai. Naya password chunne ke liye neeche button "
+"dabayein."
+
+msgid "History"
+msgstr "History"
+
+msgid ""
+"I have read and understood the safety, environment, quality and discipline "
+"guidelines above, and I will follow them."
+msgstr ""
+"Maine upar di safety, environment, quality aur discipline guidelines padh "
+"aur samajh li hain, aur main unka paalan karunga/karungi."
+
+msgid ""
+"If that address belongs to a Shiksha account, a reset link is on its way. It"
+" works for 3 hours."
+msgstr ""
+"Agar ye address kisi Shiksha account ka hai, to reset link bhej diya gaya "
+"hai. Ye 3 ghante tak valid hai."
+
+msgid "Incident reported. Reference #%(id)s"
+msgstr "Incident report ho gaya. Reference #%(id)s"
+
+msgid "Incident updated."
+msgstr "Incident update ho gaya."
+
+msgid ""
+"Incorrect email / employee ID or password — or your email isn't verified "
+"yet."
+msgstr ""
+"Email / employee ID ya password galat hai — ya aapka email abhi verify nahi "
+"hua hai."
+
+msgid "Issued"
+msgstr "Issued"
+
+msgid "Last name"
+msgstr "Surname"
+
+msgid "Learn the right way. Every shift."
+msgstr "Sahi tareeke se seekhein. Har shift."
+
+msgid "Learner"
+msgstr "Learner"
+
+msgid "Learner view — you are seeing the app exactly as a learner does."
+msgstr ""
+"Learner view — aap app ko bilkul waise dekh rahe hain jaise learner dekhte "
+"hain."
+
+msgid "Learning modules"
+msgstr "Learning modules"
+
+msgid "Link expired or already used"
+msgstr "Link expire ho gaya ya pehle use ho chuka hai"
+
+msgid "Listen to any step in your language"
+msgstr "Kisi bhi step ko apni bhasha mein sunein"
+
+msgid "Main navigation"
+msgstr "Main navigation"
+
+msgid "Meanwhile, learn this process step-by-step in the SOP steps tab."
+msgstr "Tab tak, SOP steps tab mein is process ko step-by-step seekhein."
+
+msgid "Microsoft sign-in failed. Please try again."
+msgstr "Microsoft sign in fail ho gaya. Kripya dobara try karein."
+
+msgid "Microsoft sign-in is not configured yet."
+msgstr "Microsoft sign in abhi set nahi hai."
+
+msgid "Module"
+msgstr "Module"
+
+msgid "Module complete!"
+msgstr "Module complete ho gaya!"
+
+msgid "Module details"
+msgstr "Module details"
+
+msgid "Module sections"
+msgstr "Module sections"
+
+msgid "Name"
+msgstr "Naam"
+
+msgid "Name wrong or misspelt?"
+msgstr "Naam galat ya spelling mein galti?"
+
+msgid "New report"
+msgstr "Nayi report"
+
+msgid "No access"
+msgstr "Access nahi"
+
+msgid "No approved SOPs found"
+msgstr "Koi approved SOP nahi mila"
+
+msgid "No attempts left"
+msgstr "Koi attempt baaki nahi"
+
+msgid "No attempts left for this quiz."
+msgstr "Is quiz ke liye koi attempt baaki nahi."
+
+msgid ""
+"No certificate matches this code. Check the link or QR code and try again."
+msgstr ""
+"Is code se koi certificate match nahi karta. Link ya QR code check karke "
+"dobara try karein."
+
+msgid "No certificates yet"
+msgstr "Abhi koi certificate nahi"
+
+msgid "No departments configured yet."
+msgstr "Abhi koi department set nahi hai."
+
+msgid "No discussion yet"
+msgstr "Abhi koi discussion nahi"
+
+msgid "No incidents reported"
+msgstr "Koi incident report nahi hua"
+
+msgid "No module matches your filter"
+msgstr "Aapke filter se koi module match nahi karta"
+
+msgid "No modules match these filters"
+msgstr "In filters se koi module match nahi karta"
+
+msgid ""
+"No plant has been set up yet, or you don't have permission for this page. "
+"Please contact the Shiksha admin."
+msgstr ""
+"Abhi koi plant set nahi hai, ya is page ki permission aapko nahi hai. Kripya"
+" Shiksha admin se sampark karein."
+
+msgid "No problem–solution statements yet"
+msgstr "Abhi koi problem–solution nahi"
+
+msgid "No quizzes for this plant yet"
+msgstr "Is plant ke liye abhi koi quiz nahi"
+
+msgid "Not found"
+msgstr "Nahi mila"
+
+msgid "Not passed"
+msgstr "Pass nahi"
+
+msgid "Notes / closure remarks"
+msgstr "Notes / closure remarks"
+
+msgid "Nothing after a few minutes? Check your spam folder, or try again."
+msgstr ""
+"Kuch minute baad bhi nahi aaya? Spam folder check karein ya dobara try "
+"karein."
+
+msgid "Nothing found"
+msgstr "Kuch nahi mila"
+
+msgid "Nothing to show yet"
+msgstr "Abhi dikhane ke liye kuch nahi"
+
+msgid "Only company accounts can sign in. Please use your %(d)s email."
+msgstr ""
+"Sirf company accounts sign in kar sakte hain. Kripya apna %(d)s email use "
+"karein."
+
+msgid "Open"
+msgstr "Kholein"
+
+msgid "Open menu"
+msgstr "Menu kholein"
+
+msgid "Open module"
+msgstr "Module kholein"
+
+msgid "Other"
+msgstr "Other"
+
+msgid "Owner"
+msgstr "Owner"
+
+msgid "Page not found"
+msgstr "Page nahi mila"
+
+msgid "Pass"
+msgstr "Pass"
+
+msgid "Passed"
+msgstr "Pass"
+
+msgid "Password"
+msgstr "Password"
+
+msgid "Password updated."
+msgstr "Password update ho gaya."
+
+msgid "Phase 2"
+msgstr "Phase 2"
+
+msgid "Phase 3"
+msgstr "Phase 3"
+
+msgid "Photo gallery"
+msgstr "Photo gallery"
+
+msgid "Pick up right where you left off."
+msgstr "Jahan chhoda tha, wahin se shuru karein."
+
+msgid "Plant"
+msgstr "Plant"
+
+msgid ""
+"Plant SOPs, step-by-step training, quizzes and certificates — in English, "
+"हिन्दी and Hinglish."
+msgstr ""
+"Plant SOPs, step-by-step training, quizzes aur certificates — English, "
+"हिन्दी aur Hinglish mein."
+
+msgid "Please acknowledge the safety guidelines first."
+msgstr "Kripya pehle safety guidelines accept karein."
+
+msgid "Please choose an answer."
+msgstr "Kripya ek jawab chunein."
+
+msgid "Please enter both first and last name."
+msgstr "Kripya pehla aur aakhri dono naam daalein."
+
+msgid "Please use your company email (%(d)s)."
+msgstr "Kripya apna company email (%(d)s) use karein."
+
+msgid "Post"
+msgstr "Post karein"
+
+msgid "Print"
+msgstr "Print"
+
+msgid "Problem"
+msgstr "Samasya"
+
+msgid "Problems & solutions"
+msgstr "Problems & solutions"
+
+msgid "Process deviation"
+msgstr "Process deviation"
+
+msgid "Project Shiksha"
+msgstr "Project Shiksha"
+
+msgid "Project Shiksha — home"
+msgstr "Project Shiksha — home"
+
+msgid "Quality"
+msgstr "Quality"
+
+msgid "Question"
+msgstr "Sawaal"
+
+msgid "Quick navigation"
+msgstr "Quick navigation"
+
+msgid "Quiz locked"
+msgstr "Quiz locked"
+
+msgid "Quiz locked — finish all steps"
+msgstr "Quiz locked — pehle sabhi steps complete karein"
+
+msgid "Quiz result"
+msgstr "Quiz result"
+
+msgid "Read aloud"
+msgstr "Padh kar sunayein"
+
+msgid "Read aloud — click again to pause"
+msgstr "Padh kar sunayein — rokne ke liye dobara dabayein"
+
+msgid "Read question aloud"
+msgstr "Sawaal padh kar sunayein"
+
+msgid "Read steps aloud automatically"
+msgstr "Steps automatically padh kar sunayein"
+
+msgid "Report an incident"
+msgstr "Incident report karein"
+
+msgid "Report safety, quality or equipment issues and track their status."
+msgstr ""
+"Safety, quality ya equipment ki samasyayein report karein aur unka status "
+"track karein."
+
+msgid "Reported"
+msgstr "Reported"
+
+msgid "Reported by"
+msgstr "Reported by"
+
+msgid "Request a new password reset link."
+msgstr "Password reset ka naya link mangwayein."
+
+msgid "Reset your Project Shiksha password"
+msgstr "Apna Project Shiksha password reset karein"
+
+msgid "Reset your Project Shiksha password."
+msgstr "Apna Project Shiksha password reset karein."
+
+msgid "Reset your password"
+msgstr "Apna password reset karein"
+
+msgid "Revision history"
+msgstr "Revision history"
+
+msgid "Role"
+msgstr "Role"
+
+msgid "SOP"
+msgstr "SOP"
+
+msgid "SOP steps are locked"
+msgstr "SOP steps locked hain"
+
+msgid "SOP steps are not uploaded yet"
+msgstr "SOP steps abhi upload nahi hue"
+
+msgid "Safety / near miss"
+msgstr "Safety / near miss"
+
+msgid "Safety guidelines acknowledged"
+msgstr "Safety guidelines accept ho gayi"
+
+msgid "Safety-first guided procedures"
+msgstr "Safety-first guided procedures"
+
+msgid "Save"
+msgstr "Save karein"
+
+msgid "Save password"
+msgstr "Password save karein"
+
+msgid "Search by title, number or tag"
+msgstr "Title, number ya tag se search karein"
+
+msgid "Select plant"
+msgstr "Plant chunein"
+
+msgid "Send a new link"
+msgstr "Naya link bhejein"
+
+msgid ""
+"Shared shop-floor learning, suggestions and approved answers from across "
+"plants."
+msgstr ""
+"Sabhi plants ki shared shop-floor learning, suggestions aur approved "
+"answers."
+
+msgid "Show password"
+msgstr "Password dikhayein"
+
+msgid "Sign in to continue your learning."
+msgstr "Seekhna jaari rakhne ke liye sign in karein."
+
+msgid "Solution"
+msgstr "Samadhan"
+
+msgid "Spotted something unsafe or wrong? Report it — it helps everyone."
+msgstr ""
+"Kuch unsafe ya galat dikha? Report karein — isse sabki madad hoti hai."
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Step %(i)s of %(t)s"
+msgstr "Step %(i)s / %(t)s"
+
+msgid "Stop"
+msgstr "Roken"
+
+msgid "Stop reading"
+msgstr "Padhna roken"
+
+msgid "Switch plant"
+msgstr "Plant badlein"
+
+msgid "Take the quiz"
+msgstr "Quiz dein"
+
+msgid ""
+"Thanks for creating your Project Shiksha account. Please confirm that this "
+"is your company email address to activate it."
+msgstr ""
+"Project Shiksha account banane ke liye dhanyavaad. Ise activate karne ke "
+"liye confirm karein ki ye aapka company email address hai."
+
+msgid "The link works for 3 hours. Can't see it? Check your spam folder."
+msgstr ""
+"Link 3 ghante tak kaam karta hai. Dikh nahi raha? Spam folder check karein."
+
+msgid ""
+"The page you are looking for does not exist or you do not have access to it."
+msgstr ""
+"Aap jo page dhoondh rahe hain wo maujood nahi hai ya aapke paas uski "
+"permission nahi hai."
+
+msgid "The two passwords do not match."
+msgstr "Dono passwords match nahi karte."
+
+msgid "This Employee ID is already registered."
+msgstr "Ye Employee ID pehle se registered hai."
+
+msgid "This Microsoft account is not part of the company domain."
+msgstr "Ye Microsoft account company domain ka nahi hai."
+
+msgid "This certificate was issued by Vishakha Group's Project Shiksha."
+msgstr ""
+"Ye certificate Vishakha Group ke Project Shiksha dwara jaari kiya gaya hai."
+
+msgid "This is an automated message, please do not reply."
+msgstr "Ye automated message hai, kripya reply na karein."
+
+msgid "This is the name printed on your certificates."
+msgstr "Yahi naam aapke certificates par chhapta hai."
+
+msgid ""
+"This link is valid for 3 hours and can be used once. If you didn't ask for a"
+" reset, ignore this email — your password stays unchanged."
+msgstr ""
+"Ye link 3 ghante ke liye valid hai aur ek hi baar use ho sakta hai. Agar "
+"aapne reset nahi maanga, to is email ko ignore karein — aapka password nahi "
+"badlega."
+
+msgid ""
+"This link is valid for 3 hours. If you did not create this account, ignore "
+"this email."
+msgstr ""
+"Ye link 3 ghante ke liye valid hai. Agar aapne ye account nahi banaya, to is"
+" email ko ignore karein."
+
+msgid ""
+"This link is valid for 3 hours. If you did not request this, ignore this "
+"email."
+msgstr ""
+"Ye link 3 ghante ke liye valid hai. Agar aapne ye nahi manga, to is email ko"
+" ignore karein."
+
+msgid ""
+"This link is valid for 3 hours. If you didn't create this account, you can "
+"safely ignore this email."
+msgstr ""
+"Ye link 3 ghante ke liye valid hai. Agar aapne ye account nahi banaya, to "
+"aap is email ko ignore kar sakte hain."
+
+msgid "This quiz has no questions yet."
+msgstr "Is quiz mein abhi koi sawaal nahi hai."
+
+msgid "Time is up."
+msgstr "Time khatam."
+
+msgid "Tip: press"
+msgstr "Tip: dabayein"
+
+msgid "Tip: review the SOP steps, then try again."
+msgstr "Tip: SOP steps dohrayein, phir dobara try karein."
+
+msgid "Title"
+msgstr "Title"
+
+msgid "To pass"
+msgstr "Pass hone ke liye"
+
+msgid "Toggle dark mode"
+msgstr "Dark mode badlein"
+
+msgid "Try a different word, or browse all modules."
+msgstr "Koi doosra shabd try karein, ya sabhi modules dekhein."
+
+msgid "Type at least 2 characters."
+msgstr "Kam se kam 2 characters likhein."
+
+msgid "Under review"
+msgstr "Under review"
+
+msgid "Update it in Settings"
+msgstr "Ise Settings mein badlein"
+
+msgid "Update password"
+msgstr "Password update karein"
+
+msgid "Update status"
+msgstr "Status update karein"
+
+msgid "Use at least 8 characters. Avoid common passwords."
+msgstr "Kam se kam 8 characters rakhein. Common passwords se bachein."
+
+msgid "Use this link to choose a new Project Shiksha password:"
+msgstr "Naya Project Shiksha password chunne ke liye ye link use karein:"
+
+msgid "Use your company email — we'll send a link to verify it."
+msgstr "Apna company email use karein — hum verify karne ka link bhejenge."
+
+msgid "Valid certificate"
+msgstr "Valid certificate"
+
+msgid ""
+"Verification links work once and expire after 3 hours. Create your account "
+"again, or sign in if you already verified."
+msgstr ""
+"Verification link ek hi baar chalte hain aur 3 ghante baad expire ho jaate "
+"hain. Account dobara banayein, ya verify ho chuka ho to sign in karein."
+
+msgid "Verify certificate"
+msgstr "Certificate verify karein"
+
+msgid "Verify my email"
+msgstr "Mera email verify karein"
+
+msgid "Verify your Project Shiksha account"
+msgstr "Apna Project Shiksha account verify karein"
+
+msgid "Verify your email"
+msgstr "Apna email verify karein"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Video lessons are coming soon"
+msgstr "Video lessons jaldi aa rahe hain"
+
+msgid "View"
+msgstr "Dekhein"
+
+msgid "View attachment"
+msgstr "Attachment dekhein"
+
+msgid "Vishakha AI — Knowledge Assistant"
+msgstr "Vishakha AI — Knowledge Assistant"
+
+msgid ""
+"We couldn't send the email right now. Please try again in a few minutes."
+msgstr "Abhi email nahi bhej paye. Kripya kuch minute baad dobara try karein."
+
+msgid ""
+"We couldn't send the verification email right now. Please try again in a few"
+" minutes or contact the Shiksha admin."
+msgstr ""
+"Abhi verification email nahi bhej paye. Kripya kuch minute baad dobara try "
+"karein ya Shiksha admin se sampark karein."
+
+msgid ""
+"We sent a verification link to <strong>%(email)s</strong>. Open it to "
+"activate your account."
+msgstr ""
+"Humne <strong>%(email)s</strong> par verification link bheja hai. Account "
+"activate karne ke liye ise kholein."
+
+msgid "Welcome, %(name)s!"
+msgstr "Swagat hai, %(name)s!"
+
+msgid "When"
+msgstr "Kab"
+
+msgid "You're all caught up. Great work!"
+msgstr "Aap poori tarah up-to-date hain. Bahut badhiya!"
+
+msgid "Your account"
+msgstr "Aapka account"
+
+msgid "Your answer"
+msgstr "Aapka jawab"
+
+msgid "Your attempts"
+msgstr "Aapke attempts"
+
+msgid "Your certificate is ready to download."
+msgstr "Aapka certificate download ke liye ready hai."
+
+msgid "Your certificate is ready."
+msgstr "Aapka certificate ready hai."
+
+msgid "Your name was updated. It will appear on your certificates."
+msgstr "Aapka naam update ho gaya. Ye aapke certificates par dikhega."
+
+msgid "Your profile and account security."
+msgstr "Aapki profile aur account security."
+
+msgid "active"
+msgstr "active"
+
+msgid "ago"
+msgstr "pehle"
+
+msgid "approved, current versions only"
+msgstr "sirf approved, current versions"
+
+msgid "company email"
+msgstr "company email"
+
+msgid "completed"
+msgstr "completed"
+
+msgid "correct"
+msgstr "sahi"
+
+msgid "date & time"
+msgstr "date & time"
+
+msgid "description"
+msgstr "description"
+
+msgid "modules"
+msgstr "modules"
+
+msgid "or sign in with password"
+msgstr "ya password se sign in karein"
+
+msgid "pass mark"
+msgstr "pass mark"
+
+msgid "photo / document"
+msgstr "photo / document"
+
+msgid "questions"
+msgstr "sawaal"
+
+msgid "title"
+msgstr "title"
+
+msgid "to choose, then"
+msgstr "chunne ke liye, phir"
+
+msgid "viewing as %(d)s"
+msgstr "%(d)s ke roop mein dekh rahe hain"
+
+msgid "— your certificates use the name in your profile."
+msgstr "— aapke certificates profile ke naam ka use karte hain."
+
+msgid "Link copied to clipboard."
+msgstr "Link copy ho gaya."
+
+msgid "Read-aloud is not supported on this browser."
+msgstr "Is browser mein padh kar sunane ki suvidha available nahi hai."
+
+msgid ""
+"No Hindi voice is installed on this device, so the default voice is used."
+msgstr ""
+"Is device mein Hindi voice install nahi hai, isliye default voice use ho "
+"rahi hai."
+
+msgid "Couldn't reach the server. Please try again."
+msgstr "Server se sampark nahi ho saka. Kripya dobara try karein."
+
+msgid "Not now"
+msgstr "Abhi nahi"
+
+msgid "No results for"
+msgstr "Koi result nahi:"
+
+msgid "See all results for"
+msgstr "Sabhi results dekhein:"
+
+msgid "Hindi translation not available — showing English"
+msgstr "Hindi translation available nahi — English dikhayi ja rahi hai"
+
+msgid "Shown in English"
+msgstr "English mein"
+
+msgid "Production SOPs"
+msgstr "Production SOPs"
+
+msgid "Department SOPs"
+msgstr "Department SOPs"
+
+msgid "Diagnostic"
+msgstr "Diagnostic"
+
+msgid "Production"
+msgstr "Production"
+
+msgid "Maintenance"
+msgstr "Maintenance"
+
+msgid "Hello"
+msgstr "Namaste"
+
+msgid "Soon"
+msgstr "Jaldi"
+
+msgid "Production Operator"
+msgstr "Production Operator"
+
+msgid "QC Inspector"
+msgstr "QC Inspector"
+
+msgid "Production HOD"
+msgstr "Production HOD"
+
+msgid "Shiksha Administrator"
+msgstr "Shiksha Administrator"
+
+msgid "TBD"
+msgstr "TBD"
+
+msgid "%(m)s — SOP Quiz"
+msgstr "%(m)s — SOP Quiz"
+
+msgid "%(n)s result for “%(q)s” in %(current_plant)s"
+msgid_plural "%(n)s results for “%(q)s” in %(current_plant)s"
+msgstr[0] "%(current_plant)s mein “%(q)s” ke liye %(n)s result"
+msgstr[1] "%(current_plant)s mein “%(q)s” ke liye %(n)s results"
+
+msgid "You have %(n)s module waiting for you."
+msgid_plural "You have %(n)s modules waiting for you."
+msgstr[0] "Aapke liye %(n)s module intezaar mein hai."
+msgstr[1] "Aapke liye %(n)s modules intezaar mein hain."

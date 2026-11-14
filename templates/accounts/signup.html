@@ -1,0 +1,19 @@
+{% extends "accounts/base_auth.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "Create account" %}{% endblock %}
+{% block content %}
+<h2>{% translate "Create your account" %}</h2>
+<p class="sub">{% translate "Use your company email — we'll send a link to verify it." %}</p>
+<form method="post" novalidate>{% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert error">{% icon 'alert' %}<div>{{ form.non_field_errors|join:" " }}</div></div>{% endif %}
+  <div class="two">
+    {% include "accounts/_field.html" with f=form.first_name icon="user" %}
+    {% include "accounts/_field.html" with f=form.last_name icon="user" %}
+  </div>
+  {% include "accounts/_field.html" with f=form.email icon="mail" %}
+  {% include "accounts/_field.html" with f=form.employee_id icon="file" %}
+  {% include "accounts/_field.html" with f=form.password1 icon="lock" password=1 strength=1 %}
+  {% include "accounts/_field.html" with f=form.password2 icon="lock" password=1 %}
+  <button class="btn lg block" type="submit">{% translate "Create account" %}{% icon 'arrow-right' %}</button>
+</form>
+<div class="auth-links"><a href="{% url 'accounts:login' %}">{% icon 'arrow-left' %} {% translate "Back to sign in" %}</a></div>
+{% endblock %}

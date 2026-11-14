@@ -1,0 +1,19 @@
+{% extends "accounts/base_auth.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "Verify certificate" %}{% endblock %}
+{% block content %}
+{% if cert %}
+<div class="auth-icon ok">{% icon 'check-circle' %}</div>
+<h2>{% translate "Valid certificate" %}</h2>
+<p class="sub">{% translate "This certificate was issued by Vishakha Group's Project Shiksha." %}</p>
+<div class="card details" style="padding:8px 20px"><dl>
+  <dt>{% translate "Awarded to" %}</dt><dd>{{ cert.holder_name }}</dd>
+  <dt>{% translate "Module" %}</dt><dd>{{ cert.module.title }}</dd>
+  <dt>{% translate "Plant" %}</dt><dd>{{ cert.module.plant.name }}</dd>
+  <dt>{% translate "Issued" %}</dt><dd>{{ cert.issued_at|date:"d M Y" }}</dd>
+  <dt>{% translate "Certificate ID" %}</dt><dd>{{ cert.short_code }}</dd></dl></div>
+{% else %}
+<div class="auth-icon">{% icon 'alert' %}</div>
+<h2>{% translate "Certificate not found" %}</h2>
+<p class="sub">{% translate "No certificate matches this code. Check the link or QR code and try again." %}</p>
+{% endif %}
+{% endblock %}

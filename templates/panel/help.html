@@ -1,0 +1,18 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+<div class="pn-head"><div><h1>How to use this panel</h1><p class="muted">The short version — everything is point-and-click.</p></div></div>
+<div class="pn-guide">
+  <section class="card"><span class="step-no">1</span><h3>Add a module</h3><p>Go to <a href="{% url 'panel:modules' %}">Modules</a> → <b>Add module</b>. Choose the plant and department, write a title and summary, add a cover photo. New modules start as <b>Draft</b> (hidden from learners).</p></section>
+  <section class="card"><span class="step-no">2</span><h3>Add SOP steps</h3><p>Open the module → <b>SOP steps</b>. Add steps one by one, or paste a whole list / import an Excel file. Use the arrows to reorder; numbering is automatic.</p></section>
+  <section class="card"><span class="step-no">3</span><h3>Add safety rules & photos</h3><p><b>Safety rules</b> must be agreed by learners before steps unlock. <b>Photos</b> make the Overview tab come alive — learners can tap to enlarge them.</p></section>
+  <section class="card"><span class="step-no">4</span><h3>Create the quiz</h3><p>Module → <b>Quiz</b> → Create quiz → add questions (or import). Questions and answer options are shuffled on every attempt automatically.</p></section>
+  <section class="card"><span class="step-no">5</span><h3>Add Hindi</h3><p>Every form has a collapsed <b>Hindi (optional)</b> section — add translations there. Learners who choose Hindi see them (and the read-aloud speaks Hindi).</p></section>
+  <section class="card"><span class="step-no">6</span><h3>Publish</h3><p>Click <b>Preview as learner</b> to check it, then <b>Publish</b>. You can hide it again anytime with <b>Hide from learners</b>.</p></section>
+</div>
+<section class="card" style="margin-top:20px"><h3>Good to know</h3><ul class="pn-list">
+  <li><b>Nothing is lost by mistake:</b> rows you remove are only deleted when you press <b>Save changes</b>. If you leave with unsaved edits, the browser warns you.</li>
+  <li><b>Photos</b> are shrunk automatically — upload straight from your phone.</li>
+  <li><b>SOP versions:</b> mark a version <b>Approved</b> to make it the one learners see; the older approved one becomes <b>Superseded</b> automatically.</li>
+  <li><b>Users:</b> add them one by one or import from Excel. Untick <i>Restrict to these plants</i> to give access to everything.</li>
+  <li><b>Learner view:</b> use <i>Preview as learner</i> in your account menu to see the app exactly as learners do.</li></ul></section>
+{% endblock %}

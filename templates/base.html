@@ -1,0 +1,150 @@
+{% load static i18n shiksha %}{% get_current_language as LANG %}<!doctype html>
+<html lang="{{ LANG }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block title %}{% translate "Project Shiksha" %}{% endblock %} · Shiksha</title>
+  <script>(function(){var t="light";try{t=localStorage.getItem("shiksha-theme")||"light";}catch(e){}document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light");})();</script>
+  {% include "_favicons.html" %}
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="{% static 'css/shiksha.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body class="{% if view_as_learner %}has-viewbar{% endif %}">
+<div class="app" id="app">
+  <script>try{if(localStorage.getItem("shiksha-collapsed"))document.getElementById("app").classList.add("collapsed");}catch(e){}</script>
+  <div class="scrim" data-nav-close></div>
+
+  <aside class="sidebar" aria-label="{% translate 'Main navigation' %}">
+    <div class="brand">
+      <a class="brand-link" href="{% url 'core:dashboard' %}" aria-label="{% translate 'Project Shiksha — home' %}">
+        <img class="brand-wordmark" src="{% static 'img/brand/logo-white.png' %}" alt="Vishakha">
+        <img class="brand-mark" src="{% static 'img/brand/logo-mark.png' %}" alt="Vishakha">
+        <span class="brand-tag">{% block brand_tag %}Shiksha · LMS{% endblock %}</span>
+      </a>
+      <button class="icon-ghost collapse-btn" data-collapse aria-label="{% translate 'Collapse menu' %}">{% icon 'chevron-left' %}</button>
+    </div>
+
+    {% block sidebar_nav %}
+    <nav class="nav">
+      <a href="{% url 'core:dashboard' %}" data-tip="{% translate 'Dashboard' %}" class="{% nav_active '/' %}">{% icon 'home' %}<span>{% translate "Dashboard" %}</span></a>
+      <a href="{% url 'core:plant_overview' %}" data-tip="{% translate 'Plant Overview' %}" class="{% nav_active '/plant' %}">{% icon 'building' %}<span>{% translate "Plant Overview" %}</span></a>
+      <div class="nav-label">{% translate "Learn" %}</div>
+      <a href="{% url 'learning:module_list' %}" data-tip="{% translate 'Learning Modules' %}" class="{% nav_active '/modules' %}">{% icon 'layers' %}<span>{% translate "Learning Modules" %}</span></a>
+      <a href="{% url 'sops:list' %}" data-tip="{% translate 'SOP Library' %}" class="{% nav_active '/sops' %}">{% icon 'file' %}<span>{% translate "SOP Library" %}</span></a>
+      <a href="{% url 'knowledge:home' %}" data-tip="{% translate 'Knowledge Base' %}" class="{% nav_active '/knowledge' %}">{% icon 'folder' %}<span>{% translate "Knowledge Base" %}</span></a>
+      <a href="{% url 'quizzes:list' %}" data-tip="{% translate 'Quizzes' %}" class="{% nav_active '/quizzes' %}">{% icon 'gauge' %}<span>{% translate "Quizzes" %}</span></a>
+      <a href="{% url 'certificates:list' %}" data-tip="{% translate 'Certificates' %}" class="{% nav_active '/certificates' %}">{% icon 'award' %}<span>{% translate "Certificates" %}</span></a>
+      <a href="{% url 'discussion:feed' %}" data-tip="{% translate 'Discussion' %}" class="{% nav_active '/discussion' %}">{% icon 'chat' %}<span>{% translate "Discussion" %}</span></a>
+      <div class="nav-label">{% translate "Support" %}</div>
+      <a href="{% url 'incidents:list' %}" data-tip="{% translate 'Incidents' %}" class="{% nav_active '/incidents' %}">{% icon 'alert' %}<span>{% translate "Incidents" %}</span></a>
+      <a href="{% url 'core:coming_soon' 'ai-assistant' %}" data-tip="Vishakha AI" class="is-soon {% nav_active '/soon/ai-assistant' %}"><img class="nav-vivi" src="{% static 'img/brand/vivi-sm.png' %}" alt=""><span>Vishakha AI</span><em class="soon">{% translate "Soon" %}</em></a>
+      <a href="{% url 'core:coming_soon' 'learning-book' %}" data-tip="{% translate 'Learning Book' %}" class="is-soon {% nav_active '/soon/learning-book' %}">{% icon 'book' %}<span>{% translate "Learning Book" %}</span><em class="soon">{% translate "Soon" %}</em></a>
+      {% if user.is_shiksha_admin %}
+      <div class="nav-label">{% translate "Admin" %}</div>
+      <a href="{% url 'panel:dashboard' %}" data-tip="{% translate 'Manage Content' %}">{% icon 'edit' %}<span>{% translate "Manage Content" %}</span></a>
+      {% endif %}
+    </nav>
+    {% endblock %}
+
+    <div class="side-foot">
+      <nav class="nav"><a href="{% url 'accounts:account' %}" data-tip="{% translate 'My account' %}" class="{% nav_active '/accounts/me' %}">{% icon 'user' %}<span>{% translate "My account" %}</span></a></nav>
+      <div class="version">Shiksha {{ APP_VERSION }}</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    {% if view_as_learner %}
+    <div class="viewbar" role="status">{% icon 'eye' %}<span>{% translate "Learner view — you are seeing the app exactly as a learner does." %}</span>
+      <form method="post" action="{% url 'core:view_mode' %}">{% csrf_token %}<input type="hidden" name="mode" value="admin"><input type="hidden" name="next" value="{{ request.get_full_path }}"><button class="btn sm" type="submit">{% translate "Back to admin view" %}</button></form></div>
+    {% endif %}
+    <header class="topbar">
+      <button class="icon-btn mobile-only" data-nav-toggle aria-label="{% translate 'Open menu' %}">{% icon 'menu' %}</button>
+      <a class="top-logo" href="{% url 'core:dashboard' %}" aria-label="{% translate 'Project Shiksha — home' %}"><img class="lt" src="{% static 'img/brand/logo.png' %}" alt="Vishakha"><img class="dk" src="{% static 'img/brand/logo-white.png' %}" alt="Vishakha"></a>
+
+      {% block top_search %}
+      <form class="search" action="{% url 'core:search' %}" method="get" role="search" data-search data-suggest="{% url 'core:suggest' %}" autocomplete="off">
+        {% icon 'search' %}
+        <input type="search" name="q" value="{{ q|default:'' }}" placeholder="{% translate 'Search modules, SOPs, videos…' %}" aria-label="{% translate 'Search' %}">
+        <kbd>/</kbd>
+        <div class="suggest" hidden></div>
+      </form>
+      {% endblock %}
+      <div class="topbar-spacer"></div>
+
+      {% if available_plants %}
+      <div class="dd">
+        <button type="button" class="dd-btn" title="{% translate 'Switch plant' %}">{% icon 'building' %}<span class="lbl">{{ current_plant.name|default:_("Select plant") }}</span>{% icon 'chevron-down' 'chev' %}</button>
+        <form class="dd-menu" method="post" action="{% url 'core:set_plant' %}">{% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          <div class="dd-label">{% translate "Your plants" %}</div>
+          {% for p in available_plants %}
+          <button class="dd-item" name="plant" value="{{ p.pk }}" {% if p.pk == current_plant.pk %}aria-current="true"{% endif %}>{% icon 'building' %}{{ p.name }}{% icon 'check' 'tick' %}</button>
+          {% endfor %}
+        </form>
+      </div>
+      {% endif %}
+
+      <div class="dd">
+        <button type="button" class="dd-btn" title="{% translate 'Language' %}">{% icon 'globe' %}<span class="lbl">{% if LANG == 'hi' %}हिन्दी{% else %}English{% endif %}</span>{% icon 'chevron-down' 'chev' %}</button>
+        <form class="dd-menu" method="post" action="{% url 'set_language' %}" style="min-width:190px">{% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+          {% for code, name in LANGUAGE_CHOICES %}
+          <button class="dd-item" name="language" value="{{ code }}" {% if code == LANG %}aria-current="true"{% endif %}>{{ name }}{% icon 'check' 'tick' %}</button>
+          {% endfor %}
+        </form>
+      </div>
+
+      <button class="icon-btn theme-btn" data-theme-toggle aria-label="{% translate 'Toggle dark mode' %}" title="{% translate 'Dark / light mode' %}">{% icon 'moon' 'moon' %}{% icon 'sun' 'sun' %}</button>
+
+      <div class="dd">
+        <button type="button" class="dd-btn plain" aria-label="{% translate 'Account menu' %}">
+          {% include "_avatar.html" with u=user %}
+          <span class="user-meta"><div class="user-name">{{ user.get_full_name|default:user.email }}</div><div class="user-role">{{ user.get_role_display }}</div></span>
+          {% icon 'chevron-down' 'chev' %}
+        </button>
+        <div class="dd-menu" style="min-width:260px">
+          <div class="dd-head"><strong>{{ user.get_full_name|default:user.email }}</strong><span>{{ user.email }}</span></div>
+          <a class="dd-item" href="{% url 'accounts:account' %}">{% icon 'user' %}{% translate "My account" %}</a>
+          <a class="dd-item" href="{% url 'certificates:list' %}">{% icon 'award' %}{% translate "My certificates" %}</a>
+          <a class="dd-item" href="{% url 'incidents:list' %}">{% icon 'alert' %}{% translate "My incidents" %}</a>
+          <a class="dd-item" href="{% url 'accounts:account' %}#password">{% icon 'key' %}{% translate "Change password" %}</a>
+          <button type="button" class="dd-item theme-item" data-theme-toggle>{% icon 'moon' %}{% translate "Dark / light mode" %}</button>
+          {% if can_toggle_view %}
+          <div class="dd-sep"></div>
+          <form method="post" action="{% url 'core:view_mode' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+            {% if view_as_learner %}<button class="dd-item" name="mode" value="admin">{% icon 'key' %}{% translate "Back to admin view" %}</button>
+            {% else %}<button class="dd-item" name="mode" value="learner">{% icon 'eye' %}{% translate "Preview as learner" %}</button>{% endif %}</form>
+          {% endif %}
+          <div class="dd-sep"></div>
+          <form method="post" action="{% url 'accounts:logout' %}?next={% url 'accounts:login' %}">{% csrf_token %}<button class="dd-item">{% icon 'repeat' %}{% translate "Switch account" %}</button></form>
+          <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button class="dd-item danger">{% icon 'logout' %}{% translate "Sign out" %}</button></form>
+        </div>
+      </div>
+    </header>
+
+    <main class="content" id="content">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite">{% for m in messages %}<span hidden data-flash data-level="{{ m.level_tag }}">{{ m }}</span>{% endfor %}</div>
+
+{% block fab %}<a class="fab" href="{% url 'core:coming_soon' 'ai-assistant' %}" data-label="{% translate 'Ask Vishakha AI' %}" aria-label="{% translate 'AI Assistant' %}"><img src="{% static 'img/brand/vivi-sm.png' %}" alt=""></a>{% endblock %}
+
+{% block bottom_nav %}<nav class="bottom-nav" aria-label="{% translate 'Quick navigation' %}">
+  <a href="{% url 'core:dashboard' %}" class="{% nav_active '/' %}"><span class="bn-ico">{% icon 'home' %}</span>{% translate "Home" %}</a>
+  <a href="{% url 'learning:module_list' %}" class="{% nav_active '/modules' %}"><span class="bn-ico">{% icon 'layers' %}</span>{% translate "Modules" %}</a>
+  <a href="{% url 'sops:list' %}" class="{% nav_active '/sops' %}"><span class="bn-ico">{% icon 'file' %}</span>{% translate "SOPs" %}</a>
+  <a href="{% url 'quizzes:list' %}" class="{% nav_active '/quizzes' %}"><span class="bn-ico">{% icon 'gauge' %}</span>{% translate "Quizzes" %}</a>
+  <button type="button" data-nav-toggle><span class="bn-ico">{% icon 'grid' %}</span>{% translate "More" %}</button>
+</nav>{% endblock %}
+
+{% translate "Nice work! {n} to go." as m_cheer %}{% translate "Almost there — just {n} left!" as m_almost %}{% translate "Link copied to clipboard." as m_copied %}{% translate "Read-aloud is not supported on this browser." as m_notts %}{% translate "No Hindi voice is installed on this device, so the default voice is used." as m_novoice %}{% translate "Couldn't reach the server. Please try again." as m_net %}{% translate "Not now" as m_notnow %}{% translate "Continue" as m_cont %}{% translate "No results for" as m_nores %}{% translate "See all results for" as m_seeall %}
+<script id="i18n" type="application/json">{"copied":"{{ m_copied|escapejs }}","cheer":"{{ m_cheer|escapejs }}","almost":"{{ m_almost|escapejs }}","noTts":"{{ m_notts|escapejs }}","noVoice":"{{ m_novoice|escapejs }}","net":"{{ m_net|escapejs }}","notNow":"{{ m_notnow|escapejs }}","cont":"{{ m_cont|escapejs }}","noResults":"{{ m_nores|escapejs }}","seeAll":"{{ m_seeall|escapejs }}","lang":"{{ LANG }}"}</script>
+<script src="{% static 'js/shiksha.js' %}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
