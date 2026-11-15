@@ -1,3 +1,4 @@
+import io
 import shutil
 import tempfile
 from io import BytesIO
@@ -40,7 +41,7 @@ def editor_data(key, rows):
 class PanelBase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         cls.admin = User.objects.get(employee_id="test_admin")
         cls.learner = User.objects.get(employee_id="test_user")
         cls.plant = Plant.objects.get(code="vmpl-p1")
@@ -145,12 +146,19 @@ class PlantTests(PanelBase):
     def test_departments_and_processes(self):
         url = reverse("panel:plant_tab", args=[self.plant.pk, "structure"])
         existing = [{"uid": f"r{d.pk}", "id": str(d.pk), "name": d.name, "name_hi": d.name_hi} for d in self.plant.departments.order_by("order", "id")]
-        self.client.post(url, {**editor_data("depts", existing + [{"uid": "n1", "name": "Maintenance", "name_hi": "मेंटेनेंस"}])})
-        dept = Department.objects.get(plant=self.plant, name="Maintenance")
+        self.client.post(url, {**editor_data("depts", existing + [{"uid": "n1", "name": "Stores", "name_hi": "स्टोर्स"}])})
+        dept = Department.objects.get(plant=self.plant, name="Stores")
         procs = [{"uid": f"r{p.pk}", "id": str(p.pk), "department": str(p.department_id), "name": p.name} for p in Process.objects.filter(department__plant=self.plant)]
-        self.client.post(url, {**editor_data("depts", existing + [{"uid": f"r{dept.pk}", "id": str(dept.pk), "name": "Maintenance", "name_hi": "मेंटेनेंस"}]),
+        self.client.post(url, {**editor_data("depts", existing + [{"uid": f"r{dept.pk}", "id": str(dept.pk), "name": "Stores", "name_hi": "स्टोर्स"}]),
                                **editor_data("procs", procs + [{"uid": "n2", "department": str(dept.pk), "name": "Preventive maintenance"}])})
         self.assertTrue(Process.objects.filter(department=dept, name="Preventive maintenance").exists())
+
+    def test_duplicate_department_name_is_a_friendly_error_not_a_crash(self):
+        url = reverse("panel:plant_tab", args=[self.plant.pk, "structure"])
+        existing = [{"uid": f"r{d.pk}", "id": str(d.pk), "name": d.name, "name_hi": d.name_hi} for d in self.plant.departments.order_by("order", "id")]
+        r = self.client.post(url, {**editor_data("depts", existing + [{"uid": "n1", "name": existing[0]["name"]}])}, follow=True)
+        self.assertEqual(r.status_code, 200)
+        self.assertContains(r, "Each department name must be different")
 
     def test_plant_with_incidents_cannot_be_deleted(self):
         from apps.incidents.models import Incident

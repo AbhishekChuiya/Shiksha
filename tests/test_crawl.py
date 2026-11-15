@@ -1,3 +1,4 @@
+import io
 """Walk every page reachable by links (as learner and as admin) and fail on any 404/500 or dead link."""
 import re
 from urllib.parse import urlparse
@@ -11,7 +12,7 @@ LINK = re.compile(r'(?:href|action)="(/[^"#]*)')
 class CrawlTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
 
     def crawl(self, email, limit=400):
         self.client.force_login(User.objects.get(email=email))

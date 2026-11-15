@@ -7,6 +7,7 @@
   <div class="ring" style="--p:{{ attempt.score_percent }};{% if attempt.passed %}--ring-fill:var(--ok){% endif %}"><div><div><strong style="{% if attempt.passed %}color:var(--ok){% endif %}">{{ attempt.score_percent }}%</strong></div></div></div>
   {% if attempt.passed %}<h2>🎉 {% translate "You passed!" %}</h2>{% else %}<h2>{% translate "Not passed yet" %}</h2>{% endif %}
   <p class="muted">{{ correct_count }} / {{ attempt.question_ids|length }} {% translate "correct" %} · {% translate "pass mark" %} {{ quiz.pass_percent }}%</p>
+  {% if state.best is not None %}<p class="best-line">{% icon 'star' %}{% translate "Your best score" %}: <strong>{{ state.best }}%</strong><small>{% translate "A retake never lowers it." %}</small></p>{% endif %}
   <div class="row wrap" style="justify-content:center;margin-top:18px">
     {% if attempt.passed and certificate %}<a class="btn" href="{{ certificate.get_absolute_url }}">{% icon 'award' %}{% translate "View certificate" %}</a>{% endif %}
     {% if not attempt.passed and state.attempts_left != 0 %}<form method="post" action="{% url 'quizzes:start' quiz.module.slug %}">{% csrf_token %}<button class="btn" type="submit">{% icon 'refresh' %}{% translate "Try again" %}</button></form>{% endif %}

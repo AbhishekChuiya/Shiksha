@@ -49,7 +49,7 @@ def sop_edit(request, pk=None):
     form = SOPForm(request.POST or None, instance=sop, initial={"plant": request.GET.get("plant")} if not sop and request.GET.get("plant") else None)
     ctx = {"sop": sop, "form": form, "page_title": sop.code if sop else "New SOP",
            "crumbs": crumbs(("SOP library", reverse("panel:sops")), (sop.code if sop else "New SOP", None)),
-           "groups": [("Document", ["code", "title", "plant", "department", "process", "category", "tags", "owner", "language", "allow_download"]), ("Hindi (optional)", ["title_hi"])]}
+           "groups": [("Document", ["code", "title", "plant", "department", "process", "category", "tags", "owner", "language", "allow_download"]), ("Hindi (optional)", ["title_hi"]), ("Gujarati (optional)", ["title_gu"])]}
     if sop is None:
         if request.method == "POST" and form.is_valid():
             obj = form.save()

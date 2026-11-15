@@ -1,10 +1,9 @@
 {% extends "base.html" %}{% load i18n shiksha %}
 {% block title %}{% translate "My account" %}{% endblock %}
 {% block content %}
-<div class="page-head"><div><h1>{% translate "My account" %}</h1><p>{% translate "Manage your photo, name and password." %}</p></div></div>
-
 <section class="card acct-hero">
-  {% include "_avatar.html" with u=user cls="xl" %}
+  <a class="avatar-edit" href="{% url 'accounts:photo_update' %}" title="{% translate 'Change profile photo' %}" aria-label="{% translate 'Change profile photo' %}">
+    {% include "_avatar.html" with u=user cls="xl" %}<span class="pencil">{% icon 'edit2' %}</span></a>
   <div class="grow">
     <h2 style="margin:0 0 2px">{{ user.get_full_name|default:user.email }}</h2>
     <div class="muted">{{ user.email }}</div>
@@ -12,74 +11,14 @@
   </div>
 </section>
 
-<div class="split" style="margin-top:18px">
-  <div class="stack">
-    <form class="card" method="post" action="{% url 'accounts:photo_update' %}" enctype="multipart/form-data" id="photo-form">{% csrf_token %}
-      <h3>{% translate "Profile photo" %}</h3>
-      <div class="photo-edit">
-        <div class="photo-preview" id="photo-preview">{% if user.photo %}<img src="{{ user.photo.url }}" alt="">{% else %}<span>{{ user.initial }}</span>{% endif %}</div>
-        <div class="grow">
-          <p class="small muted" style="margin:0 0 12px">{% translate "JPG, PNG or WEBP, up to 5 MB. It is cropped to a square." %}</p>
-          <input type="file" name="photo" id="photo-input" accept="image/jpeg,image/png,image/webp" hidden>
-          <div class="row wrap">
-            <label for="photo-input" class="btn secondary" role="button" tabindex="0">{% icon 'plus' %}{% translate "Choose photo" %}</label>
-            <button class="btn" type="submit" id="photo-save" hidden>{% icon 'check' %}{% translate "Save photo" %}</button>
-            {% if user.photo %}<button class="btn ghost" type="submit" name="action" value="remove" data-no-loading>{% translate "Remove photo" %}</button>{% endif %}
-          </div>
-        </div>
-      </div>
-    </form>
-
-    <form class="card" method="post" action="{% url 'accounts:profile_update' %}" novalidate>{% csrf_token %}
-      <h3>{% translate "Personal details" %}</h3>
-      <p class="small muted">{% translate "This is the name printed on your certificates." %}</p>
-      <div class="two">
-        {% include "accounts/_field.html" with f=profile_form.first_name icon="user" %}
-        {% include "accounts/_field.html" with f=profile_form.last_name icon="user" %}
-      </div>
-      <button class="btn" type="submit">{% translate "Save name" %}</button>
-    </form>
-
-    <form class="card" method="post" novalidate id="password">{% csrf_token %}
-      <h3>{% translate "Change password" %}</h3>
-      {% include "accounts/_field.html" with f=form.old_password icon="lock" password=1 %}
-      {% include "accounts/_field.html" with f=form.new_password1 icon="lock" password=1 strength=1 %}
-      {% include "accounts/_field.html" with f=form.new_password2 icon="lock" password=1 %}
-      <button class="btn" type="submit">{% translate "Update password" %}</button>
-    </form>
-  </div>
-
-  <div class="stack">
-    <div class="card details"><h3>{% translate "Account details" %}</h3><dl>
-      <dt>{% translate "Email" %}</dt><dd>{{ user.email }}</dd>
-      <dt>{% translate "Employee ID" %}</dt><dd>{{ user.employee_id|default:"—" }}</dd>
-      <dt>{% translate "Role" %}</dt><dd>{{ user.get_role_display }}</dd>
-      {% if user.department %}<dt>{% translate "Department" %}</dt><dd>{{ user.department.display_name }}</dd>{% endif %}
-      <dt>{% translate "Member since" %}</dt><dd>{{ user.date_joined|date:"d M Y" }}</dd>
-      <dt>{% translate "Last sign-in" %}</dt><dd>{{ user.last_login|date:"d M Y, H:i"|default:"—" }}</dd>
-    </dl></div>
-    <div class="card"><h3>{% translate "Plants" %}</h3>
-      <div class="chips">{% for p in plants_list %}<span class="badge grey">{{ p.name }}</span>{% endfor %}</div></div>
-    <form class="card" method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}
-      <button class="btn secondary block" type="submit" data-no-loading>{% icon 'logout' %}{% translate "Sign out" %}</button>
-    </form>
-  </div>
+<div class="acct-menu">
+  <a class="card hover" href="{% url 'accounts:photo_update' %}"><span class="ico">{% icon 'image' %}</span><div><strong>{% translate "Profile photo" %}</strong><small>{% translate "Add or change your picture" %}</small></div>{% icon 'chevron-right' %}</a>
+  <a class="card hover" href="{% url 'accounts:details' %}"><span class="ico blue">{% icon 'user' %}</span><div><strong>{% translate "Personal details" %}</strong><small>{% translate "Your name and account information" %}</small></div>{% icon 'chevron-right' %}</a>
+  <a class="card hover" href="{% url 'accounts:password_change' %}"><span class="ico amber">{% icon 'lock' %}</span><div><strong>{% translate "Change password" %}</strong><small>{% translate "Keep your account safe" %}</small></div>{% icon 'chevron-right' %}</a>
+  <a class="card hover" href="{% url 'certificates:list' %}"><span class="ico green">{% icon 'award' %}</span><div><strong>{% translate "My certificates" %}</strong><small>{% translate "View and download" %}</small></div>{% icon 'chevron-right' %}</a>
 </div>
-{% endblock %}
 
-{% block scripts %}
-<script>
-(function () {
-  var input = document.getElementById("photo-input"), box = document.getElementById("photo-preview"), save = document.getElementById("photo-save");
-  if (!input) return;
-  input.addEventListener("change", function () {
-    var f = input.files && input.files[0]; if (!f) return;
-    if (f.size > 5 * 1024 * 1024) { input.value = ""; window.shikshaToast("error", "{% translate 'The photo is too large. Please use an image under 5 MB.' as m %}{{ m|escapejs }}"); return; }
-    var r = new FileReader();
-    r.onload = function (e) { box.innerHTML = ""; var img = document.createElement("img"); img.src = e.target.result; img.alt = ""; box.appendChild(img); };
-    r.readAsDataURL(f); save.hidden = false;
-  });
-  document.querySelector('label[for="photo-input"]').addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
-})();
-</script>
+<form method="post" action="{% url 'accounts:logout' %}" style="margin-top:18px">{% csrf_token %}
+  <button class="btn secondary" type="submit" data-no-loading>{% icon 'logout' %}{% translate "Sign out" %}</button>
+</form>
 {% endblock %}

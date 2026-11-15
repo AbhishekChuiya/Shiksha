@@ -21,5 +21,5 @@ class AuditLog(models.Model):
     @classmethod
     def record(cls, actor, action, obj, **detail):
         return cls.objects.create(actor=actor, action=action,
-                                  object_type=obj._meta.label, object_id=str(obj.pk),
+                                  object_type=obj._meta.label if obj is not None else "", object_id=str(obj.pk) if obj is not None else "",
                                   detail=detail)

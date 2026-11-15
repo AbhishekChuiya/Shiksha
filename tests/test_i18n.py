@@ -1,3 +1,4 @@
+import io
 import re
 import sys
 from pathlib import Path
@@ -39,13 +40,16 @@ class CatalogCoverageTests(TestCase):
     def test_hindi_complete(self):
         self._check("hi")
 
+    def test_gujarati_complete(self):
+        self._check("gu")
+
     def test_hinglish_is_gone(self):
         from django.conf import settings
-        self.assertEqual([c for c, _ in settings.LANGUAGES], ["en", "hi"])
+        self.assertEqual([c for c, _ in settings.LANGUAGES], ["en", "hi", "gu"])
         self.assertFalse((ROOT / "locale" / "hi_Latn").exists())
 
     def test_compiled_catalogs_are_fresh(self):
-        for lang in ("hi",):
+        for lang in ("hi", "gu"):
             base = ROOT / "locale" / lang / "LC_MESSAGES"
             self.assertGreaterEqual((base / "django.mo").stat().st_mtime + 5, (base / "django.po").stat().st_mtime)
 
@@ -53,7 +57,7 @@ class CatalogCoverageTests(TestCase):
 class HindiPagesTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         cls.user = User.objects.get(employee_id="test_user")
         cls.melt = Module.objects.get(slug="vmpl_melt_cast")
 
@@ -117,7 +121,7 @@ class HindiPagesTests(TestCase):
     def test_seed_hindi_never_overwrites_existing_hindi(self):
         self.melt.title_hi = "मेरा अपना शीर्षक"
         self.melt.save()
-        call_command("seed_hindi", stdout=open("/dev/null", "w"))
+        call_command("seed_hindi", stdout=io.StringIO())
         self.melt.refresh_from_db()
         self.assertEqual(self.melt.title_hi, "मेरा अपना शीर्षक")
 

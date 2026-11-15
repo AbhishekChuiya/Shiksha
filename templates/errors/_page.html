@@ -1,0 +1,17 @@
+{% load i18n static %}<!doctype html>
+<html lang="{{ LANGUAGE_CODE|default:'en' }}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Project Shiksha{% endblock %}</title>
+<style>
+  :root { color-scheme: light; } * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; font-family: Inter, system-ui, -apple-system, "Segoe UI", "Nirmala UI", "Shruti", sans-serif; background: #f6f7fa; color: #1a1d24; }
+  .box { max-width: 460px; width: 100%; background: #fff; border-radius: 24px; padding: 36px 28px; text-align: center; box-shadow: 0 10px 40px rgba(20,24,40,.08); border: 1px solid #e8eaf0; }
+  .code { font-size: 4rem; font-weight: 800; letter-spacing: -.04em; color: #c8102e; line-height: 1; } h1 { font-size: 1.4rem; margin: 14px 0 8px; } p { color: #6b7280; line-height: 1.6; margin: 0 0 22px; }
+  .row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  a.btn, button.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 22px; border-radius: 14px; font: inherit; font-weight: 700; text-decoration: none; border: 1px solid #c8102e; background: linear-gradient(135deg, #dc1a3a, #b00d27); color: #fff; cursor: pointer; }
+  a.btn.secondary, button.btn.secondary { background: #fff; color: #1a1d24; border-color: #d9dce3; }
+</style></head><body><main class="box">
+  <img src="{% static 'img/brand/logo.png' %}" alt="Vishakha" height="34" style="margin-bottom:18px" onerror="this.style.display='none'">
+  <div class="code">{% block code %}{% endblock %}</div>
+  <h1>{% block heading %}{% endblock %}</h1><p>{% block text %}{% endblock %}</p>
+  <div class="row"><a class="btn" href="/">{% translate "Back to dashboard" %}</a><button class="btn secondary" type="button" onclick="history.length > 1 ? history.back() : location.reload()">{% translate "Go back" %}</button></div>
+</main></body></html>

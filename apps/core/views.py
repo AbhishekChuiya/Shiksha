@@ -1,4 +1,6 @@
 from django.contrib.auth.decorators import login_required
+
+from .charts import learner_charts
 from django.db.models import Q, Sum
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -22,6 +24,16 @@ def _safe_next(request, fallback="core:dashboard"):
     if nxt and url_has_allowed_host_and_scheme(nxt, {request.get_host()}):
         return nxt
     return fallback
+
+
+def _safe(fn, *args):
+    """Optional widgets (charts) must never take a whole page down."""
+    try:
+        return fn(*args)
+    except Exception:  # noqa: BLE001
+        import logging
+        logging.getLogger(__name__).exception("dashboard widget failed")
+        return {"has_data": False}
 
 
 @login_required
@@ -55,6 +67,7 @@ def dashboard(request):
         "resume": in_progress[0] if in_progress else None,
         "in_progress": in_progress[1:5],
         "recommended": recommended,
+        "charts": _safe(learner_charts, request.user, plant),
     })
 
 

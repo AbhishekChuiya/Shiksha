@@ -1,0 +1,31 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+<div class="pn-head"><div><h1>Import from Excel</h1><p class="muted">Add many modules, SOP steps or quiz questions at once from an Excel (.xlsx) or CSV file.</p></div></div>
+
+<section class="card imp-how">
+  <div><span class="imp-n">1</span><div><strong>Download a sample</strong><small>It already shows the right columns and has a “How to fill” sheet.</small></div></div>
+  <div><span class="imp-n">2</span><div><strong>Fill it in Excel</strong><small>Delete the example rows, keep the first row.</small></div></div>
+  <div><span class="imp-n">3</span><div><strong>Upload it here</strong><small>If something is wrong, nothing is imported and you see exactly which row to fix.</small></div></div>
+</section>
+
+<div class="imp-grid">
+{% for c in cards %}
+  <section class="card imp-card" id="{{ c.kind }}">
+    <h2>{% if c.kind == "modules" %}{% icon 'layers' %}{% elif c.kind == "steps" %}{% icon 'file' %}{% else %}{% icon 'gauge' %}{% endif %}{{ c.title }}</h2>
+    <p class="muted">{% if c.kind == "modules" %}Create your module list in one go. Existing modules with the same name are updated.{% elif c.kind == "steps" %}Steps for one or many modules. Each row says which module it belongs to.{% else %}Questions for one or many modules. Each row says which module it belongs to.{% endif %}</p>
+    <div class="row wrap"><a class="btn secondary sm" href="{% url 'panel:import_sample' c.kind 'xlsx' %}">{% icon 'download' %}Sample Excel</a><a class="btn ghost sm" href="{% url 'panel:import_sample' c.kind 'csv' %}">{% icon 'download' %}Sample CSV</a></div>
+    <details class="imp-cols"><summary>What goes in each column?</summary>
+      <table>{% for name, req, desc in c.cols %}<tr><td><code>{{ name }}</code>{% if req %} <b class="req">needed</b>{% endif %}</td><td>{{ desc }}</td></tr>{% endfor %}</table></details>
+    <form method="post" enctype="multipart/form-data" class="imp-form">{% csrf_token %}<input type="hidden" name="kind" value="{{ c.kind }}">
+      {% if c.kind == "modules" %}<label>Plant for rows that have no plant column
+        <select name="plant">{% for p in plants %}<option value="{{ p.pk }}">{{ p.name }}</option>{% endfor %}</select></label>
+      {% else %}<div class="imp-mode"><label class="pn-check sm"><input type="radio" name="mode" value="append" checked><span>Add to what is already there</span></label>
+        <label class="pn-check sm"><input type="radio" name="mode" value="replace"><span>Replace what is there for the modules in the file</span></label></div>{% endif %}
+      <input type="file" name="file" accept=".xlsx,.csv" required>
+      <button class="btn lg" type="submit">{% icon 'upload' %}Import {{ c.title|lower }}</button>
+    </form>
+  </section>
+{% endfor %}
+</div>
+<p class="muted small" style="margin-top:14px">Tip: import <b>Modules</b> first, then <b>SOP steps</b> and <b>Quiz questions</b> — they refer to modules by name.</p>
+{% endblock %}

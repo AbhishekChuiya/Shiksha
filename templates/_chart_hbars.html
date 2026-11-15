@@ -1,0 +1,1 @@
+<div class="hbars">{% for r in rows %}<div class="hb"><div class="hb-top"><span>{{ r.label }}</span><b>{{ r.pct }}%</b></div><div class="bar {% if r.pct >= 80 %}ok{% elif r.pct < 40 %}low{% endif %}"><i style="width:{{ r.pct }}%"></i></div><small>{{ r.note }}</small></div>{% endfor %}</div>

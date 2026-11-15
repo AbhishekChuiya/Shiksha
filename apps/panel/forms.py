@@ -89,13 +89,13 @@ def _unique_slug(model, base, field="slug", instance=None, sep="_"):
 class PlantForm(PanelForm):
     class Meta:
         model = Plant
-        fields = ["name", "company", "location", "location_hi", "tagline", "tagline_hi", "about", "about_hi", "banner", "order", "is_active", "code"]
-        labels = {"name": "Plant name", "company": "Company (legal name)", "location_hi": "Location (Hindi)", "banner": "Banner photo",
+        fields = ["name", "company", "location", "location_hi", "location_gu", "tagline", "tagline_hi", "tagline_gu", "about", "about_hi", "about_gu", "banner", "order", "is_active", "code"]
+        labels = {"name": "Plant name", "company": "Company (legal name)", "location_hi": "Location (Hindi)", "location_gu": "Location (Gujarati)", "banner": "Banner photo",
                   "order": "Position in lists", "is_active": "Active (visible to learners)", "code": "Short web name"}
         help_texts = {"name": "Shown everywhere, e.g. VMPL P1.", "tagline": "One line under the plant name on the Plant Overview page.",
                       "about": "A few paragraphs. Press Enter twice for a new paragraph.", "banner": "Wide photo (landscape) works best. It is resized automatically.",
                       "order": "Lower numbers appear first.", "code": "Used in web addresses. Leave blank to create it from the name."}
-        widgets = {"about": forms.Textarea(attrs={"rows": 7}), "about_hi": forms.Textarea(attrs={"rows": 7}), "tagline": forms.TextInput, }
+        widgets = {"about": forms.Textarea(attrs={"rows": 7}), "about_hi": forms.Textarea(attrs={"rows": 7}), "about_gu": forms.Textarea(attrs={"rows": 7}), "tagline": forms.TextInput, }
 
     def __init__(self, *a, **kw):
         super().__init__(*a, **kw)
@@ -116,16 +116,16 @@ class ModuleForm(PanelForm):
 
     class Meta:
         model = Module
-        fields = ["title", "title_hi", "plant", "department", "process", "category", "category_hi", "library", "summary", "summary_hi",
-                  "overview", "overview_hi", "objectives", "objectives_hi", "cover", "est_minutes", "instructor", "sop_document", "status", "order", "slug"]
+        fields = ["title", "title_hi", "title_gu", "plant", "department", "process", "category", "category_hi", "category_gu", "library", "summary", "summary_hi", "summary_gu",
+                  "overview", "overview_hi", "overview_gu", "objectives", "objectives_hi", "objectives_gu", "cover", "est_minutes", "instructor", "sop_document", "status", "order", "slug"]
         labels = {"title": "Module title", "est_minutes": "Estimated time (minutes)", "sop_document": "Linked SOP", "cover": "Cover photo",
                   "library": "Library", "category": "Category (filter chip)", "status": "Status", "order": "Position in lists", "slug": "Web address name"}
         help_texts = {"title": "e.g. Melt & Cast", "summary": "One or two lines shown on the module card.", "overview": "Shown on the Overview tab. Press Enter twice for a new paragraph.",
                       "objectives": "One learning objective per line.", "cover": "Shown on the module card and at the top of the Overview tab.",
                       "status": "Draft = hidden from learners. Published = visible.", "slug": "Leave blank to create it from the title.",
                       "category": "Learners can filter by this, e.g. Extrusion.", "order": "Lower numbers appear first inside a department."}
-        widgets = {"overview": forms.Textarea(attrs={"rows": 7}), "overview_hi": forms.Textarea(attrs={"rows": 7}), "objectives": forms.Textarea(attrs={"rows": 4}),
-                   "objectives_hi": forms.Textarea(attrs={"rows": 4}), "summary": forms.Textarea(attrs={"rows": 2}), "summary_hi": forms.Textarea(attrs={"rows": 2})}
+        widgets = {"overview": forms.Textarea(attrs={"rows": 7}), "overview_hi": forms.Textarea(attrs={"rows": 7}), "overview_gu": forms.Textarea(attrs={"rows": 7}), "objectives": forms.Textarea(attrs={"rows": 4}),
+                   "objectives_hi": forms.Textarea(attrs={"rows": 4}), "objectives_gu": forms.Textarea(attrs={"rows": 4}), "summary": forms.Textarea(attrs={"rows": 2}), "summary_hi": forms.Textarea(attrs={"rows": 2}), "summary_gu": forms.Textarea(attrs={"rows": 2})}
 
     def __init__(self, *a, **kw):
         super().__init__(*a, **kw)
@@ -175,12 +175,12 @@ class QuizSettingsForm(forms.ModelForm):
 class QuestionForm(forms.ModelForm):
     class Meta:
         model = Question
-        fields = ["text", "text_hi", "kind", "explanation", "explanation_hi", "keep_choice_order"]
+        fields = ["text", "text_hi", "text_gu", "kind", "explanation", "explanation_hi", "explanation_gu", "keep_choice_order"]
         labels = {"text": "Question", "kind": "Label above the question", "explanation": "Explanation (shown after answering)",
                   "keep_choice_order": 'Keep options in the order below (for "All of the above" style questions)'}
         help_texts = {"kind": 'Small heading, e.g. "Diagnostic" or "Safety".'}
-        widgets = {"text": forms.Textarea(attrs={"rows": 3}), "text_hi": forms.Textarea(attrs={"rows": 3}),
-                   "explanation": forms.Textarea(attrs={"rows": 2}), "explanation_hi": forms.Textarea(attrs={"rows": 2})}
+        widgets = {"text": forms.Textarea(attrs={"rows": 3}), "text_hi": forms.Textarea(attrs={"rows": 3}), "text_gu": forms.Textarea(attrs={"rows": 3}),
+                   "explanation": forms.Textarea(attrs={"rows": 2}), "explanation_hi": forms.Textarea(attrs={"rows": 2}), "explanation_gu": forms.Textarea(attrs={"rows": 2})}
 
 
 # ----------------------------------------------------------------------- SOP
@@ -190,7 +190,7 @@ class SOPForm(PanelForm):
 
     class Meta:
         model = SOPDocument
-        fields = ["title", "title_hi", "code", "plant", "department", "process", "category", "tags", "owner", "language", "allow_download"]
+        fields = ["title", "title_hi", "title_gu", "code", "plant", "department", "process", "category", "tags", "owner", "language", "allow_download"]
         labels = {"code": "Document number", "allow_download": "Learners may download the file", "owner": "Content owner"}
         help_texts = {"code": "Your controlled document number, e.g. VMPL/PRD/SOP/01.", "tags": "Comma separated, e.g. furnace, safety.",
                       "language": "Language of the document (used for read-aloud)."}
@@ -269,12 +269,12 @@ from apps.knowledge.models import KBItem  # noqa: E402
 class KBItemForm(PanelForm):
     class Meta:
         model = KBItem
-        fields = ["title", "title_hi", "category", "plant", "file", "url", "description", "description_hi", "is_active", "order"]
+        fields = ["title", "title_hi", "title_gu", "category", "plant", "file", "url", "description", "description_hi", "description_gu", "is_active", "order"]
         labels = {"file": "File (PDF, Word, Excel, PowerPoint, video…)", "url": "…or a web / YouTube link", "plant": "Show at", "is_active": "Visible to learners",
                   "order": "Sort order"}
         help_texts = {"plant": "Leave on “Every plant” to show at all plants.", "file": "Upload the file, or give a link below. Large videos are better as a YouTube link.",
                       "order": "Smaller numbers come first."}
-        widgets = {"description": forms.Textarea(attrs={"rows": 3}), "description_hi": forms.Textarea(attrs={"rows": 3})}
+        widgets = {"description": forms.Textarea(attrs={"rows": 3}), "description_hi": forms.Textarea(attrs={"rows": 3}), "description_gu": forms.Textarea(attrs={"rows": 3})}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

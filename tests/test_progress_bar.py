@@ -1,3 +1,4 @@
+import io
 import re
 
 from django.core.management import call_command
@@ -11,7 +12,7 @@ from apps.learning.models import Module
 class ProgressBarTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         cls.user = User.objects.get(employee_id="test_user2")
         cls.melt = Module.objects.get(slug="vmpl_melt_cast")
 

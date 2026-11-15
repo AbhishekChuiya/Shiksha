@@ -1,3 +1,4 @@
+import io
 from unittest import mock
 
 from django.core import mail
@@ -99,7 +100,7 @@ class DomainRuleTests(TestCase):
 class TestAccountsTests(TestCase):
     def test_test_accounts_can_sign_in_by_short_name(self):
         from django.core.management import call_command
-        call_command("create_test_users", stdout=open("/dev/null", "w"))
+        call_command("create_test_users", stdout=io.StringIO())
         for name in ("test_user", "test_admin", "test_manager"):
             self.client.logout()
             r = self.client.post(reverse("accounts:login"), {"username": name, "password": "Test@12345"})
@@ -186,7 +187,7 @@ class ThemeAndResetDiagnosticsTests(TestCase):
 
     def test_app_defaults_to_light_even_if_phone_is_dark(self):
         from django.core.management import call_command
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         self.client.force_login(User.objects.get(employee_id="test_user"))
         html = self.client.get(reverse("core:dashboard")).content.decode()
         self.assertNotIn("prefers-color-scheme", html)

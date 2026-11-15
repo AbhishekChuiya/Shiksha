@@ -1,0 +1,1841 @@
+#
+msgid ""
+msgstr ""
+"Language: gu\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Dashboard"
+msgstr "ડેશબોર્ડ"
+
+msgid "Plant Overview"
+msgstr "પ્લાન્ટ ઓવરવ્યુ"
+
+msgid "Learning Modules"
+msgstr "લર્નિંગ મોડ્યુલ"
+
+msgid "SOP Library"
+msgstr "એસઓપી લાઇબ્રેરી"
+
+msgid "Quizzes"
+msgstr "ક્વિઝ"
+
+msgid "Certificates"
+msgstr "પ્રમાણપત્રો"
+
+msgid "Incidents"
+msgstr "ઘટનાઓ"
+
+msgid "AI Assistant"
+msgstr "એઆઈ સહાયક"
+
+msgid "Learning Book"
+msgstr "લર્નિંગ બુક"
+
+msgid "Manage Content"
+msgstr "સામગ્રી મેનેજ કરો"
+
+msgid "Settings"
+msgstr "સેટિંગ્સ"
+
+msgid "Search processes, SOPs, videos…"
+msgstr "પ્રક્રિયા, એસઓપી, વિડિઓ શોધો…"
+
+msgid "Sign out"
+msgstr "સાઇન આઉટ"
+
+msgid "Sign in"
+msgstr "સાઇન ઇન"
+
+msgid "Browse modules"
+msgstr "મોડ્યુલ જુઓ"
+
+msgid "Change Plant"
+msgstr "પ્લાન્ટ બદલો"
+
+msgid "Overall"
+msgstr "કુલ"
+
+msgid "Learning time"
+msgstr "શીખવાનો સમય"
+
+msgid "Avg best score"
+msgstr "સરેરાશ શ્રેષ્ઠ સ્કોર"
+
+msgid "Modules completed"
+msgstr "પૂર્ણ મોડ્યુલ"
+
+msgid "Quick Actions"
+msgstr "ઝડપી કાર્યો"
+
+msgid "Continue Learning"
+msgstr "શીખવાનું ચાલુ રાખો"
+
+msgid "My SOPs"
+msgstr "મારા એસઓપી"
+
+msgid "Watch Videos"
+msgstr "વિડિઓ જુઓ"
+
+msgid "Take Quiz"
+msgstr "ક્વિઝ આપો"
+
+msgid "Report Incident"
+msgstr "ઘટનાની જાણ કરો"
+
+msgid "Nothing in progress — open a module to start."
+msgstr "કંઈ ચાલુ નથી — શરૂ કરવા માટે મોડ્યુલ ખોલો."
+
+msgid "Department"
+msgstr "વિભાગ"
+
+msgid "Library"
+msgstr "લાઇબ્રેરી"
+
+msgid "Category"
+msgstr "શ્રેણી"
+
+msgid "All"
+msgstr "બધા"
+
+msgid "steps"
+msgstr "પગલાં"
+
+msgid "mins"
+msgstr "મિનિટ"
+
+msgid "min"
+msgstr "મિનિટ"
+
+msgid "Progress"
+msgstr "પ્રગતિ"
+
+msgid "Continue"
+msgstr "ચાલુ રાખો"
+
+msgid "Start"
+msgstr "શરૂ કરો"
+
+msgid "Review"
+msgstr "ફરી જુઓ"
+
+msgid "Overview"
+msgstr "ઓવરવ્યુ"
+
+msgid "Video Lessons"
+msgstr "વિડિઓ પાઠ"
+
+msgid "SOPs"
+msgstr "એસઓપી"
+
+msgid "Quiz"
+msgstr "ક્વિઝ"
+
+msgid "Problem Solution Statements"
+msgstr "સમસ્યા અને ઉકેલ"
+
+msgid "Discussion"
+msgstr "ચર્ચા"
+
+msgid "Report an issue"
+msgstr "સમસ્યાની જાણ કરો"
+
+msgid "Module overview"
+msgstr "મોડ્યુલ ઓવરવ્યુ"
+
+msgid "Learning objectives"
+msgstr "શીખવાના ઉદ્દેશ્યો"
+
+msgid "Listen"
+msgstr "સાંભળો"
+
+msgid "Module Details"
+msgstr "મોડ્યુલની વિગતો"
+
+msgid "Est. time"
+msgstr "અંદાજિત સમય"
+
+msgid "Process"
+msgstr "પ્રક્રિયા"
+
+msgid "Instructor"
+msgstr "પ્રશિક્ષક"
+
+msgid "General"
+msgstr "સામાન્ય"
+
+msgid "Safety"
+msgstr "સુરક્ષા"
+
+msgid "Environment, Quality & Discipline"
+msgstr "પર્યાવરણ, ગુણવત્તા અને શિસ્ત"
+
+msgid "Confirm safety guidelines"
+msgstr "સુરક્ષા માર્ગદર્શિકાની પુષ્ટિ કરો"
+
+msgid "Agree"
+msgstr "સંમત"
+
+msgid "Safety guidelines acknowledged — SOP steps unlocked."
+msgstr "સુરક્ષા માર્ગદર્શિકા સ્વીકારી — એસઓપી પગલાં ખુલ્યા."
+
+msgid ""
+"Read the safety guidelines above. You must agree to all safety steps before "
+"the SOP procedure unlocks."
+msgstr ""
+"ઉપરની સુરક્ષા માર્ગદર્શિકા વાંચો. એસઓપી પ્રક્રિયા ખુલે તે પહેલાં તમારે બધા "
+"સુરક્ષા પગલાં સાથે સંમત થવું પડશે."
+
+msgid "SOP Steps Locked"
+msgstr "એસઓપી પગલાં લૉક છે"
+
+msgid "Your progress"
+msgstr "તમારી પ્રગતિ"
+
+msgid "Step"
+msgstr "પગલું"
+
+msgid "Mark complete"
+msgstr "પૂર્ણ તરીકે નોંધો"
+
+msgid "Unmark"
+msgstr "નિશાની દૂર કરો"
+
+msgid "Previous"
+msgstr "પાછળ"
+
+msgid "Next"
+msgstr "આગળ"
+
+msgid "Take quiz"
+msgstr "ક્વિઝ આપો"
+
+msgid "Read each step aloud automatically"
+msgstr "દરેક પગલું આપમેળે વાંચી સંભળાવો"
+
+msgid "Photo coming soon"
+msgstr "ફોટો જલ્દી આવશે"
+
+msgid "Questions"
+msgstr "પ્રશ્નો"
+
+msgid "Passing"
+msgstr "પાસ થવા માટે"
+
+msgid "Time limit"
+msgstr "સમય મર્યાદા"
+
+msgid "None"
+msgstr "કોઈ નહીં"
+
+msgid "Start quiz"
+msgstr "ક્વિઝ શરૂ કરો"
+
+msgid "Answer the questions to complete this module."
+msgstr "આ મોડ્યુલ પૂર્ણ કરવા પ્રશ્નોના જવાબ આપો."
+
+msgid "Submit"
+msgstr "સબમિટ કરો"
+
+msgid "Passed!"
+msgstr "પાસ થયા!"
+
+msgid "Not passed yet"
+msgstr "હજી પાસ થયા નથી"
+
+msgid "Try again"
+msgstr "ફરી પ્રયત્ન કરો"
+
+msgid "View certificate"
+msgstr "પ્રમાણપત્ર જુઓ"
+
+msgid "Report incident"
+msgstr "ઘટનાની જાણ કરો"
+
+msgid "My incidents"
+msgstr "મારી ઘટનાઓ"
+
+msgid "My certificates"
+msgstr "મારા પ્રમાણપત્રો"
+
+msgid "Change password"
+msgstr "પાસવર્ડ બદલો"
+
+msgid "About"
+msgstr "વિશે"
+
+msgid "Download"
+msgstr "ડાઉનલોડ"
+
+msgid "Search"
+msgstr "શોધો"
+
+msgid "Filters"
+msgstr "ફિલ્ટર"
+
+msgid "Swipe"
+msgstr "સ્વાઇપ કરો"
+
+msgid "Preview as learner"
+msgstr "શીખનારની જેમ જુઓ"
+
+msgid "Back to admin view"
+msgstr "એડમિન વ્યૂ પર પાછા જાઓ"
+
+msgid "Download PDF"
+msgstr "પીડીએફ ડાઉનલોડ કરો"
+
+msgid "Copy verification link"
+msgstr "ચકાસણી લિંક કૉપિ કરો"
+
+msgid "Save name"
+msgstr "નામ સાચવો"
+
+msgid "Profile"
+msgstr "પ્રોફાઇલ"
+
+msgid "Ready"
+msgstr "તૈયાર"
+
+msgid "Locked"
+msgstr "લૉક"
+
+msgid "Retake quiz"
+msgstr "ક્વિઝ ફરી આપો"
+
+msgid "Good morning"
+msgstr "સુપ્રભાત"
+
+msgid "Good afternoon"
+msgstr "શુભ બપોર"
+
+msgid "Good evening"
+msgstr "શુભ સાંજ"
+
+msgid "Learn"
+msgstr "શીખો"
+
+msgid "Support"
+msgstr "સહાય"
+
+msgid "Admin"
+msgstr "એડમિન"
+
+msgid "Home"
+msgstr "હોમ"
+
+msgid "Modules"
+msgstr "મોડ્યુલ"
+
+msgid "More"
+msgstr "વધુ"
+
+msgid "Resume learning"
+msgstr "શીખવાનું ફરી શરૂ કરો"
+
+msgid "Resume"
+msgstr "ફરી શરૂ કરો"
+
+msgid "Continue where you left off"
+msgstr "જ્યાં અટક્યા હતા ત્યાંથી આગળ વધો"
+
+msgid "Recommended for you"
+msgstr "તમારા માટે સૂચવેલ"
+
+msgid "In progress"
+msgstr "ચાલુ"
+
+msgid "Completed"
+msgstr "પૂર્ણ"
+
+msgid "View all"
+msgstr "બધા જુઓ"
+
+msgid "Quick actions"
+msgstr "ઝડપી કાર્યો"
+
+msgid "Ask Vishakha AI"
+msgstr "વિશાખા એઆઈને પૂછો"
+
+msgid "Switch account"
+msgstr "એકાઉન્ટ બદલો"
+
+msgid "Your plants"
+msgstr "તમારા પ્લાન્ટ"
+
+msgid "Language"
+msgstr "ભાષા"
+
+msgid "Welcome back"
+msgstr "ફરી સ્વાગત છે"
+
+msgid "Create account"
+msgstr "એકાઉન્ટ બનાવો"
+
+msgid "Forgot password?"
+msgstr "પાસવર્ડ ભૂલી ગયા?"
+
+msgid "Send reset link"
+msgstr "રીસેટ લિંક મોકલો"
+
+msgid "Check your inbox"
+msgstr "તમારું ઇનબૉક્સ તપાસો"
+
+msgid "Back to sign in"
+msgstr "સાઇન ઇન પર પાછા જાઓ"
+
+msgid "I agree — unlock steps"
+msgstr "હું સંમત છું — પગલાં ખોલો"
+
+msgid "Mark complete & next"
+msgstr "પૂર્ણ કરો અને આગળ વધો"
+
+msgid "SOP steps"
+msgstr "એસઓપી પગલાં"
+
+msgid "Steps"
+msgstr "પગલાં"
+
+msgid "Videos"
+msgstr "વિડિઓ"
+
+msgid "Submit report"
+msgstr "રિપોર્ટ સબમિટ કરો"
+
+msgid "Submit quiz"
+msgstr "ક્વિઝ સબમિટ કરો"
+
+msgid "You passed!"
+msgstr "તમે પાસ થયા!"
+
+msgid "Review your answers"
+msgstr "તમારા જવાબો ફરી જુઓ"
+
+msgid "Search modules, SOPs, videos…"
+msgstr "મોડ્યુલ, એસઓપી, વિડિઓ શોધો…"
+
+msgid "Account menu"
+msgstr "એકાઉન્ટ મેનૂ"
+
+msgid "Action in progress"
+msgstr "કાર્યવાહી ચાલુ છે"
+
+msgid "Active"
+msgstr "સક્રિય"
+
+msgid "All certificates"
+msgstr "બધા પ્રમાણપત્રો"
+
+msgid "All departments"
+msgstr "બધા વિભાગો"
+
+msgid "All incidents"
+msgstr "બધી ઘટનાઓ"
+
+msgid "All steps complete!"
+msgstr "બધા પગલાં પૂર્ણ!"
+
+msgid ""
+"An account with this email already exists. Try signing in or resetting your "
+"password."
+msgstr "આ ઇમેઇલ સાથે એકાઉન્ટ પહેલેથી છે. સાઇન ઇન કરો અથવા પાસવર્ડ રીસેટ કરો."
+
+msgid "Approved by"
+msgstr "મંજૂર કરનાર"
+
+msgid "Ask a question or share a practical tip for this process…"
+msgstr "આ પ્રક્રિયા વિશે પ્રશ્ન પૂછો અથવા વ્યવહારુ ટિપ શેર કરો…"
+
+msgid ""
+"Ask questions about SOPs and procedures. Answers come only from approved "
+"plant content, with source references."
+msgstr ""
+"એસઓપી અને પ્રક્રિયાઓ વિશે પ્રશ્નો પૂછો. જવાબો ફક્ત મંજૂર પ્લાન્ટ "
+"સામગ્રીમાંથી, સ્રોત સંદર્ભ સાથે મળશે."
+
+msgid "At a glance"
+msgstr "એક નજરમાં"
+
+msgid "Awarded to"
+msgstr "આને એનાયત"
+
+msgid "Back to dashboard"
+msgstr "ડેશબોર્ડ પર પાછા જાઓ"
+
+msgid "Back to module"
+msgstr "મોડ્યુલ પર પાછા જાઓ"
+
+msgid "Be the first to ask a question."
+msgstr "પ્રશ્ન પૂછનાર પહેલા બનો."
+
+msgid "Best"
+msgstr "શ્રેષ્ઠ"
+
+msgid "Button not working? Copy this link into your browser:"
+msgstr "બટન કામ કરતું નથી? આ લિંક તમારા બ્રાઉઝરમાં કૉપિ કરો:"
+
+msgid "Cancel"
+msgstr "રદ કરો"
+
+msgid "Cause"
+msgstr "કારણ"
+
+msgid "Certificate"
+msgstr "પ્રમાણપત્ર"
+
+msgid "Certificate ID"
+msgstr "પ્રમાણપત્ર આઈડી"
+
+msgid "Certificate not found"
+msgstr "પ્રમાણપત્ર મળ્યું નથી"
+
+msgid "Check your email"
+msgstr "તમારો ઇમેઇલ તપાસો"
+
+msgid "Choose a new password"
+msgstr "નવો પાસવર્ડ પસંદ કરો"
+
+msgid "Clear filters"
+msgstr "ફિલ્ટર હટાવો"
+
+msgid "Closed"
+msgstr "બંધ"
+
+msgid "Closure notes"
+msgstr "બંધ કરવાની નોંધ"
+
+msgid "Collapse menu"
+msgstr "મેનૂ નાનું કરો"
+
+msgid "Coming soon"
+msgstr "જલ્દી આવી રહ્યું છે"
+
+msgid "Company"
+msgstr "કંપની"
+
+msgid "Company email"
+msgstr "કંપની ઇમેઇલ"
+
+msgid "Company email or Employee ID"
+msgstr "કંપની ઇમેઇલ અથવા કર્મચારી આઈડી"
+
+msgid "Complete a module and pass its quiz to earn your first one."
+msgstr "મોડ્યુલ પૂર્ણ કરો અને ક્વિઝ પાસ કરીને પહેલું પ્રમાણપત્ર મેળવો."
+
+msgid "Complete all %(n)s SOP steps to unlock this quiz."
+msgstr "આ ક્વિઝ ખોલવા બધા %(n)s એસઓપી પગલાં પૂર્ણ કરો."
+
+msgid "Complete all %(n)s steps to unlock"
+msgstr "ખોલવા માટે બધા %(n)s પગલાં પૂર્ણ કરો"
+
+msgid "Complete all SOP steps to unlock this quiz."
+msgstr "આ ક્વિઝ ખોલવા બધા એસઓપી પગલાં પૂર્ણ કરો."
+
+msgid "Confirm password"
+msgstr "પાસવર્ડની પુષ્ટિ કરો"
+
+msgid ""
+"Confirm the safety guidelines above to unlock the %(n)s-step procedure."
+msgstr ""
+"%(n)s પગલાંની પ્રક્રિયા ખોલવા ઉપરની સુરક્ષા માર્ગદર્શિકાની પુષ્ટિ કરો."
+
+msgid "Confirm your email to activate your Project Shiksha account:"
+msgstr "તમારું પ્રોજેક્ટ શિક્ષા એકાઉન્ટ સક્રિય કરવા ઇમેઇલની પુષ્ટિ કરો:"
+
+msgid "Confirm your email to activate your account."
+msgstr "એકાઉન્ટ સક્રિય કરવા તમારા ઇમેઇલની પુષ્ટિ કરો."
+
+msgid "Continue with Microsoft"
+msgstr "Microsoft સાથે આગળ વધો"
+
+msgid "Correct answer"
+msgstr "સાચો જવાબ"
+
+msgid "Create your account"
+msgstr "તમારું એકાઉન્ટ બનાવો"
+
+msgid "Dark / light mode"
+msgstr "ડાર્ક / લાઇટ મોડ"
+
+msgid "Departments"
+msgstr "વિભાગો"
+
+msgid "Departments & processes"
+msgstr "વિભાગો અને પ્રક્રિયાઓ"
+
+msgid "Document control"
+msgstr "દસ્તાવેજ નિયંત્રણ"
+
+msgid "Done"
+msgstr "પૂર્ણ"
+
+msgid "Earn certificates as you complete modules"
+msgstr "મોડ્યુલ પૂર્ણ કરતા પ્રમાણપત્રો મેળવો"
+
+msgid ""
+"Earned by completing all steps and passing the quiz. Download them as PDF."
+msgstr ""
+"બધા પગલાં પૂર્ણ કરીને અને ક્વિઝ પાસ કરીને મળે છે. પીડીએફ તરીકે ડાઉનલોડ કરો."
+
+msgid "Effective"
+msgstr "અમલમાં"
+
+msgid "Email"
+msgstr "ઇમેઇલ"
+
+msgid "Email verified. You can sign in now."
+msgstr "ઇમેઇલ ચકાસાયો. હવે તમે સાઇન ઇન કરી શકો છો."
+
+msgid "Employee ID"
+msgstr "કર્મચારી આઈડી"
+
+msgid "Employee ID (optional)"
+msgstr "કર્મચારી આઈડી (વૈકલ્પિક)"
+
+msgid "Enter your company email and we'll send you a link to reset it."
+msgstr "તમારો કંપની ઇમેઇલ દાખલ કરો, અમે રીસેટ કરવાની લિંક મોકલીશું."
+
+msgid "Environment / spillage"
+msgstr "પર્યાવરણ / ઢોળાવું"
+
+msgid "Environment, quality & discipline"
+msgstr "પર્યાવરણ, ગુણવત્તા અને શિસ્ત"
+
+msgid "Equipment / breakdown"
+msgstr "સાધન / બ્રેકડાઉન"
+
+msgid "Filter by name…"
+msgstr "નામથી ફિલ્ટર કરો…"
+
+msgid "Filter modules"
+msgstr "મોડ્યુલ ફિલ્ટર કરો"
+
+msgid "Finish a module's SOP steps to unlock its quiz."
+msgstr "ક્વિઝ ખોલવા મોડ્યુલના એસઓપી પગલાં પૂર્ણ કરો."
+
+msgid "First name"
+msgstr "પહેલું નામ"
+
+msgid "Forgot password"
+msgstr "પાસવર્ડ ભૂલી ગયા"
+
+msgid "Forgot your password?"
+msgstr "તમારો પાસવર્ડ ભૂલી ગયા?"
+
+msgid "Go to SOP steps"
+msgstr "એસઓપી પગલાં પર જાઓ"
+
+msgid "Great work."
+msgstr "સરસ કામ."
+
+msgid "Great work. The quiz is now unlocked."
+msgstr "સરસ કામ. હવે ક્વિઝ ખુલી ગઈ છે."
+
+msgid "Hi %(name)s,"
+msgstr "નમસ્તે %(name)s,"
+
+msgid ""
+"Hi %(name)s, we received a request to reset the password of your Project "
+"Shiksha account. Click the button below to choose a new one."
+msgstr ""
+"નમસ્તે %(name)s, તમારા પ્રોજેક્ટ શિક્ષા એકાઉન્ટનો પાસવર્ડ રીસેટ કરવાની "
+"વિનંતી મળી છે. નવો પાસવર્ડ પસંદ કરવા નીચેના બટન પર ક્લિક કરો."
+
+msgid "History"
+msgstr "ઇતિહાસ"
+
+msgid ""
+"I have read and understood the safety, environment, quality and discipline "
+"guidelines above, and I will follow them."
+msgstr ""
+"મેં ઉપરની સુરક્ષા, પર્યાવરણ, ગુણવત્તા અને શિસ્તની માર્ગદર્શિકા વાંચી અને "
+"સમજી છે, અને હું તેનું પાલન કરીશ."
+
+msgid ""
+"If that address belongs to a Shiksha account, a reset link is on its way. It"
+" works for 3 hours."
+msgstr ""
+"જો આ સરનામું શિક્ષા એકાઉન્ટનું હશે, તો રીસેટ લિંક મોકલાઈ રહી છે. તે 3 કલાક "
+"ચાલશે."
+
+msgid "Incident reported. Reference #%(id)s"
+msgstr "ઘટનાની જાણ થઈ. સંદર્ભ #%(id)s"
+
+msgid "Incident updated."
+msgstr "ઘટના અપડેટ થઈ."
+
+msgid ""
+"Incorrect email / employee ID or password — or your email isn't verified "
+"yet."
+msgstr ""
+"ઇમેઇલ / કર્મચારી આઈડી અથવા પાસવર્ડ ખોટો છે — અથવા તમારો ઇમેઇલ હજી ચકાસાયો "
+"નથી."
+
+msgid "Issued"
+msgstr "જારી"
+
+msgid "Last name"
+msgstr "અટક"
+
+msgid "Learn the right way. Every shift."
+msgstr "સાચી રીતે શીખો. દરેક શિફ્ટમાં."
+
+msgid "Learner"
+msgstr "શીખનાર"
+
+msgid "Learner view — you are seeing the app exactly as a learner does."
+msgstr "શીખનાર વ્યૂ — તમે એપ બરાબર શીખનારની જેમ જોઈ રહ્યા છો."
+
+msgid "Learning modules"
+msgstr "લર્નિંગ મોડ્યુલ"
+
+msgid "Link expired or already used"
+msgstr "લિંકની મુદત પૂરી થઈ અથવા વપરાઈ ગઈ છે"
+
+msgid "Listen to any step in your language"
+msgstr "કોઈપણ પગલું તમારી ભાષામાં સાંભળો"
+
+msgid "Main navigation"
+msgstr "મુખ્ય નેવિગેશન"
+
+msgid "Meanwhile, learn this process step-by-step in the SOP steps tab."
+msgstr "ત્યાં સુધી, એસઓપી પગલાં ટૅબમાં આ પ્રક્રિયા પગલે-પગલે શીખો."
+
+msgid "Microsoft sign-in failed. Please try again."
+msgstr "Microsoft સાઇન-ઇન નિષ્ફળ ગયું. કૃપા કરીને ફરી પ્રયત્ન કરો."
+
+msgid "Microsoft sign-in is not configured yet."
+msgstr "Microsoft સાઇન-ઇન હજી ગોઠવાયું નથી."
+
+msgid "Module"
+msgstr "મોડ્યુલ"
+
+msgid "Module complete!"
+msgstr "મોડ્યુલ પૂર્ણ!"
+
+msgid "Module details"
+msgstr "મોડ્યુલની વિગતો"
+
+msgid "Module sections"
+msgstr "મોડ્યુલ વિભાગો"
+
+msgid "Name"
+msgstr "નામ"
+
+msgid "Name wrong or misspelt?"
+msgstr "નામ ખોટું અથવા ભૂલવાળું છે?"
+
+msgid "New report"
+msgstr "નવો રિપોર્ટ"
+
+msgid "No access"
+msgstr "પ્રવેશ નથી"
+
+msgid "No approved SOPs found"
+msgstr "કોઈ મંજૂર એસઓપી મળ્યા નથી"
+
+msgid "No attempts left"
+msgstr "કોઈ પ્રયાસ બાકી નથી"
+
+msgid "No attempts left for this quiz."
+msgstr "આ ક્વિઝ માટે કોઈ પ્રયાસ બાકી નથી."
+
+msgid ""
+"No certificate matches this code. Check the link or QR code and try again."
+msgstr ""
+"આ કોડ સાથે કોઈ પ્રમાણપત્ર મળતું નથી. લિંક અથવા ક્યુઆર કોડ તપાસીને ફરી "
+"પ્રયત્ન કરો."
+
+msgid "No certificates yet"
+msgstr "હજી કોઈ પ્રમાણપત્ર નથી"
+
+msgid "No departments configured yet."
+msgstr "હજી કોઈ વિભાગ ગોઠવાયો નથી."
+
+msgid "No discussion yet"
+msgstr "હજી કોઈ ચર્ચા નથી"
+
+msgid "No incidents reported"
+msgstr "કોઈ ઘટનાની જાણ થઈ નથી"
+
+msgid "No module matches your filter"
+msgstr "તમારા ફિલ્ટર સાથે કોઈ મોડ્યુલ મેળ ખાતું નથી"
+
+msgid "No modules match these filters"
+msgstr "આ ફિલ્ટર સાથે કોઈ મોડ્યુલ મેળ ખાતું નથી"
+
+msgid ""
+"No plant has been set up yet, or you don't have permission for this page. "
+"Please contact the Shiksha admin."
+msgstr ""
+"હજી કોઈ પ્લાન્ટ ગોઠવાયો નથી, અથવા તમને આ પેજની પરવાનગી નથી. કૃપા કરીને "
+"શિક્ષા એડમિનનો સંપર્ક કરો."
+
+msgid "No problem–solution statements yet"
+msgstr "હજી કોઈ સમસ્યા–ઉકેલ નથી"
+
+msgid "No quizzes for this plant yet"
+msgstr "આ પ્લાન્ટ માટે હજી કોઈ ક્વિઝ નથી"
+
+msgid "Not found"
+msgstr "મળ્યું નથી"
+
+msgid "Not passed"
+msgstr "પાસ થયા નથી"
+
+msgid "Notes / closure remarks"
+msgstr "નોંધ / બંધ કરવાની ટિપ્પણી"
+
+msgid "Nothing after a few minutes? Check your spam folder, or try again."
+msgstr "થોડી મિનિટ પછી પણ કંઈ નથી? સ્પામ ફોલ્ડર તપાસો અથવા ફરી પ્રયત્ન કરો."
+
+msgid "Nothing found"
+msgstr "કંઈ મળ્યું નથી"
+
+msgid "Nothing to show yet"
+msgstr "હજી બતાવવા માટે કંઈ નથી"
+
+msgid "Only company accounts can sign in. Please use your %(d)s email."
+msgstr ""
+"ફક્ત કંપની એકાઉન્ટ સાઇન ઇન કરી શકે છે. કૃપા કરીને તમારો %(d)s ઇમેઇલ વાપરો."
+
+msgid "Open"
+msgstr "ખોલો"
+
+msgid "Open menu"
+msgstr "મેનૂ ખોલો"
+
+msgid "Open module"
+msgstr "મોડ્યુલ ખોલો"
+
+msgid "Other"
+msgstr "અન્ય"
+
+msgid "Owner"
+msgstr "માલિક"
+
+msgid "Page not found"
+msgstr "પેજ મળ્યું નથી"
+
+msgid "Pass"
+msgstr "પાસ"
+
+msgid "Passed"
+msgstr "પાસ થયા"
+
+msgid "Password"
+msgstr "પાસવર્ડ"
+
+msgid "Password updated."
+msgstr "પાસવર્ડ અપડેટ થયો."
+
+msgid "Phase 2"
+msgstr "તબક્કો 2"
+
+msgid "Phase 3"
+msgstr "તબક્કો 3"
+
+msgid "Photo gallery"
+msgstr "ફોટો ગૅલેરી"
+
+msgid "Pick up right where you left off."
+msgstr "જ્યાં અટક્યા હતા ત્યાંથી જ આગળ વધો."
+
+msgid "Plant"
+msgstr "પ્લાન્ટ"
+
+msgid "Please acknowledge the safety guidelines first."
+msgstr "કૃપા કરીને પહેલા સુરક્ષા માર્ગદર્શિકા સ્વીકારો."
+
+msgid "Please choose an answer."
+msgstr "કૃપા કરીને જવાબ પસંદ કરો."
+
+msgid "Please enter both first and last name."
+msgstr "કૃપા કરીને પહેલું નામ અને અટક બંને દાખલ કરો."
+
+msgid "Please use your company email (%(d)s)."
+msgstr "કૃપા કરીને તમારો કંપની ઇમેઇલ (%(d)s) વાપરો."
+
+msgid "Post"
+msgstr "પોસ્ટ કરો"
+
+msgid "Print"
+msgstr "પ્રિન્ટ"
+
+msgid "Problem"
+msgstr "સમસ્યા"
+
+msgid "Problems & solutions"
+msgstr "સમસ્યાઓ અને ઉકેલ"
+
+msgid "Process deviation"
+msgstr "પ્રક્રિયામાં વિચલન"
+
+msgid "Project Shiksha"
+msgstr "પ્રોજેક્ટ શિક્ષા"
+
+msgid "Project Shiksha — home"
+msgstr "પ્રોજેક્ટ શિક્ષા — હોમ"
+
+msgid "Quality"
+msgstr "ગુણવત્તા"
+
+msgid "Question"
+msgstr "પ્રશ્ન"
+
+msgid "Quick navigation"
+msgstr "ઝડપી નેવિગેશન"
+
+msgid "Quiz locked"
+msgstr "ક્વિઝ લૉક છે"
+
+msgid "Quiz locked — finish all steps"
+msgstr "ક્વિઝ લૉક છે — બધા પગલાં પૂર્ણ કરો"
+
+msgid "Quiz result"
+msgstr "ક્વિઝ પરિણામ"
+
+msgid "Read aloud"
+msgstr "મોટેથી વાંચો"
+
+msgid "Read aloud — click again to pause"
+msgstr "મોટેથી વાંચો — અટકાવવા ફરી ક્લિક કરો"
+
+msgid "Read question aloud"
+msgstr "પ્રશ્ન મોટેથી વાંચો"
+
+msgid "Read steps aloud automatically"
+msgstr "પગલાં આપમેળે મોટેથી વાંચો"
+
+msgid "Report an incident"
+msgstr "ઘટનાની જાણ કરો"
+
+msgid "Report safety, quality or equipment issues and track their status."
+msgstr "સુરક્ષા, ગુણવત્તા કે સાધનની સમસ્યાની જાણ કરો અને તેની સ્થિતિ જુઓ."
+
+msgid "Reported"
+msgstr "જાણ કરી"
+
+msgid "Reported by"
+msgstr "જાણ કરનાર"
+
+msgid "Request a new password reset link."
+msgstr "નવી પાસવર્ડ રીસેટ લિંકની વિનંતી કરો."
+
+msgid "Reset your Project Shiksha password"
+msgstr "તમારો પ્રોજેક્ટ શિક્ષા પાસવર્ડ રીસેટ કરો"
+
+msgid "Reset your Project Shiksha password."
+msgstr "તમારો પ્રોજેક્ટ શિક્ષા પાસવર્ડ રીસેટ કરો."
+
+msgid "Reset your password"
+msgstr "તમારો પાસવર્ડ રીસેટ કરો"
+
+msgid "Revision history"
+msgstr "સુધારાનો ઇતિહાસ"
+
+msgid "Role"
+msgstr "ભૂમિકા"
+
+msgid "SOP"
+msgstr "એસઓપી"
+
+msgid "SOP steps are locked"
+msgstr "એસઓપી પગલાં લૉક છે"
+
+msgid "SOP steps are not uploaded yet"
+msgstr "એસઓપી પગલાં હજી અપલોડ થયા નથી"
+
+msgid "Safety / near miss"
+msgstr "સુરક્ષા / નજીકની ચૂક"
+
+msgid "Safety guidelines acknowledged"
+msgstr "સુરક્ષા માર્ગદર્શિકા સ્વીકારી"
+
+msgid "Safety-first guided procedures"
+msgstr "સુરક્ષા પ્રથમ — માર્ગદર્શિત પ્રક્રિયાઓ"
+
+msgid "Save"
+msgstr "સાચવો"
+
+msgid "Save password"
+msgstr "પાસવર્ડ સાચવો"
+
+msgid "Search by title, number or tag"
+msgstr "શીર્ષક, નંબર કે ટૅગથી શોધો"
+
+msgid "Select plant"
+msgstr "પ્લાન્ટ પસંદ કરો"
+
+msgid "Send a new link"
+msgstr "નવી લિંક મોકલો"
+
+msgid ""
+"Shared shop-floor learning, suggestions and approved answers from across "
+"plants."
+msgstr "બધા પ્લાન્ટમાંથી શૉપ-ફ્લોરનું શીખવું, સૂચનો અને મંજૂર જવાબો."
+
+msgid "Show password"
+msgstr "પાસવર્ડ બતાવો"
+
+msgid "Sign in to continue your learning."
+msgstr "શીખવાનું ચાલુ રાખવા સાઇન ઇન કરો."
+
+msgid "Solution"
+msgstr "ઉકેલ"
+
+msgid "Spotted something unsafe or wrong? Report it — it helps everyone."
+msgstr "કંઈ અસુરક્ષિત કે ખોટું દેખાયું? તેની જાણ કરો — તે બધાને મદદ કરે છે."
+
+msgid "Status"
+msgstr "સ્થિતિ"
+
+msgid "Step %(i)s of %(t)s"
+msgstr "પગલું %(i)s / %(t)s"
+
+msgid "Stop"
+msgstr "રોકો"
+
+msgid "Stop reading"
+msgstr "વાંચવાનું રોકો"
+
+msgid "Switch plant"
+msgstr "પ્લાન્ટ બદલો"
+
+msgid "Take the quiz"
+msgstr "ક્વિઝ આપો"
+
+msgid ""
+"Thanks for creating your Project Shiksha account. Please confirm that this "
+"is your company email address to activate it."
+msgstr ""
+"પ્રોજેક્ટ શિક્ષા એકાઉન્ટ બનાવવા બદલ આભાર. સક્રિય કરવા કૃપા કરીને પુષ્ટિ કરો "
+"કે આ તમારો કંપની ઇમેઇલ છે."
+
+msgid "The link works for 3 hours. Can't see it? Check your spam folder."
+msgstr "લિંક 3 કલાક ચાલે છે. દેખાતી નથી? સ્પામ ફોલ્ડર તપાસો."
+
+msgid ""
+"The page you are looking for does not exist or you do not have access to it."
+msgstr "તમે શોધી રહ્યા છો તે પેજ અસ્તિત્વમાં નથી અથવા તમને તેની પરવાનગી નથી."
+
+msgid "The two passwords do not match."
+msgstr "બંને પાસવર્ડ મેળ ખાતા નથી."
+
+msgid "This Employee ID is already registered."
+msgstr "આ કર્મચારી આઈડી પહેલેથી નોંધાયેલ છે."
+
+msgid "This Microsoft account is not part of the company domain."
+msgstr "આ Microsoft એકાઉન્ટ કંપની ડોમેનનું નથી."
+
+msgid "This certificate was issued by Vishakha Group's Project Shiksha."
+msgstr "આ પ્રમાણપત્ર વિશાખા ગ્રુપના પ્રોજેક્ટ શિક્ષા દ્વારા જારી કરાયું છે."
+
+msgid "This is an automated message, please do not reply."
+msgstr "આ સ્વચાલિત સંદેશ છે, કૃપા કરીને જવાબ ન આપો."
+
+msgid "This is the name printed on your certificates."
+msgstr "આ નામ તમારા પ્રમાણપત્રો પર છપાય છે."
+
+msgid ""
+"This link is valid for 3 hours and can be used once. If you didn't ask for a"
+" reset, ignore this email — your password stays unchanged."
+msgstr ""
+"આ લિંક 3 કલાક માટે માન્ય છે અને એક જ વાર વાપરી શકાય છે. જો તમે રીસેટ "
+"માંગ્યું ન હોય, તો આ ઇમેઇલ અવગણો — તમારો પાસવર્ડ બદલાશે નહીં."
+
+msgid ""
+"This link is valid for 3 hours. If you did not create this account, ignore "
+"this email."
+msgstr ""
+"આ લિંક 3 કલાક માટે માન્ય છે. જો તમે આ એકાઉન્ટ બનાવ્યું ન હોય, તો આ ઇમેઇલ "
+"અવગણો."
+
+msgid ""
+"This link is valid for 3 hours. If you did not request this, ignore this "
+"email."
+msgstr ""
+"આ લિંક 3 કલાક માટે માન્ય છે. જો તમે આ માંગ્યું ન હોય, તો આ ઇમેઇલ અવગણો."
+
+msgid ""
+"This link is valid for 3 hours. If you didn't create this account, you can "
+"safely ignore this email."
+msgstr ""
+"આ લિંક 3 કલાક માટે માન્ય છે. જો તમે આ એકાઉન્ટ બનાવ્યું ન હોય, તો તમે આ ઇમેઇલ"
+" સુરક્ષિત રીતે અવગણી શકો છો."
+
+msgid "This quiz has no questions yet."
+msgstr "આ ક્વિઝમાં હજી કોઈ પ્રશ્ન નથી."
+
+msgid "Time is up."
+msgstr "સમય પૂરો થયો."
+
+msgid "Tip: press"
+msgstr "ટિપ: દબાવો"
+
+msgid "Tip: review the SOP steps, then try again."
+msgstr "ટિપ: એસઓપી પગલાં ફરી જુઓ, પછી ફરી પ્રયત્ન કરો."
+
+msgid "Title"
+msgstr "શીર્ષક"
+
+msgid "To pass"
+msgstr "પાસ થવા માટે"
+
+msgid "Toggle dark mode"
+msgstr "ડાર્ક મોડ બદલો"
+
+msgid "Try a different word, or browse all modules."
+msgstr "બીજો શબ્દ અજમાવો, અથવા બધા મોડ્યુલ જુઓ."
+
+msgid "Type at least 2 characters."
+msgstr "ઓછામાં ઓછા 2 અક્ષર લખો."
+
+msgid "Under review"
+msgstr "સમીક્ષા હેઠળ"
+
+msgid "Update it in Settings"
+msgstr "સેટિંગ્સમાં અપડેટ કરો"
+
+msgid "Update password"
+msgstr "પાસવર્ડ અપડેટ કરો"
+
+msgid "Update status"
+msgstr "સ્થિતિ અપડેટ કરો"
+
+msgid "Use at least 8 characters. Avoid common passwords."
+msgstr "ઓછામાં ઓછા 8 અક્ષર વાપરો. સામાન્ય પાસવર્ડ ટાળો."
+
+msgid "Use this link to choose a new Project Shiksha password:"
+msgstr "નવો પ્રોજેક્ટ શિક્ષા પાસવર્ડ પસંદ કરવા આ લિંક વાપરો:"
+
+msgid "Use your company email — we'll send a link to verify it."
+msgstr "તમારો કંપની ઇમેઇલ વાપરો — અમે ચકાસણી માટે લિંક મોકલીશું."
+
+msgid "Valid certificate"
+msgstr "માન્ય પ્રમાણપત્ર"
+
+msgid ""
+"Verification links work once and expire after 3 hours. Create your account "
+"again, or sign in if you already verified."
+msgstr ""
+"ચકાસણી લિંક એક જ વાર ચાલે છે અને 3 કલાકે સમાપ્ત થાય છે. એકાઉન્ટ ફરી બનાવો, "
+"અથવા ચકાસણી થઈ ગઈ હોય તો સાઇન ઇન કરો."
+
+msgid "Verify certificate"
+msgstr "પ્રમાણપત્ર ચકાસો"
+
+msgid "Verify my email"
+msgstr "મારો ઇમેઇલ ચકાસો"
+
+msgid "Verify your Project Shiksha account"
+msgstr "તમારું પ્રોજેક્ટ શિક્ષા એકાઉન્ટ ચકાસો"
+
+msgid "Verify your email"
+msgstr "તમારો ઇમેઇલ ચકાસો"
+
+msgid "Version"
+msgstr "વર્ઝન"
+
+msgid "Video lessons are coming soon"
+msgstr "વિડિઓ પાઠ જલ્દી આવી રહ્યા છે"
+
+msgid "View"
+msgstr "જુઓ"
+
+msgid "View attachment"
+msgstr "જોડાણ જુઓ"
+
+msgid "Vishakha AI — Knowledge Assistant"
+msgstr "વિશાખા એઆઈ — જ્ઞાન સહાયક"
+
+msgid ""
+"We couldn't send the email right now. Please try again in a few minutes."
+msgstr ""
+"હમણાં ઇમેઇલ મોકલી શકાયો નથી. કૃપા કરીને થોડી મિનિટ પછી ફરી પ્રયત્ન કરો."
+
+msgid ""
+"We couldn't send the verification email right now. Please try again in a few"
+" minutes or contact the Shiksha admin."
+msgstr ""
+"હમણાં ચકાસણી ઇમેઇલ મોકલી શકાયો નથી. કૃપા કરીને થોડી મિનિટ પછી ફરી પ્રયત્ન "
+"કરો અથવા શિક્ષા એડમિનનો સંપર્ક કરો."
+
+msgid ""
+"We sent a verification link to <strong>%(email)s</strong>. Open it to "
+"activate your account."
+msgstr ""
+"અમે <strong>%(email)s</strong> પર ચકાસણી લિંક મોકલી છે. એકાઉન્ટ સક્રિય કરવા "
+"તે ખોલો."
+
+msgid "Welcome, %(name)s!"
+msgstr "સ્વાગત છે, %(name)s!"
+
+msgid "When"
+msgstr "ક્યારે"
+
+msgid "You're all caught up. Great work!"
+msgstr "તમે બધું પૂર્ણ કરી લીધું છે. સરસ કામ!"
+
+msgid "Your account"
+msgstr "તમારું એકાઉન્ટ"
+
+msgid "Your answer"
+msgstr "તમારો જવાબ"
+
+msgid "Your attempts"
+msgstr "તમારા પ્રયાસો"
+
+msgid "Your certificate is ready to download."
+msgstr "તમારું પ્રમાણપત્ર ડાઉનલોડ કરવા તૈયાર છે."
+
+msgid "Your certificate is ready."
+msgstr "તમારું પ્રમાણપત્ર તૈયાર છે."
+
+msgid "Your name was updated. It will appear on your certificates."
+msgstr "તમારું નામ અપડેટ થયું. તે તમારા પ્રમાણપત્રો પર દેખાશે."
+
+msgid "Your profile and account security."
+msgstr "તમારી પ્રોફાઇલ અને એકાઉન્ટ સુરક્ષા."
+
+msgid "active"
+msgstr "સક્રિય"
+
+msgid "ago"
+msgstr "પહેલાં"
+
+msgid "approved, current versions only"
+msgstr "ફક્ત મંજૂર, વર્તમાન વર્ઝન"
+
+msgid "company email"
+msgstr "કંપની ઇમેઇલ"
+
+msgid "completed"
+msgstr "પૂર્ણ"
+
+msgid "correct"
+msgstr "સાચા"
+
+msgid "date & time"
+msgstr "તારીખ અને સમય"
+
+msgid "description"
+msgstr "વર્ણન"
+
+msgid "modules"
+msgstr "મોડ્યુલ"
+
+msgid "or sign in with password"
+msgstr "અથવા પાસવર્ડથી સાઇન ઇન કરો"
+
+msgid "pass mark"
+msgstr "પાસ થવાના ગુણ"
+
+msgid "photo / document"
+msgstr "ફોટો / દસ્તાવેજ"
+
+msgid "questions"
+msgstr "પ્રશ્નો"
+
+msgid "title"
+msgstr "શીર્ષક"
+
+msgid "to choose, then"
+msgstr "પસંદ કરવા, પછી"
+
+msgid "viewing as %(d)s"
+msgstr "%(d)s તરીકે જોઈ રહ્યા છો"
+
+msgid "— your certificates use the name in your profile."
+msgstr "— તમારા પ્રમાણપત્રો પ્રોફાઇલમાંનું નામ વાપરે છે."
+
+msgid "Link copied to clipboard."
+msgstr "લિંક ક્લિપબોર્ડ પર કૉપિ થઈ."
+
+msgid "Read-aloud is not supported on this browser."
+msgstr "આ બ્રાઉઝરમાં મોટેથી વાંચવાની સુવિધા ઉપલબ્ધ નથી."
+
+msgid ""
+"No voice for this language is installed on this device, so the default voice"
+" is used."
+msgstr "આ ડિવાઇસમાં આ ભાષાનો અવાજ ઇન્સ્ટૉલ નથી, તેથી સામાન્ય અવાજ વપરાય છે."
+
+msgid "Couldn't reach the server. Please try again."
+msgstr "સર્વર સુધી પહોંચી શકાયું નથી. કૃપા કરીને ફરી પ્રયત્ન કરો."
+
+msgid "Not now"
+msgstr "અત્યારે નહીં"
+
+msgid "No results for"
+msgstr "કોઈ પરિણામ નથી:"
+
+msgid "See all results for"
+msgstr "બધા પરિણામ જુઓ:"
+
+msgid "Translation not available in this language — showing English"
+msgstr "આ ભાષામાં અનુવાદ ઉપલબ્ધ નથી — અંગ્રેજી બતાવ્યું છે"
+
+msgid "Shown in English"
+msgstr "અંગ્રેજીમાં બતાવ્યું છે"
+
+msgid "Production SOPs"
+msgstr "પ્રોડક્શન એસઓપી"
+
+msgid "Department SOPs"
+msgstr "વિભાગીય એસઓપી"
+
+msgid "Diagnostic"
+msgstr "ડાયગ્નોસ્ટિક"
+
+msgid "Production"
+msgstr "પ્રોડક્શન"
+
+msgid "Maintenance"
+msgstr "મેન્ટેનન્સ"
+
+msgid "Hello"
+msgstr "નમસ્તે"
+
+msgid "Soon"
+msgstr "જલ્દી"
+
+msgid "Production Operator"
+msgstr "પ્રોડક્શન ઑપરેટર"
+
+msgid "QC Inspector"
+msgstr "ક્યુસી ઇન્સ્પેક્ટર"
+
+msgid "Production HOD"
+msgstr "પ્રોડક્શન એચઓડી"
+
+msgid "Shiksha Administrator"
+msgstr "શિક્ષા એડમિનિસ્ટ્રેટર"
+
+msgid "TBD"
+msgstr "નક્કી થવાનું બાકી"
+
+msgid "%(m)s — SOP Quiz"
+msgstr "%(m)s — એસઓપી ક્વિઝ"
+
+msgid ""
+"Plant SOPs, step-by-step training, quizzes and certificates — in English and"
+" हिन्दी."
+msgstr ""
+"પ્લાન્ટ એસઓપી, પગલે-પગલે તાલીમ, ક્વિઝ અને પ્રમાણપત્રો — English, हिन्दी અને "
+"ગુજરાતીમાં."
+
+msgid "Rows view"
+msgstr "હરોળ વ્યૂ"
+
+msgid "Grid view"
+msgstr "ગ્રિડ વ્યૂ"
+
+msgid "Search modules…"
+msgstr "મોડ્યુલ શોધો…"
+
+msgid "Pages"
+msgstr "પેજ"
+
+msgid "Page %(a)s of %(b)s"
+msgstr "પેજ %(a)s / %(b)s"
+
+msgid "My account"
+msgstr "મારું એકાઉન્ટ"
+
+msgid "Profile photo"
+msgstr "પ્રોફાઇલ ફોટો"
+
+msgid "Choose photo"
+msgstr "ફોટો પસંદ કરો"
+
+msgid "Save photo"
+msgstr "ફોટો સાચવો"
+
+msgid "Remove photo"
+msgstr "ફોટો દૂર કરો"
+
+msgid "Personal details"
+msgstr "અંગત વિગતો"
+
+msgid "Account details"
+msgstr "એકાઉન્ટની વિગતો"
+
+msgid "Member since"
+msgstr "સભ્ય ક્યારથી"
+
+msgid "Last sign-in"
+msgstr "છેલ્લું સાઇન-ઇન"
+
+msgid "Plants"
+msgstr "પ્લાન્ટ"
+
+msgid "Manage your photo, name and password."
+msgstr "તમારો ફોટો, નામ અને પાસવર્ડ મેનેજ કરો."
+
+msgid "JPG, PNG or WEBP, up to 5 MB. It is cropped to a square."
+msgstr "JPG, PNG કે WEBP, 5 MB સુધી. તે ચોરસ કાપવામાં આવે છે."
+
+msgid "Profile photo updated."
+msgstr "પ્રોફાઇલ ફોટો અપડેટ થયો."
+
+msgid "Profile photo removed."
+msgstr "પ્રોફાઇલ ફોટો દૂર થયો."
+
+msgid "Please choose a photo first."
+msgstr "કૃપા કરીને પહેલા ફોટો પસંદ કરો."
+
+msgid "The photo is too large. Please use an image under 5 MB."
+msgstr "ફોટો ખૂબ મોટો છે. કૃપા કરીને 5 MB થી નાની છબી વાપરો."
+
+msgid "Please upload a JPG, PNG or WEBP image."
+msgstr "કૃપા કરીને JPG, PNG કે WEBP છબી અપલોડ કરો."
+
+msgid "Update it in My account"
+msgstr "મારા એકાઉન્ટમાં અપડેટ કરો"
+
+msgid "Please write something first."
+msgstr "કૃપા કરીને પહેલા કંઈક લખો."
+
+msgid "That post is no longer available."
+msgstr "તે પોસ્ટ હવે ઉપલબ્ધ નથી."
+
+msgid "Reply posted."
+msgstr "જવાબ પોસ્ટ થયો."
+
+msgid "Posted."
+msgstr "પોસ્ટ થયું."
+
+msgid "Post deleted."
+msgstr "પોસ્ટ ડિલીટ થઈ."
+
+msgid ""
+"A shared space for every plant and module — ask questions, share tips and "
+"learn from each other."
+msgstr ""
+"દરેક પ્લાન્ટ અને મોડ્યુલ માટે સહિયારી જગ્યા — પ્રશ્નો પૂછો, ટિપ્સ શેર કરો "
+"અને એકબીજા પાસેથી શીખો."
+
+msgid "Share a question, tip or experience with everyone…"
+msgstr "બધા સાથે પ્રશ્ન, ટિપ કે અનુભવ શેર કરો…"
+
+msgid "Related module (optional)"
+msgstr "સંબંધિત મોડ્યુલ (વૈકલ્પિક)"
+
+msgid "No specific module"
+msgstr "કોઈ ચોક્કસ મોડ્યુલ નહીં"
+
+msgid "All posts"
+msgstr "બધી પોસ્ટ"
+
+msgid "My posts"
+msgstr "મારી પોસ્ટ"
+
+msgid "Open global discussion"
+msgstr "સર્વસામાન્ય ચર્ચા ખોલો"
+
+msgid "Delete this post and its replies?"
+msgstr "આ પોસ્ટ અને તેના જવાબો ડિલીટ કરવા છે?"
+
+msgid "Pinned"
+msgstr "પિન કરેલ"
+
+msgid "Hidden by moderator"
+msgstr "મૉડરેટરે છુપાવ્યું"
+
+msgid "Options"
+msgstr "વિકલ્પો"
+
+msgid "Unpin"
+msgstr "પિન હટાવો"
+
+msgid "Pin to top"
+msgstr "ટોચ પર પિન કરો"
+
+msgid "Unhide"
+msgstr "ફરી બતાવો"
+
+msgid "Hide"
+msgstr "છુપાવો"
+
+msgid "Delete"
+msgstr "ડિલીટ"
+
+msgid "Write a reply…"
+msgstr "જવાબ લખો…"
+
+msgid "Send reply"
+msgstr "જવાબ મોકલો"
+
+msgid "Tap to enlarge"
+msgstr "મોટું કરવા ટૅપ કરો"
+
+msgid "just now"
+msgstr "હમણાં જ"
+
+msgid "SOP progress"
+msgstr "એસઓપી પ્રગતિ"
+
+msgid "Jump to step"
+msgstr "પગલા પર જાઓ"
+
+msgid "Step number"
+msgstr "પગલા નંબર"
+
+msgid "Nice work! {n} to go."
+msgstr "સરસ કામ! હજી {n} બાકી."
+
+msgid "Almost there — just {n} left!"
+msgstr "લગભગ પહોંચી ગયા — ફક્ત {n} બાકી!"
+
+msgid "Signing in as"
+msgstr "આ તરીકે સાઇન ઇન"
+
+msgid "Not you?"
+msgstr "તમે નથી?"
+
+msgid "Your learning journey"
+msgstr "તમારી શીખવાની સફર"
+
+msgid "Read the safety rules"
+msgstr "સુરક્ષા નિયમો વાંચો"
+
+msgid "You confirm them once before starting"
+msgstr "શરૂ કરતા પહેલાં એક વાર પુષ્ટિ કરો"
+
+msgid "Complete the SOP steps"
+msgstr "એસઓપી પગલાં પૂર્ણ કરો"
+
+msgid "%(d)s of %(t)s steps done"
+msgstr "%(d)s / %(t)s પગલાં પૂર્ણ"
+
+msgid "Pass the quiz"
+msgstr "ક્વિઝ પાસ કરો"
+
+msgid "Opens after all steps are done"
+msgstr "બધા પગલાં પૂર્ણ થયા પછી ખુલશે"
+
+msgid "Pass mark %(n)s%%"
+msgstr "પાસ થવાના ગુણ %(n)s%%"
+
+msgid "Get your certificate"
+msgstr "તમારું પ્રમાણપત્ર મેળવો"
+
+msgid "Issued automatically when you finish"
+msgstr "પૂર્ણ કરતા જ આપમેળે મળશે"
+
+msgid "Review this module"
+msgstr "આ મોડ્યુલ ફરી જુઓ"
+
+msgid "Continue learning"
+msgstr "શીખવાનું ચાલુ રાખો"
+
+msgid "Start learning"
+msgstr "શીખવાનું શરૂ કરો"
+
+msgid "modules done"
+msgstr "મોડ્યુલ પૂર્ણ"
+
+msgid "Change profile photo"
+msgstr "પ્રોફાઇલ ફોટો બદલો"
+
+msgid "Add or change your picture"
+msgstr "તમારો ફોટો ઉમેરો અથવા બદલો"
+
+msgid "Your name and account information"
+msgstr "તમારું નામ અને એકાઉન્ટની માહિતી"
+
+msgid "Keep your account safe"
+msgstr "તમારું એકાઉન્ટ સુરક્ષિત રાખો"
+
+msgid "View and download"
+msgstr "જુઓ અને ડાઉનલોડ કરો"
+
+msgid "Choose a strong password you have not used elsewhere."
+msgstr "એવો મજબૂત પાસવર્ડ પસંદ કરો જે તમે બીજે વાપર્યો ન હોય."
+
+msgid "To change your email, role or plant access, please contact your admin."
+msgstr ""
+"ઇમેઇલ, ભૂમિકા કે પ્લાન્ટ પ્રવેશ બદલવા કૃપા કરીને તમારા એડમિનનો સંપર્ક કરો."
+
+msgid "Your progress at a glance"
+msgstr "તમારી પ્રગતિ એક નજરમાં"
+
+msgid "Your modules"
+msgstr "તમારા મોડ્યુલ"
+
+msgid "How many modules you have finished"
+msgstr "તમે કેટલા મોડ્યુલ પૂર્ણ કર્યા"
+
+msgid "done"
+msgstr "પૂર્ણ"
+
+msgid "Progress by department"
+msgstr "વિભાગ મુજબ પ્રગતિ"
+
+msgid "Steps you have completed"
+msgstr "તમે પૂર્ણ કરેલા પગલાં"
+
+msgid "Start a module to see your progress here."
+msgstr "તમારી પ્રગતિ અહીં જોવા માટે મોડ્યુલ શરૂ કરો."
+
+msgid "Your quiz scores"
+msgstr "તમારા ક્વિઝ સ્કોર"
+
+msgid "Your latest quiz results"
+msgstr "તમારા તાજેતરના ક્વિઝ પરિણામ"
+
+msgid "Take a quiz to see your scores here."
+msgstr "તમારા સ્કોર અહીં જોવા માટે ક્વિઝ આપો."
+
+msgid "Quiz scores"
+msgstr "ક્વિઝ સ્કોર"
+
+msgid "Not started"
+msgstr "શરૂ કર્યું નથી"
+
+msgid "Type"
+msgstr "પ્રકાર"
+
+msgid "Your best score"
+msgstr "તમારો શ્રેષ્ઠ સ્કોર"
+
+msgid "A retake never lowers it."
+msgstr "ફરી આપવાથી તે ક્યારેય ઘટતો નથી."
+
+msgid "Go back"
+msgstr "પાછા જાઓ"
+
+msgid "Something went wrong"
+msgstr "કંઈક ખોટું થયું"
+
+msgid "Something went wrong on our side"
+msgstr "અમારી બાજુથી કંઈક ખોટું થયું"
+
+msgid ""
+"You do not have permission to open this page. If you think this is a "
+"mistake, please contact the Shiksha admin."
+msgstr ""
+"તમને આ પેજ ખોલવાની પરવાનગી નથી. જો તમને લાગે કે આ ભૂલ છે, તો કૃપા કરીને "
+"શિક્ષા એડમિનનો સંપર્ક કરો."
+
+msgid "We could not understand that request. Please go back and try again."
+msgstr "અમે તે વિનંતી સમજી શક્યા નથી. કૃપા કરીને પાછા જઈને ફરી પ્રયત્ન કરો."
+
+msgid ""
+"Your work is safe. Please try again in a moment — if it keeps happening, "
+"tell the Shiksha admin."
+msgstr ""
+"તમારું કામ સુરક્ષિત છે. કૃપા કરીને થોડીવારમાં ફરી પ્રયત્ન કરો — જો વારંવાર "
+"થાય, તો શિક્ષા એડમિનને જણાવો."
+
+msgid "Session expired"
+msgstr "સત્ર પૂરું થયું"
+
+msgid "Your page expired"
+msgstr "તમારું પેજ સમાપ્ત થઈ ગયું"
+
+msgid ""
+"For your safety this page timed out. Please go back, refresh it, and try "
+"again."
+msgstr ""
+"તમારી સુરક્ષા માટે આ પેજ સમાપ્ત થઈ ગયું. કૃપા કરીને પાછા જાઓ, પેજ રિફ્રેશ "
+"કરો અને ફરી પ્રયત્ન કરો."
+
+msgid "Old password"
+msgstr "જૂનો પાસવર્ડ"
+
+msgid "New password"
+msgstr "નવો પાસવર્ડ"
+
+msgid "New password confirmation"
+msgstr "નવા પાસવર્ડની પુષ્ટિ"
+
+msgid ""
+"Gujarati voice not found on this device — reading with the Hindi voice "
+"instead."
+msgstr ""
+"આ ડિવાઇસમાં ગુજરાતી અવાજ મળ્યો નથી — તેથી હિન્દી અવાજમાં વાંચી રહ્યા છીએ."
+
+msgid ""
+"No voice found for this language. Please install a voice in your device's "
+"speech settings."
+msgstr ""
+"આ ભાષા માટે અવાજ મળ્યો નથી. કૃપા કરીને તમારા ડિવાઇસના સ્પીચ સેટિંગમાં અવાજ "
+"ઇન્સ્ટૉલ કરો."
+
+msgid "Couldn't read this aloud on this device."
+msgstr "આ ડિવાઇસ પર આ મોટેથી વાંચી શકાયું નથી."
+
+msgid "Description"
+msgstr "વર્ણન"
+
+msgid "Date & time"
+msgstr "તારીખ અને સમય"
+
+msgid "Photo / document"
+msgstr "ફોટો / દસ્તાવેજ"
+
+msgid "Go to step number"
+msgstr "પગલા નંબર પર જાઓ"
+
+msgid "Knowledge Base"
+msgstr "જ્ઞાન ભંડાર"
+
+msgid "All SOPs, manuals, documents and videos in one place."
+msgstr "બધા એસઓપી, મેન્યુઅલ, દસ્તાવેજ અને વિડિઓ એક જ જગ્યાએ."
+
+msgid "Search documents, SOPs, videos…"
+msgstr "દસ્તાવેજ, એસઓપી, વિડિઓ શોધો…"
+
+msgid "SOP documents"
+msgstr "એસઓપી દસ્તાવેજો"
+
+msgid "Training videos"
+msgstr "તાલીમ વિડિઓ"
+
+msgid "Everything"
+msgstr "બધું"
+
+msgid "PDFs"
+msgstr "પીડીએફ"
+
+msgid "Documents"
+msgstr "દસ્તાવેજો"
+
+msgid "Spreadsheets"
+msgstr "સ્પ્રેડશીટ"
+
+msgid "Links"
+msgstr "લિંક"
+
+msgid "%(n)s found"
+msgstr "%(n)s મળ્યા"
+
+msgid "Try a different word or clear the filters."
+msgstr "બીજો શબ્દ અજમાવો અથવા ફિલ્ટર હટાવો."
+
+msgid "Show everything"
+msgstr "બધું બતાવો"
+
+msgid "Nothing here yet"
+msgstr "અહીં હજી કંઈ નથી"
+
+msgid "Documents added by your admin will show up here."
+msgstr "એડમિને ઉમેરેલા દસ્તાવેજો અહીં દેખાશે."
+
+msgid "Open link"
+msgstr "લિંક ખોલો"
+
+msgid "Watch video"
+msgstr "વિડિઓ જુઓ"
+
+msgid "This file opens in its own app"
+msgstr "આ ફાઇલ તેની પોતાની એપમાં ખુલે છે"
+
+msgid "Download it to read it on your device."
+msgstr "તમારા ડિવાઇસ પર વાંચવા માટે તેને ડાઉનલોડ કરો."
+
+msgid "More in this category"
+msgstr "આ શ્રેણીમાં વધુ"
+
+msgid "PPE required"
+msgstr "જરૂરી સુરક્ષા સાધનો (પીપીઈ)"
+
+msgid "Hazards — high-risk areas"
+msgstr "જોખમો — ઊંચા જોખમવાળા વિસ્તારો"
+
+msgid "Safe operating practices"
+msgstr "સુરક્ષિત સંચાલન પદ્ધતિઓ"
+
+msgid "Do's"
+msgstr "શું કરવું"
+
+msgid "Don'ts"
+msgstr "શું ન કરવું"
+
+msgid "What would you like to do?"
+msgstr "તમે શું કરવા માંગો છો?"
+
+msgid "Open training modules"
+msgstr "તાલીમ મોડ્યુલ ખોલો"
+
+msgid "Read work instructions"
+msgstr "કાર્ય સૂચનાઓ વાંચો"
+
+msgid "Test what you learned"
+msgstr "જે શીખ્યા તેની કસોટી આપો"
+
+msgid "Download your certificates"
+msgstr "તમારા પ્રમાણપત્રો ડાઉનલોડ કરો"
+
+msgid "Tell us about a safety issue"
+msgstr "સુરક્ષા સંબંધી સમસ્યા જણાવો"
+
+msgid "Get quick answers"
+msgstr "ઝડપી જવાબ મેળવો"
+
+msgid "Text size"
+msgstr "અક્ષરનું કદ"
+
+msgid "Change text size"
+msgstr "અક્ષરનું કદ બદલો"
+
+msgid "Go"
+msgstr "જાઓ"
+
+msgid "You are here"
+msgstr "તમે અહીં છો"
+
+msgid "%(d)s of %(t)s done · %(p)s%%"
+msgstr "%(d)s / %(t)s પૂર્ણ · %(p)s%%"
+
+msgid "jan"
+msgstr "જાન્યુ"
+
+msgid "feb"
+msgstr "ફેબ્રુ"
+
+msgid "mar"
+msgstr "માર્ચ"
+
+msgid "apr"
+msgstr "એપ્રિલ"
+
+msgid "may"
+msgstr "મે"
+
+msgid "jun"
+msgstr "જૂન"
+
+msgid "jul"
+msgstr "જુલાઈ"
+
+msgid "aug"
+msgstr "ઑગસ્ટ"
+
+msgid "sep"
+msgstr "સપ્ટે"
+
+msgid "oct"
+msgstr "ઑક્ટો"
+
+msgid "nov"
+msgstr "નવે"
+
+msgid "dec"
+msgstr "ડિસે"
+
+msgid "%(n)s result for “%(q)s” in %(current_plant)s"
+msgid_plural "%(n)s results for “%(q)s” in %(current_plant)s"
+msgstr[0] "%(current_plant)s માં “%(q)s” માટે %(n)s પરિણામ"
+msgstr[1] "%(current_plant)s માં “%(q)s” માટે %(n)s પરિણામ"
+
+msgid "You have %(n)s module waiting for you."
+msgid_plural "You have %(n)s modules waiting for you."
+msgstr[0] "તમારા માટે %(n)s મોડ્યુલ રાહ જોઈ રહ્યું છે."
+msgstr[1] "તમારા માટે %(n)s મોડ્યુલ રાહ જોઈ રહ્યા છે."
+
+msgid "Reply (%(n)s)"
+msgid_plural "Reply (%(n)s)"
+msgstr[0] "જવાબ (%(n)s)"
+msgstr[1] "જવાબ (%(n)s)"

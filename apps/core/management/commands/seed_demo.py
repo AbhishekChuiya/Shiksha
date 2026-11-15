@@ -6,6 +6,8 @@ Only the texts visible in the current Shiksha screenshots are real; every
 other step is marked [DEMO] and must be replaced with approved SOP content
 (use `import_steps` / `import_quiz`).
 """
+import io
+
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -26,6 +28,8 @@ Engineered using 6063 and 6005 aluminium alloys, these frames offer excellent du
 VMPL's integrated manufacturing capabilities enable consistent control over critical parameters such as dimensional accuracy, surface finish, mechanical strength, corrosion resistance, and profile quality."""
 
 # (category, department, summary, step count)
+DEPARTMENTS = ["Production", "QC", "Maintenance"]
+
 VMPL_MODULES = [
     ("Melt & Cast", "Production", "Melting and casting is where production starts. Ingots and aluminium scrap used as raw material are melted and cast into billets.", 31),
     ("Homogenizing", "Production", "This SOP covers the homogenizing and cooling process for aluminium casting logs prior to extrusion.", 19),
@@ -37,6 +41,9 @@ VMPL_MODULES = [
     ("Incoming Inspection", "QC", "Inspection of incoming raw material before it is released to production.", 8),
     ("Customer Complaint", "QC", "Handling and closing customer complaints.", 6),
     ("Material Handling", "Production", "Safe handling and movement of material inside the plant.", 8),
+    ("Preventive Maintenance", "Maintenance", "Planned checks and servicing that keep machines running safely.", 10),
+    ("Hydraulic System Maintenance", "Maintenance", "Inspecting, topping up and troubleshooting hydraulic systems.", 9),
+    ("Electrical Panel Safety", "Maintenance", "Safe working around electrical panels, with lock-out / tag-out.", 8),
 ]
 
 ENV_GUIDELINES = [
@@ -84,7 +91,7 @@ class Command(BaseCommand):
         vmpl.save()
 
         depts = {n: Department.objects.get_or_create(plant=vmpl, name=n, defaults={"order": i})[0]
-                 for i, n in enumerate(["Production", "QC"])}
+                 for i, n in enumerate(DEPARTMENTS)}
 
         for i, t in enumerate(ENV_GUIDELINES):
             SafetyGuideline.objects.get_or_create(plant=vmpl, module=None, section="environment",
@@ -95,7 +102,7 @@ class Command(BaseCommand):
 
         for i, (sec, t, hi) in enumerate(COLOURED_GUIDELINES):
             SafetyGuideline.objects.get_or_create(plant=vmpl, module=None, section=sec, text=t, defaults={"order": i, "text_hi": hi})
-        call_command("seed_knowledge", stdout=open("/dev/null", "w"))
+        call_command("seed_knowledge", stdout=io.StringIO())
 
         for order, (cat, dept, summary, n_steps) in enumerate(VMPL_MODULES):
             slug = "vmpl_" + cat.lower().replace(" — ", "_").replace(" & ", "_").replace(" ", "_")
@@ -103,7 +110,7 @@ class Command(BaseCommand):
             m, created = Module.objects.update_or_create(slug=slug, defaults=dict(
                 plant=vmpl, department=depts[dept], process=process, category=cat,
                 title=cat, summary=summary, overview=summary, est_minutes=max(10, n_steps),
-                library=Module.Library.PRODUCTION, order=order))
+                library=Module.Library.PRODUCTION if dept == "Production" else Module.Library.DEPARTMENT, order=order))
             if created or not m.steps.exists():
                 for k in range(1, n_steps + 1):
                     SOPStep.objects.create(module=m, number=k,

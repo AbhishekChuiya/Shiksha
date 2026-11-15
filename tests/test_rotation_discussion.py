@@ -1,3 +1,4 @@
+import io
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
@@ -25,7 +26,7 @@ def make_quiz(module, n_questions=8, n_choices=4, **quiz_kw):
 class RotationTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         cls.user = User.objects.get(employee_id="test_user")
         cls.module = Module.objects.get(slug="vmpl_melt_cast")
 
@@ -114,7 +115,7 @@ class RotationTests(TestCase):
 class DiscussionTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         cls.admin = User.objects.get(employee_id="test_admin")
         cls.u1 = User.objects.get(employee_id="test_user")
         cls.u2 = User.objects.get(employee_id="test_user2")

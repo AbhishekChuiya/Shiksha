@@ -16,6 +16,7 @@ class SOPDocument(models.Model):
     code = models.CharField(max_length=40, help_text="Document number, e.g. VMPL/PRD/SOP/01")
     title = models.CharField(max_length=200)
     title_hi = models.CharField("title (Hindi)", max_length=200, blank=True)
+    title_gu = models.CharField("title (Gujarati)", max_length=200, blank=True)
     category = models.CharField(max_length=80, blank=True)
     tags = models.CharField(max_length=200, blank=True, help_text="Comma separated")
     owner = models.CharField(max_length=120, blank=True, help_text="Content owner")

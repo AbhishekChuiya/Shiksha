@@ -27,16 +27,21 @@ class Module(models.Model):
     category = models.CharField(max_length=80, blank=True,
                                 help_text="Filter chip, e.g. Melt & Cast, Extrusion")
     category_hi = models.CharField("category (Hindi)", max_length=80, blank=True)
+    category_gu = models.CharField("category (Gujarati)", max_length=80, blank=True)
     library = models.CharField(max_length=20, choices=Library.choices,
                                default=Library.PRODUCTION)
     title = models.CharField(max_length=160)
     title_hi = models.CharField("title (Hindi)", max_length=160, blank=True)
+    title_gu = models.CharField("title (Gujarati)", max_length=160, blank=True)
     summary = models.CharField(max_length=300, blank=True)
     summary_hi = models.CharField("summary (Hindi)", max_length=300, blank=True)
+    summary_gu = models.CharField("summary (Gujarati)", max_length=300, blank=True)
     overview = models.TextField(blank=True)
     overview_hi = models.TextField("overview (Hindi)", blank=True)
+    overview_gu = models.TextField("overview (Gujarati)", blank=True)
     objectives = models.TextField(blank=True, help_text="One learning objective per line")
     objectives_hi = models.TextField("objectives (Hindi)", blank=True)
+    objectives_gu = models.TextField("objectives (Gujarati)", blank=True)
     cover = models.ImageField(upload_to="modules/covers/", blank=True)
     est_minutes = models.PositiveSmallIntegerField("estimated time (min)", default=20)
     instructor = models.CharField(max_length=120, blank=True)
@@ -106,6 +111,7 @@ class SafetyGuideline(models.Model):
     section = models.CharField(max_length=20, choices=Section.choices, default=Section.SAFETY)
     text = models.TextField()
     text_hi = models.TextField("text (Hindi)", blank=True)
+    text_gu = models.TextField("text (Gujarati)", blank=True)
     order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
@@ -124,6 +130,7 @@ class SOPStep(models.Model):
     number = models.PositiveSmallIntegerField()
     text = models.TextField()
     text_hi = models.TextField("text (Hindi)", blank=True)
+    text_gu = models.TextField("text (Gujarati)", blank=True)
     image = models.ImageField(upload_to="modules/steps/", blank=True)
 
     class Meta:
@@ -162,10 +169,13 @@ class ProblemSolution(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="problems")
     problem = models.TextField()
     problem_hi = models.TextField("problem (Hindi)", blank=True)
+    problem_gu = models.TextField("problem (Gujarati)", blank=True)
     cause = models.TextField(blank=True)
     cause_hi = models.TextField("cause (Hindi)", blank=True)
+    cause_gu = models.TextField("cause (Gujarati)", blank=True)
     solution = models.TextField()
     solution_hi = models.TextField("solution (Hindi)", blank=True)
+    solution_gu = models.TextField("solution (Gujarati)", blank=True)
     order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
@@ -194,6 +204,7 @@ class ModuleImage(models.Model):
     image = models.ImageField(upload_to="modules/gallery/")
     caption = models.CharField(max_length=200, blank=True)
     caption_hi = models.CharField("caption (Hindi)", max_length=200, blank=True)
+    caption_gu = models.CharField("caption (Gujarati)", max_length=200, blank=True)
     order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:

@@ -11,7 +11,7 @@
     </div>
     <h3>{{ r.quiz.module.display_title }}</h3>
     <div class="meta"><span>{% icon 'file' %}{{ r.quiz.question_count }} {% translate "questions" %}</span><span>{% icon 'check-circle' %}{% translate "Pass" %} {{ r.quiz.pass_percent }}%</span>{% if r.best is not None %}<span>{% icon 'star' %}{% translate "Best" %} {{ r.best }}%</span>{% endif %}</div>
-    {% if not r.unlocked %}<p class="lock-note">{% icon 'lock' %}{% blocktranslate with n=r.quiz.module.steps.count %}Complete all {{ n }} steps to unlock{% endblocktranslate %}</p>{% endif %}
+    {% if not r.unlocked and not r.passed %}<p class="lock-note">{% icon 'lock' %}{% blocktranslate with n=r.quiz.module.steps.count %}Complete all {{ n }} steps to unlock{% endblocktranslate %}</p>{% endif %}
     {% if r.unlocked and r.attempts_left != 0 %}
       <form method="post" action="{% url 'quizzes:start' r.quiz.module.slug %}">{% csrf_token %}<button class="btn block {% if r.passed %}secondary{% endif %}" type="submit">{% if r.passed %}{% icon 'refresh' %}{% translate "Retake quiz" %}{% else %}{% translate "Start quiz" %}{% icon 'arrow-right' %}{% endif %}</button></form>
     {% elif not r.unlocked %}<a class="btn secondary" href="{% url 'learning:module_detail' r.quiz.module.slug %}?tab=sops">{% translate "Open module" %}{% icon 'arrow-right' %}</a>

@@ -5,26 +5,20 @@
   <div style="position:relative;z-index:1">
     <span class="eyebrow">{% icon 'building' %}{{ current_plant.name }}</span>
     <h1>{% trans greeting %}, {{ user.first_name|default:user.email }} 👋</h1>
-    <p>{% if resume %}{% translate "Pick up right where you left off." %}{% elif pending_modules %}{% blocktranslate count n=pending_modules %}You have {{ n }} module waiting for you.{% plural %}You have {{ n }} modules waiting for you.{% endblocktranslate %}{% else %}{% translate "You're all caught up. Great work!" %}{% endif %}</p>
+    {% if resume %}
+    <p class="hero-sub">{% translate "Continue where you left off" %}</p>
+    <div class="hero-resume"><strong>{{ resume.module.display_title }}</strong>
+      <div class="prog-line"><div class="bar"><i style="width:{{ resume.percent }}%"></i></div>{{ resume.steps_done }}/{{ resume.steps_total }} {% translate "steps" %}</div></div>
+    {% else %}<p>{% if pending_modules %}{% blocktranslate count n=pending_modules %}You have {{ n }} module waiting for you.{% plural %}You have {{ n }} modules waiting for you.{% endblocktranslate %}{% else %}{% translate "You're all caught up. Great work!" %}{% endif %}</p>{% endif %}
     <div class="row wrap">
       {% if resume %}<a class="btn lg" href="{% url 'learning:module_detail' resume.module.slug %}?tab=sops">{% icon 'play' %}{% translate "Resume learning" %}</a>
       {% else %}<a class="btn lg" href="{% url 'learning:module_list' %}">{% translate "Browse modules" %}{% icon 'arrow-right' %}</a>{% endif %}
     </div>
   </div>
-  <div class="ring" style="--p: {{ overall_percent }}"><div><div><strong>{{ overall_percent }}%</strong><span class="tiny">{% translate "completed" %}</span></div></div></div>
+  <div class="ring" style="--p: {{ overall_percent }}"><div><div><strong>{{ overall_percent }}%</strong><span class="tiny">{% translate "modules done" %}</span></div></div></div>
 </section>
 
-{% if resume %}
-<a class="card hover resume" href="{% url 'learning:module_detail' resume.module.slug %}?tab=sops">
-  <div class="thumb">{% icon 'play' %}</div>
-  <div class="grow">
-    <div class="overline" style="margin-bottom:2px">{% translate "Continue where you left off" %}</div>
-    <h3 style="margin:0 0 8px">{{ resume.module.display_title }}</h3>
-    <div class="prog-line"><div class="bar"><i style="width:{{ resume.percent }}%"></i></div>{{ resume.steps_done }}/{{ resume.steps_total }} {% translate "steps" %}</div>
-  </div>
-  <span class="btn secondary sm">{% translate "Resume" %}{% icon 'arrow-right' %}</span>
-</a>
-{% endif %}
+
 
 <div class="grid g4 hscroll stats" style="margin-top:18px">
   <div class="card stat"><div class="ico">{% icon 'clock' %}</div><div><strong>{{ learning_minutes|minutes_label }}</strong><span>{% translate "Learning time" %}</span></div></div>
@@ -32,6 +26,18 @@
   <div class="card stat"><div class="ico blue">{% icon 'gauge' %}</div><div><strong>{% if avg_best_score is not None %}{{ avg_best_score }}%{% else %}—{% endif %}</strong><span>{% translate "Avg best score" %}</span></div></div>
   <div class="card stat"><div class="ico green">{% icon 'check-circle' %}</div><div><strong>{{ completed_modules }}<small class="muted" style="font-size:.9rem;font-weight:600"> / {{ total_modules }}</small></strong><span>{% translate "Modules completed" %}</span></div></div>
 </div>
+
+{% if charts.has_data %}
+<div class="section-title">{% translate "Your progress at a glance" %}</div>
+<div class="charts">
+  <section class="card chart-card"><h3>{% translate "Your modules" %}</h3><p>{% translate "How many modules you have finished" %}</p>
+    {% include "_chart_donut.html" with d=charts.status center=completed_modules caption=_("done") %}</section>
+  <section class="card chart-card"><h3>{% translate "Progress by department" %}</h3><p>{% translate "Steps you have completed" %}</p>
+    {% if charts.depts %}{% include "_chart_hbars.html" with rows=charts.depts %}{% else %}<div class="chart-empty">{% translate "Start a module to see your progress here." %}</div>{% endif %}</section>
+  <section class="card chart-card"><h3>{% translate "Your quiz scores" %}</h3><p>{% translate "Your latest quiz results" %}</p>
+    {% if charts.scores %}{% include "_chart_bars.html" with items=charts.scores unit="%" aria=_("Quiz scores") %}{% else %}<div class="chart-empty">{% translate "Take a quiz to see your scores here." %}</div>{% endif %}</section>
+</div>
+{% endif %}
 
 <div class="section-title">{% translate "What would you like to do?" %}</div>
 <div class="quick quick-big">

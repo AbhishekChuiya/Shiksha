@@ -1,3 +1,4 @@
+import io
 from django.core.management import call_command
 from django.test import TestCase
 from django.urls import reverse
@@ -10,7 +11,7 @@ from apps.learning.models import Module
 class V3Tests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         cls.learner = User.objects.get(employee_id="test_user")
         cls.admin = User.objects.get(employee_id="test_admin")
         cls.melt = Module.objects.get(slug="vmpl_melt_cast")
@@ -90,7 +91,7 @@ class V3Tests(TestCase):
         r = self.client.get(reverse("learning:module_list"))
         self.assertContains(r, "mod-section")
         self.assertContains(r, "hscroll")
-        self.assertEqual([s["dept"].name for s in r.context["sections"]], ["Production", "QC"])
+        self.assertEqual([s["dept"].name for s in r.context["sections"]], ["Production", "QC", "Maintenance"])
 
     def test_bottom_nav_marks_current_page(self):
         self.client.force_login(self.learner)
@@ -107,7 +108,7 @@ class V3Tests(TestCase):
 class CelebrationTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         cls.user = User.objects.get(employee_id="test_user2")
         cls.melt = Module.objects.get(slug="vmpl_melt_cast")
 

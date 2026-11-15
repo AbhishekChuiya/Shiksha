@@ -8,7 +8,9 @@
 </section>
 <div class="split">
   <div class="stack">
-    <div class="card"><h3>{% translate "About" %}</h3><div class="prose">{{ plant.display_about|linebreaks }}</div></div>
+    <div class="card"><div class="row between"><h3 style="margin:0">{% translate "About" %}</h3>
+      <div class="row" style="gap:8px"><button class="btn secondary sm" type="button" data-speak="#plant-read" data-lang="{% if LANG == 'hi' and plant.about_hi %}hi-IN{% elif LANG == 'gu' and plant.about_gu %}gu-IN{% else %}en-IN{% endif %}">{% icon 'speaker' %}{% translate "Listen" %}</button></div></div>
+      <div id="plant-read" class="prose" style="margin-top:12px"><p style="font-weight:600">{{ plant.name }}{% if plant.display_tagline %}. {{ plant.display_tagline }}{% endif %}</p>{{ plant.display_about|linebreaks }}</div></div>
     {% if plant.photos.exists %}<div class="card"><h3>{% translate "Photo gallery" %}</h3>
       <div class="photo-grid">{% for ph in plant.photos.all %}<figure style="margin:0"><a href="{{ ph.image.url }}" data-lightbox="plant" data-caption="{{ ph.display_caption }}"><img src="{{ ph.image.url }}" alt="{{ ph.display_caption }}" loading="lazy"></a>{% if ph.display_caption %}<figcaption class="small muted">{{ ph.display_caption }}</figcaption>{% endif %}</figure>{% endfor %}</div></div>{% endif %}
   </div>

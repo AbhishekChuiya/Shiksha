@@ -569,7 +569,7 @@ msgid "Document control"
 msgstr "दस्तावेज़ नियंत्रण"
 
 msgid "Done"
-msgstr "पूर्ण"
+msgstr "पूरा"
 
 msgid "Earn certificates as you complete modules"
 msgstr "मॉड्यूल पूरे करते ही प्रमाणपत्र पाएँ"
@@ -1261,7 +1261,8 @@ msgid "Read-aloud is not supported on this browser."
 msgstr "इस ब्राउज़र में पढ़कर सुनाने की सुविधा उपलब्ध नहीं है।"
 
 msgid ""
-"No Hindi voice is installed on this device, so the default voice is used."
+"No voice for this language is installed on this device, so the default voice"
+" is used."
 msgstr ""
 "इस डिवाइस में हिन्दी आवाज़ इंस्टॉल नहीं है, इसलिए डिफ़ॉल्ट आवाज़ उपयोग हो "
 "रही है।"
@@ -1278,7 +1279,7 @@ msgstr "कोई परिणाम नहीं:"
 msgid "See all results for"
 msgstr "सभी परिणाम देखें:"
 
-msgid "Hindi translation not available — showing English"
+msgid "Translation not available in this language — showing English"
 msgstr "हिन्दी अनुवाद उपलब्ध नहीं — अंग्रेज़ी दिखाई जा रही है"
 
 msgid "Shown in English"
@@ -1499,6 +1500,188 @@ msgstr "इस खाते से साइन इन"
 msgid "Not you?"
 msgstr "आप नहीं हैं?"
 
+msgid "Your learning journey"
+msgstr "आपकी सीखने की यात्रा"
+
+msgid "Read the safety rules"
+msgstr "सुरक्षा नियम पढ़ें"
+
+msgid "You confirm them once before starting"
+msgstr "शुरू करने से पहले एक बार पुष्टि करें"
+
+msgid "Complete the SOP steps"
+msgstr "एसओपी चरण पूरे करें"
+
+msgid "%(d)s of %(t)s steps done"
+msgstr "%(d)s / %(t)s चरण पूरे"
+
+msgid "Pass the quiz"
+msgstr "क्विज़ पास करें"
+
+msgid "Opens after all steps are done"
+msgstr "सभी चरण पूरे होने पर खुलेगा"
+
+msgid "Pass mark %(n)s%%"
+msgstr "पास होने के अंक %(n)s%%"
+
+msgid "Get your certificate"
+msgstr "अपना प्रमाणपत्र पाएँ"
+
+msgid "Issued automatically when you finish"
+msgstr "पूरा करते ही अपने-आप मिल जाएगा"
+
+msgid "Review this module"
+msgstr "मॉड्यूल दोबारा देखें"
+
+msgid "Continue learning"
+msgstr "सीखना जारी रखें"
+
+msgid "Start learning"
+msgstr "सीखना शुरू करें"
+
+msgid "modules done"
+msgstr "मॉड्यूल पूरे"
+
+msgid "Change profile photo"
+msgstr "प्रोफ़ाइल फ़ोटो बदलें"
+
+msgid "Add or change your picture"
+msgstr "अपनी तस्वीर जोड़ें या बदलें"
+
+msgid "Your name and account information"
+msgstr "आपका नाम और खाते की जानकारी"
+
+msgid "Keep your account safe"
+msgstr "अपना खाता सुरक्षित रखें"
+
+msgid "View and download"
+msgstr "देखें और डाउनलोड करें"
+
+msgid "Choose a strong password you have not used elsewhere."
+msgstr "ऐसा मज़बूत पासवर्ड चुनें जो आपने कहीं और इस्तेमाल न किया हो।"
+
+msgid "To change your email, role or plant access, please contact your admin."
+msgstr ""
+"ईमेल, भूमिका या प्लांट एक्सेस बदलने के लिए कृपया अपने एडमिन से संपर्क करें।"
+
+msgid "Your progress at a glance"
+msgstr "आपकी प्रगति एक नज़र में"
+
+msgid "Your modules"
+msgstr "आपके मॉड्यूल"
+
+msgid "How many modules you have finished"
+msgstr "आपने कितने मॉड्यूल पूरे किए"
+
+msgid "done"
+msgstr "पूरे"
+
+msgid "Progress by department"
+msgstr "विभाग के अनुसार प्रगति"
+
+msgid "Steps you have completed"
+msgstr "आपके पूरे किए गए चरण"
+
+msgid "Start a module to see your progress here."
+msgstr "अपनी प्रगति यहाँ देखने के लिए कोई मॉड्यूल शुरू करें।"
+
+msgid "Your quiz scores"
+msgstr "आपके क्विज़ अंक"
+
+msgid "Your latest quiz results"
+msgstr "आपके हाल के क्विज़ परिणाम"
+
+msgid "Take a quiz to see your scores here."
+msgstr "अपने अंक यहाँ देखने के लिए क्विज़ दें।"
+
+msgid "Quiz scores"
+msgstr "क्विज़ अंक"
+
+msgid "Not started"
+msgstr "शुरू नहीं किया"
+
+msgid "Type"
+msgstr "प्रकार"
+
+msgid "Your best score"
+msgstr "आपका सर्वश्रेष्ठ स्कोर"
+
+msgid "A retake never lowers it."
+msgstr "दोबारा देने पर यह कभी कम नहीं होता।"
+
+msgid "Go back"
+msgstr "वापस जाएँ"
+
+msgid "Something went wrong"
+msgstr "कुछ गड़बड़ हो गई"
+
+msgid "Something went wrong on our side"
+msgstr "हमारी तरफ़ से कुछ गड़बड़ हो गई"
+
+msgid ""
+"You do not have permission to open this page. If you think this is a "
+"mistake, please contact the Shiksha admin."
+msgstr ""
+"आपको यह पेज खोलने की अनुमति नहीं है। अगर आपको लगता है कि यह गलती है, तो "
+"कृपया शिक्षा एडमिन से संपर्क करें।"
+
+msgid "We could not understand that request. Please go back and try again."
+msgstr "हम उस अनुरोध को समझ नहीं पाए। कृपया वापस जाकर फिर प्रयास करें।"
+
+msgid ""
+"Your work is safe. Please try again in a moment — if it keeps happening, "
+"tell the Shiksha admin."
+msgstr ""
+"आपका काम सुरक्षित है। कृपया थोड़ी देर में फिर प्रयास करें — अगर बार-बार हो, "
+"तो शिक्षा एडमिन को बताएँ।"
+
+msgid "Session expired"
+msgstr "सत्र समाप्त हो गया"
+
+msgid "Your page expired"
+msgstr "आपका पेज समाप्त हो गया"
+
+msgid ""
+"For your safety this page timed out. Please go back, refresh it, and try "
+"again."
+msgstr ""
+"आपकी सुरक्षा के लिए यह पेज समाप्त हो गया। कृपया वापस जाएँ, पेज रीफ़्रेश करें"
+" और फिर प्रयास करें।"
+
+msgid "Old password"
+msgstr "पुराना पासवर्ड"
+
+msgid "New password"
+msgstr "नया पासवर्ड"
+
+msgid "New password confirmation"
+msgstr "नए पासवर्ड की पुष्टि"
+
+msgid ""
+"Gujarati voice not found on this device — reading with the Hindi voice "
+"instead."
+msgstr ""
+"इस डिवाइस में गुजराती आवाज़ नहीं मिली — इसलिए हिन्दी आवाज़ में पढ़ रहे हैं।"
+
+msgid ""
+"No voice found for this language. Please install a voice in your device's "
+"speech settings."
+msgstr ""
+"इस भाषा की आवाज़ नहीं मिली। कृपया अपने डिवाइस की स्पीच सेटिंग में आवाज़ "
+"इंस्टॉल करें।"
+
+msgid "Couldn't read this aloud on this device."
+msgstr "इस डिवाइस पर इसे पढ़कर नहीं सुनाया जा सका।"
+
+msgid "Description"
+msgstr "विवरण"
+
+msgid "Date & time"
+msgstr "तारीख और समय"
+
+msgid "Photo / document"
+msgstr "फ़ोटो / दस्तावेज़"
+
 msgid "Go to step number"
 msgstr "चरण संख्या पर जाएँ"
 
@@ -1612,6 +1795,42 @@ msgstr "आप यहाँ हैं"
 
 msgid "%(d)s of %(t)s done · %(p)s%%"
 msgstr "%(d)s / %(t)s पूरे · %(p)s%%"
+
+msgid "jan"
+msgstr "जन॰"
+
+msgid "feb"
+msgstr "फ़र॰"
+
+msgid "mar"
+msgstr "मार्च"
+
+msgid "apr"
+msgstr "अप्रैल"
+
+msgid "may"
+msgstr "मई"
+
+msgid "jun"
+msgstr "जून"
+
+msgid "jul"
+msgstr "जुलाई"
+
+msgid "aug"
+msgstr "अग॰"
+
+msgid "sep"
+msgstr "सित॰"
+
+msgid "oct"
+msgstr "अक्तू॰"
+
+msgid "nov"
+msgstr "नव॰"
+
+msgid "dec"
+msgstr "दिस॰"
 
 msgid "%(n)s result for “%(q)s” in %(current_plant)s"
 msgid_plural "%(n)s results for “%(q)s” in %(current_plant)s"

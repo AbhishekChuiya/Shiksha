@@ -15,9 +15,11 @@ from django.views.decorators.http import require_POST
 
 from apps.accounts.models import User
 from apps.certificates.models import Certificate
+from apps.core.charts import admin_charts
 from apps.core.models import AuditLog
 from apps.incidents.models import Incident
 from apps.learning.importers import ImportError_, import_quiz, import_steps
+from apps.learning.tables import TableError, read_table
 from apps.learning.models import (DiscussionPost, Module, ModuleImage, ModuleProgress, ProblemSolution, SafetyGuideline, SOPStep, VideoLesson)
 from apps.plants.models import Department, Plant, PlantPhoto, Process
 from apps.quizzes.models import Attempt, Choice, Question, Quiz
@@ -90,13 +92,23 @@ def dashboard(request):
         attention.append({"level": "warn", "text": f"{open_inc} incident(s) are waiting for review", "url": reverse("panel:incidents") + "?status=open"})
     hidden = DiscussionPost.objects.filter(is_hidden=True).count()
     return render_panel(request, "panel/dashboard.html", page_title="Overview", stats=stats, attention=attention,
-                        activity=AuditLog.objects.select_related("actor")[:8], new_users=User.objects.order_by("-date_joined")[:5], hidden_posts=hidden)
+                        charts=_safe_charts(), activity=AuditLog.objects.select_related("actor")[:8], new_users=User.objects.order_by("-date_joined")[:5], hidden_posts=hidden)
+
+
+def _safe_charts():
+    try:
+        return admin_charts()
+    except Exception:  # noqa: BLE001
+        import logging
+        logging.getLogger(__name__).exception("admin charts failed")
+        return {"daily": [], "daily_max": 1, "weeks": [], "weeks_max": 1, "depts": [], "status": {"gradient": "#e5e7eb 0 100%", "legend": [], "total": 0}, "hard": []}
 
 
 def _pass_rate():
-    done = Attempt.objects.filter(finished_at__isnull=False)
-    n = done.count()
-    return f"{round(100 * done.filter(passed=True).count() / n)}%" if n else "—"
+    """Share of learner+quiz pairs that have passed at least once (a retake never counts against a learner)."""
+    pairs = Attempt.objects.filter(finished_at__isnull=False).values("user", "quiz").annotate(ok=Count("id", filter=Q(passed=True)))
+    n = pairs.count()
+    return f"{round(100 * pairs.filter(ok__gt=0).count() / n)}%" if n else "—"
 
 
 # ----------------------------------------------------------------------------- plants
@@ -127,7 +139,7 @@ def plant_edit(request, pk=None, tab="details"):
             messages.success(request, f"{obj.name} saved.")
             return redirect("panel:plant_tab", pk=obj.pk, tab="details")
         ctx.update(form=form, groups=[("Basics", ["name", "company", "location", "tagline", "about", "banner"]),
-                                        ("Hindi (optional)", ["location_hi", "tagline_hi", "about_hi"]), ("Settings", ["is_active", "order", "code"])])
+                                        ("Hindi (optional)", ["location_hi", "tagline_hi", "about_hi"]), ("Gujarati (optional)", ["location_gu", "tagline_gu", "about_gu"]), ("Settings", ["is_active", "order", "code"])])
         return render_panel(request, "panel/plant_edit.html", **ctx)
 
     if tab == "gallery":
@@ -143,8 +155,13 @@ def plant_edit(request, pk=None, tab="details"):
             eds.append(Editor("procs", Process, [F("department", "Department", "select", required=True, choices=[(d.pk, d.name) for d in depts], fk=True),
                                                  F("name", "Process name", required=True), F("name_hi", "Name (Hindi)", hindi=True)],
                               {}, filter={"department__plant": plant}, title="Processes", noun="process", info="A process is a step in production, e.g. Extrusion or Anodizing."))
+    def no_duplicate_departments(parsed):
+        names = [(r["vals"].get("name") or "").strip().lower() for r in parsed.get("depts", [])]
+        dup = next((n for n in names if n and names.count(n) > 1), None)
+        return f"There are two departments called “{dup}”. Each department name must be different." if dup else None
+
     return _editor_page(request, "panel/plant_edit.html", eds, ctx, redirect_name="panel:plant_tab", redirect_kwargs={"pk": plant.pk, "tab": tab},
-                        saved=f"{plant.name} updated.", log=("plant." + tab, plant))
+                        saved=f"{plant.name} updated.", log=("plant." + tab, plant), extra_validate=no_duplicate_departments if tab == "structure" else None)
 
 
 @admin_required
@@ -261,7 +278,7 @@ def module_edit(request, pk=None, tab="details"):
             return redirect("panel:module_tab", pk=obj.pk, tab="details" if pk else "steps")
         ctx.update(form=form, groups=[("Basics", ["title", "plant", "department", "process", "category", "library", "est_minutes", "instructor"]),
                                         ("Cover photo", ["cover"]), ("What learners read", ["summary", "overview", "objectives"]),
-                                        ("Hindi (optional)", ["title_hi", "category_hi", "summary_hi", "overview_hi", "objectives_hi"]),
+                                        ("Hindi (optional)", ["title_hi", "category_hi", "summary_hi", "overview_hi", "objectives_hi"]), ("Gujarati (optional)", ["title_gu", "category_gu", "summary_gu", "overview_gu", "objectives_gu"]),
                                         ("Publishing", ["status", "sop_document", "order", "slug"])])
         return render_panel(request, "panel/module_edit.html", **ctx)
 
@@ -345,7 +362,7 @@ def module_import(request, pk, kind):
             pasted = (request.POST.get("paste") or "").strip()
             upload = request.FILES.get("csv")
             if upload:
-                rows = _read_csv(upload)
+                rows = read_table(upload)
             elif pasted:
                 lines = [l.strip().lstrip("0123456789.)- ").strip() if l.strip()[:3].replace(".", "").replace(")", "").strip().isdigit() else l.strip() for l in pasted.splitlines()]
                 rows = [{"text": l} for l in lines if l]
@@ -358,10 +375,10 @@ def module_import(request, pk, kind):
             if not upload:
                 raise ImportError_("Choose a CSV file first.")
             Quiz.objects.get_or_create(module=module)
-            n = import_quiz(module, _read_csv(upload), replace=replace)
+            n = import_quiz(module, read_table(upload), replace=replace)
             messages.success(request, f"{n} question(s) {'replaced' if replace else 'added'}.")
         audit(request, f"module.import_{kind}", module, count=n)
-    except ImportError_ as exc:
+    except (ImportError_, TableError) as exc:
         messages.error(request, str(exc))
     except (UnicodeDecodeError, csv.Error):
         messages.error(request, "Couldn't read that file. Save it as “CSV UTF-8” from Excel and try again.")

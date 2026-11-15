@@ -97,15 +97,17 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 AUTHENTICATION_BACKENDS = ["apps.accounts.backends.EmailOrEmployeeIdBackend"]
+CSRF_FAILURE_VIEW = "apps.core.errors.csrf_failure"
 LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "core:dashboard"
 LOGOUT_REDIRECT_URL = "accounts:login"
 
-# Internationalisation — English and Hindi (Gujarati optional later).
+# Internationalisation — English, Hindi and Gujarati.
 LANGUAGE_CODE = "en"
 LANGUAGES = [
     ("en", "English"),
     ("hi", "हिन्दी"),
+    ("gu", "ગુજરાતી"),
 ]
 LOCALE_PATHS = [BASE_DIR / "locale"]
 TIME_ZONE = "Asia/Kolkata"

@@ -1,0 +1,14 @@
+{% load i18n shiksha %}
+<section class="card journey" aria-label="{% translate 'Your learning journey' %}">
+  <h3>{% translate "Your learning journey" %}</h3>
+  <ol>
+    <li class="j-{{ journey.safety }}"><span class="j-dot">{% if journey.safety == "done" %}{% icon 'check' %}{% else %}1{% endif %}</span>
+      <div><strong>{% translate "Read the safety rules" %}</strong><small>{% if journey.safety == "done" %}{% translate "Done" %}{% else %}{% translate "You confirm them once before starting" %}{% endif %}</small></div></li>
+    <li class="j-{{ journey.steps }}"><span class="j-dot">{% if journey.steps == "done" %}{% icon 'check' %}{% else %}2{% endif %}</span>
+      <div><strong>{% translate "Complete the SOP steps" %}</strong><small>{% blocktranslate with d=steps_done t=steps_total %}{{ d }} of {{ t }} steps done{% endblocktranslate %}</small></div></li>
+    {% if quiz %}<li class="j-{{ journey.quiz }}"><span class="j-dot">{% if journey.quiz == "done" %}{% icon 'check' %}{% else %}3{% endif %}</span>
+      <div><strong>{% translate "Pass the quiz" %}</strong><small>{% if journey.quiz == "done" %}{% translate "Passed" %}{% elif not quiz_unlocked %}{% translate "Opens after all steps are done" %}{% else %}{% blocktranslate with n=quiz.pass_percent %}Pass mark {{ n }}%{% endblocktranslate %}{% endif %}</small></div></li>{% endif %}
+    <li class="j-{{ journey.cert }}"><span class="j-dot">{% if journey.cert == "done" %}{% icon 'check' %}{% else %}{% icon 'award' %}{% endif %}</span>
+      <div><strong>{% translate "Get your certificate" %}</strong><small>{% if journey.cert == "done" %}{% translate "Done" %}{% else %}{% translate "Issued automatically when you finish" %}{% endif %}</small></div></li>
+  </ol>
+</section>

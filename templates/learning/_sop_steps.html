@@ -50,7 +50,7 @@
         </span>
       </div>
       <p class="step-body" id="step-text">{{ step.display_text }}</p>
-      {% if LANG == "hi" and not step.text_hi %}<p class="small muted" style="margin:-14px 0 16px"><span class="badge grey">EN</span> {% translate "Hindi translation not available — showing English" %}</p>{% endif %}
+      {% if LANG == "hi" and not step.text_hi or LANG == "gu" and not step.text_gu %}<p class="small muted" style="margin:-14px 0 16px"><span class="badge grey">EN</span> {% translate "Translation not available in this language — showing English" %}</p>{% endif %}
       <form class="step-actions" method="post" action="{% url 'learning:toggle_step' module.slug step.number %}" data-soft-form>{% csrf_token %}
         {% if step_done %}<input type="hidden" name="action" value="unmark"><button class="btn secondary" type="submit">{% icon 'refresh' %}{% translate "Unmark" %}</button>
         {% else %}<button class="btn lg" type="submit" data-enter-submit>{% icon 'check' %}{% if next_step %}{% translate "Mark complete & next" %}{% else %}{% translate "Mark complete" %}{% endif %}</button>{% endif %}

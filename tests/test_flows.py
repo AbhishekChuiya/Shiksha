@@ -1,3 +1,4 @@
+import io
 from datetime import date
 
 from django.core.management import call_command
@@ -15,7 +16,7 @@ from apps.sops.models import SOPDocument, SOPVersion
 class FlowTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         cls.learner = User.objects.get(email="test_user@vishakha.com")
         cls.melt = Module.objects.get(slug="vmpl_melt_cast")
 
@@ -118,7 +119,7 @@ class FlowTests(TestCase):
 class SuggestTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         cls.learner = User.objects.get(email="test_user@vishakha.com")
 
     def setUp(self):

@@ -1,4 +1,4 @@
-{% load i18n shiksha %}<a class="kb-card k-{{ e.kind }} c-{{ e.catinfo.color }}" href="{{ e.url }}">
-  <span class="kb-ico">{% if e.kind == 'video' %}{% icon 'play' %}{% elif e.kind == 'link' %}{% icon 'link' %}{% elif e.kind == 'image' %}{% icon 'image' %}{% else %}{% icon 'file' %}{% endif %}<b>{{ e.kind|upper }}</b></span>
-  <span class="kb-body"><strong>{{ e.title }}</strong>{% if e.desc %}<small>{{ e.desc|truncatechars:80 }}</small>{% endif %}<em>{{ e.meta }}</em></span>
+{% load i18n shiksha %}<a class="kbx-card k-{{ e.kind }} c-{{ e.catinfo.color }}" href="{{ e.url }}">
+  <span class="kbx-thumb">{% if e.kind == 'video' %}{% icon 'play' %}{% elif e.kind == 'link' %}{% icon 'link' %}{% elif e.kind == 'image' %}{% icon 'image' %}{% else %}{% icon 'file' %}{% endif %}<b>{{ e.kind|upper }}</b></span>
+  <span class="kbx-body"><strong>{{ e.title }}</strong>{% if e.desc %}<small>{{ e.desc|truncatechars:70 }}</small>{% endif %}<em>{{ e.meta }}</em></span>
 </a>

@@ -9,7 +9,7 @@
   <div class="ed-fields">
     <input type="hidden" name="{{ key }}-{{ row.uid }}-id" value="{{ row.id }}">
     <div class="pn-grid">
-    {% for f in fields %}{% if not f.hindi %}
+    {% for f in fields %}{% if not f.hindi and not f.gujarati %}
       {% with v=row.vals|get:f.name e=row.errors|get:f.name %}
       <div class="pn-field {% if e %}has-error{% endif %} {% if f.kind == 'textarea' or f.kind == 'image' or f.kind == 'file' %}wide{% elif f.width != 'half' and f.kind != 'select' and f.kind != 'number' and f.kind != 'date' and f.kind != 'radio' %}wide{% endif %}">
         {% if f.kind == "radio" %}
@@ -39,6 +39,13 @@
     {% if has_hindi %}
     <details class="ed-hi" {% if row|has_hindi_value:fields %}open{% endif %}><summary><span class="hi-dot">हि</span>Hindi (optional)</summary>
       <div class="pn-grid">{% for f in fields %}{% if f.hindi %}{% with v=row.vals|get:f.name e=row.errors|get:f.name %}
+        <div class="pn-field wide {% if e %}has-error{% endif %}"><label>{{ f.label }}</label>
+          {% if f.kind == "textarea" %}<textarea name="{{ key }}-{{ row.uid }}-{{ f.name }}" rows="{{ f.rows }}">{{ v }}</textarea>{% else %}<input type="text" name="{{ key }}-{{ row.uid }}-{{ f.name }}" value="{{ v }}">{% endif %}
+          {% if e %}<p class="pn-err">{{ e }}</p>{% endif %}</div>{% endwith %}{% endif %}{% endfor %}</div>
+    </details>{% endif %}
+    {% if has_gujarati %}
+    <details class="ed-hi ed-gu" {% if row|has_gujarati_value:fields %}open{% endif %}><summary><span class="hi-dot">ગુ</span>Gujarati (optional)</summary>
+      <div class="pn-grid">{% for f in fields %}{% if f.gujarati %}{% with v=row.vals|get:f.name e=row.errors|get:f.name %}
         <div class="pn-field wide {% if e %}has-error{% endif %}"><label>{{ f.label }}</label>
           {% if f.kind == "textarea" %}<textarea name="{{ key }}-{{ row.uid }}-{{ f.name }}" rows="{{ f.rows }}">{{ v }}</textarea>{% else %}<input type="text" name="{{ key }}-{{ row.uid }}-{{ f.name }}" value="{{ v }}">{% endif %}
           {% if e %}<p class="pn-err">{{ e }}</p>{% endif %}</div>{% endwith %}{% endif %}{% endfor %}</div>

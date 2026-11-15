@@ -1,0 +1,4 @@
+{% comment %}items: [{label, value, tone, title}]; set unit="%" for percent charts{% endcomment %}
+<div class="vbars" role="img" aria-label="{{ aria }}">
+  {% for i in items %}<div class="vb" title="{{ i.title }}"><span class="vb-n">{{ i.value }}{{ unit }}</span><span class="vb-bar t-{{ i.tone }}" style="--h:{% if unit == '%' %}{{ i.value }}{% else %}{% widthratio i.value maxv 100 %}{% endif %}%"></span><span class="vb-l">{{ i.label }}</span></div>{% endfor %}
+</div>

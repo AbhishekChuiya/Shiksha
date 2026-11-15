@@ -26,6 +26,7 @@ def kind_from_name(name, url=""):
 class KBCategory(models.Model):
     name = models.CharField(max_length=80)
     name_hi = models.CharField("name (Hindi)", max_length=80, blank=True)
+    name_gu = models.CharField("name (Gujarati)", max_length=80, blank=True)
     icon = models.CharField(max_length=20, choices=ICONS, default="folder")
     color = models.CharField(max_length=10, choices=COLORS, default="red")
     order = models.PositiveSmallIntegerField(default=0)
@@ -54,8 +55,10 @@ class KBItem(models.Model):
     category = models.ForeignKey(KBCategory, on_delete=models.PROTECT, related_name="items")
     title = models.CharField(max_length=200)
     title_hi = models.CharField("title (Hindi)", max_length=200, blank=True)
+    title_gu = models.CharField("title (Gujarati)", max_length=200, blank=True)
     description = models.TextField(blank=True)
     description_hi = models.TextField("description (Hindi)", blank=True)
+    description_gu = models.TextField("description (Gujarati)", blank=True)
     kind = models.CharField(max_length=10, choices=Kind.choices, blank=True,
                             help_text="Leave blank — it is worked out from the uploaded file.")
     file = models.FileField(upload_to="knowledge/%Y/", blank=True)

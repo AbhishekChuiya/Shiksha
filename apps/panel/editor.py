@@ -23,6 +23,7 @@ class F:
     fk: bool = False            # select that stores a foreign key (value = pk)
     required: bool = False
     hindi: bool = False         # shown inside the collapsible "हिन्दी" group
+    gujarati: bool = False      # shown inside the collapsible "ગુજરાતી" group
     choices: list = None        # [(value, label)] for select
     help: str = ""
     placeholder: str = ""
@@ -33,6 +34,10 @@ class F:
 class Editor:
     def __init__(self, key, model, fields, scope, *, title="", noun="item", order_field="order", number_field=None,
                  empty_hint="", add_label=None, max_file_mb=60, pre_save=None, info="", filter=None, ordering=None):
+        # every Hindi field automatically gets a Gujarati twin (name_hi -> name_gu)
+        twins = [F(f.name[:-3] + "_gu", f.label.replace("Hindi", "Gujarati"), f.kind, gujarati=True, rows=f.rows)
+                 for f in fields if f.hindi and f.name.endswith("_hi") and hasattr(model, f.name[:-3] + "_gu")]
+        fields = list(fields) + twins
         self.key, self.model, self.fields, self.scope = key, model, fields, scope
         self.filter, self.ordering = filter, ordering
         self.title, self.noun, self.order_field, self.number_field = title, noun, order_field, number_field
@@ -195,4 +200,4 @@ class Editor:
         return {"editor": self, "key": self.key, "title": self.title, "fields": self.fields, "noun": self.noun,
                 "rows": self.rows_from_db() if rows is None else rows, "blank": self.blank_row(),
                 "empty_hint": self.empty_hint, "add_label": self.add_label, "info": self.info,
-                "has_hindi": any(f.hindi for f in self.fields)}
+                "has_hindi": any(f.hindi for f in self.fields), "has_gujarati": any(f.gujarati for f in self.fields)}

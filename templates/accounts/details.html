@@ -1,0 +1,25 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "Personal details" %}{% endblock %}
+{% block content %}
+<nav class="crumbs"><a href="{% url 'accounts:account' %}">{% translate "My account" %}</a>{% icon 'chevron-right' %}<b>{% translate "Personal details" %}</b></nav>
+<div class="acct-page">
+  <form class="card" method="post" novalidate>{% csrf_token %}
+    <h2>{% translate "Personal details" %}</h2>
+    <p class="muted">{% translate "This is the name printed on your certificates." %}</p>
+    <div class="two">
+      {% include "accounts/_field.html" with f=profile_form.first_name icon="user" %}
+      {% include "accounts/_field.html" with f=profile_form.last_name icon="user" %}
+    </div>
+    <div class="row wrap"><button class="btn lg" type="submit">{% translate "Save name" %}</button><a class="btn ghost" href="{% url 'accounts:account' %}">{% translate "Cancel" %}</a></div>
+  </form>
+  <div class="card details"><h3>{% translate "Account details" %}</h3><dl>
+    <dt>{% translate "Email" %}</dt><dd>{{ user.email }}</dd>
+    <dt>{% translate "Employee ID" %}</dt><dd>{{ user.employee_id|default:"—" }}</dd>
+    <dt>{% translate "Role" %}</dt><dd>{{ user.get_role_display }}</dd>
+    {% if user.department %}<dt>{% translate "Department" %}</dt><dd>{{ user.department.display_name }}</dd>{% endif %}
+    <dt>{% translate "Plants" %}</dt><dd>{% for p in plants_list %}{{ p.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</dd>
+    <dt>{% translate "Member since" %}</dt><dd>{{ user.date_joined|date:"d M Y" }}</dd>
+    <dt>{% translate "Last sign-in" %}</dt><dd>{{ user.last_login|date:"d M Y, H:i"|default:"—" }}</dd>
+  </dl><p class="small muted">{% translate "To change your email, role or plant access, please contact your admin." %}</p></div>
+</div>
+{% endblock %}

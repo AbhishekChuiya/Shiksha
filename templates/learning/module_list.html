@@ -23,7 +23,7 @@
   {% if has_filters %}<a class="btn ghost" href="{{ clear_url }}">{% icon 'x' %}{% translate "Clear filters" %}</a>{% endif %}
 </form>
 
-<details class="card filter-card" id="filters" open>
+<details class="card filter-card" id="filters">
   <summary>{% icon 'grid' %}<span>{% translate "Filters" %}</span>{% if sel.dept or sel.library or sel.category %}<span class="badge">{% translate "active" %}</span>{% endif %}<span class="grow"></span>{% icon 'chevron-down' 'chev' %}</summary>
   <div class="filters">
     <span class="lbl">{% translate "Department" %}</span>
@@ -34,7 +34,6 @@
     <div class="chips scroll">{% for label, link, on in cat_chips %}<a class="chip {% if on %}on{% endif %}" href="{{ link }}">{{ label }}</a>{% endfor %}</div>{% endif %}
   </div>
 </details>
-<script>if (matchMedia("(max-width: 800px)").matches) document.getElementById("filters").removeAttribute("open");</script>
 
 {% if grid %}
   {% if cards %}

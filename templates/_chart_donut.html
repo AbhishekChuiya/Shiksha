@@ -1,0 +1,2 @@
+{% load i18n %}<div class="donut-wrap"><div class="donut" style="background: conic-gradient({{ d.gradient }})"><div><strong>{{ center }}</strong><small>{{ caption }}</small></div></div>
+  <ul class="legend">{% for l in d.legend %}<li><i style="background:{{ l.colour }}"></i>{% trans l.label %} <b>{{ l.value }}</b></li>{% endfor %}</ul></div>

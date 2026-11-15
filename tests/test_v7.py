@@ -1,3 +1,4 @@
+import io
 import shutil
 import tempfile
 from io import BytesIO
@@ -24,7 +25,7 @@ def make_image(fmt="PNG", size=(600, 400), color=(200, 20, 40), name="me.png"):
 class AccountTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
 
     @classmethod
     def tearDownClass(cls):
@@ -43,7 +44,7 @@ class AccountTests(TestCase):
         self.assertContains(self.client.get(reverse("core:dashboard")), reverse("accounts:account"))
 
     def test_old_settings_url_redirects(self):
-        self.assertRedirects(self.client.get("/accounts/password/change/"), reverse("accounts:account"),
+        self.assertRedirects(self.client.get("/accounts/password/change/"), reverse("accounts:password_change"),
                              fetch_redirect_response=False)
 
     def test_photo_upload_is_square_small_jpeg_and_shown_in_topbar(self):
@@ -95,7 +96,7 @@ class AccountTests(TestCase):
         self.client.logout()
         self.assertEqual(self.client.post(reverse("accounts:photo_update"), {}).status_code, 302)
         self.client.force_login(self.user)
-        self.assertEqual(self.client.get(reverse("accounts:photo_update")).status_code, 405)
+        self.assertEqual(self.client.get(reverse("accounts:photo_update")).status_code, 200)   # the photo page
 
     def test_name_update(self):
         self.client.post(reverse("accounts:profile_update"), {"first_name": "Asha", "last_name": "Mehta"})
@@ -103,7 +104,7 @@ class AccountTests(TestCase):
         self.assertEqual(self.user.get_full_name(), "Asha Mehta")
 
     def test_password_change_works_and_keeps_user_signed_in(self):
-        r = self.client.post(reverse("accounts:account"), {"old_password": "Test@12345",
+        r = self.client.post(reverse("accounts:password_change"), {"old_password": "Test@12345",
                              "new_password1": "Brand-New-Pass-77", "new_password2": "Brand-New-Pass-77"})
         self.assertRedirects(r, reverse("accounts:account"), fetch_redirect_response=False)
         self.assertEqual(self.client.get(reverse("core:dashboard")).status_code, 200)  # still signed in
@@ -111,21 +112,30 @@ class AccountTests(TestCase):
         self.assertTrue(self.user.check_password("Brand-New-Pass-77"))
 
     def test_wrong_old_password_rejected(self):
-        self.client.post(reverse("accounts:account"), {"old_password": "nope", "new_password1": "Brand-New-Pass-77", "new_password2": "Brand-New-Pass-77"})
+        self.client.post(reverse("accounts:password_change"), {"old_password": "nope", "new_password1": "Brand-New-Pass-77", "new_password2": "Brand-New-Pass-77"})
         self.user.refresh_from_db()
         self.assertTrue(self.user.check_password("Test@12345"))
 
     def test_account_page_in_hindi(self):
         self.client.cookies["django_language"] = "hi"
-        html = self.client.get(reverse("accounts:account")).content.decode()
+        html = "".join(self.client.get(reverse(n)).content.decode() for n in ("accounts:account", "accounts:photo_update", "accounts:details"))
         for needle in ("मेरा खाता", "प्रोफ़ाइल फ़ोटो", "फ़ोटो चुनें", "खाते का विवरण"):
             self.assertIn(needle, html)
+
+    def test_account_is_a_menu_with_pencil_and_separate_pages(self):
+        html = self.client.get(reverse("accounts:account")).content.decode()
+        self.assertIn('class="pencil"', html)
+        self.assertNotIn('name="old_password"', html)          # password form is not shown by default
+        for name in ("accounts:photo_update", "accounts:details", "accounts:password_change"):
+            self.assertIn(reverse(name), html)
+            self.assertEqual(self.client.get(reverse(name)).status_code, 200)
+        self.assertContains(self.client.get(reverse("accounts:password_change")), 'name="old_password"')
 
 
 class ModuleGridTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         cls.user = User.objects.get(employee_id="test_user")
         cls.base = Module.objects.get(slug="vmpl_melt_cast")
         # grow the catalogue to 60 production modules to exercise paging
@@ -186,7 +196,7 @@ class SidebarTests(TestCase):
 
 class AccountPageFocusTest(TestCase):
     def test_password_field_does_not_autofocus(self):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         self.client.force_login(User.objects.get(employee_id="test_user"))
         html = self.client.get(reverse("accounts:account")).content.decode()
         self.assertNotIn("autofocus", html)

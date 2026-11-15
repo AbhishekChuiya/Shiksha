@@ -171,6 +171,27 @@ def module_detail(request, slug):
         "problem_count": module.problems.count(),
         "video_count": module.videos.count(),
     }
+    # "Your learning journey": what is done, what to do now, what comes next.
+    from apps.quizzes.models import Attempt
+    quiz_on = ctx["quiz"]
+    quiz_passed = bool(quiz_on and Attempt.objects.filter(quiz=quiz_on, user=request.user, passed=True).exists())
+    safety_done = bool(progress.safety_ack_at)
+    steps_done_all = bool(steps) and len(done_ids) == len(steps)
+    finished = bool(progress.completed_at)
+    flags = [("safety", safety_done), ("steps", steps_done_all)] + ([("quiz", quiz_passed)] if quiz_on else []) + [("cert", finished)]
+    journey, found = {}, False
+    for key, done in flags:
+        journey[key] = "done" if done else ("todo" if found else "now")
+        found = found or not done
+    if finished:
+        cta = ("review", "?tab=sops")
+    elif steps_done_all and quiz_on and not quiz_passed:
+        cta = ("quiz", "?tab=quiz")
+    elif safety_done and done_ids:
+        cta = ("continue", "?tab=sops")
+    else:
+        cta = ("start", "?tab=sops")
+    ctx.update(journey=journey, cta_key=cta[0], cta_url=cta[1], quiz_passed=quiz_passed)
     if tab == "overview":
         gallery = [{"url": module.cover.url, "caption": module.display_title}] if module.cover else []
         gallery += [{"url": im.image.url, "caption": im.display_caption} for im in module.images.all()]

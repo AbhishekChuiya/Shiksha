@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from apps.plants.models import Department, Process
 
@@ -12,6 +13,8 @@ class IncidentForm(forms.ModelForm):
         model = Incident
         fields = ["category", "department", "process", "title", "description",
                   "occurred_at", "attachment"]
+        labels = {"category": _("Category"), "department": _("Department"), "process": _("Process"), "title": _("Title"),
+                  "description": _("Description"), "occurred_at": _("Date & time"), "attachment": _("Photo / document")}
         widgets = {
             "occurred_at": forms.DateTimeInput(attrs={"type": "datetime-local"},
                                                format="%Y-%m-%dT%H:%M"),
@@ -22,6 +25,8 @@ class IncidentForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["department"].queryset = Department.objects.filter(plant=plant)
         self.fields["process"].queryset = Process.objects.filter(department__plant=plant)
+        self.fields["department"].label_from_instance = lambda d: f"{d.display_name} ({d.plant.name})"
+        self.fields["process"].label_from_instance = lambda p: p.display_name
 
     def clean_attachment(self):
         f = self.cleaned_data.get("attachment")

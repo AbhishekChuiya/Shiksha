@@ -43,9 +43,11 @@ class Question(models.Model):
                             help_text="Label shown above the question")
     text = models.TextField()
     text_hi = models.TextField("text (Hindi)", blank=True)
+    text_gu = models.TextField("text (Gujarati)", blank=True)
     keep_choice_order = models.BooleanField(default=False, help_text='Never shuffle this question\'s options (e.g. "All of the above")')
     explanation = models.TextField(blank=True, help_text="Shown after answering")
     explanation_hi = models.TextField("explanation (Hindi)", blank=True)
+    explanation_gu = models.TextField("explanation (Gujarati)", blank=True)
     order = models.PositiveSmallIntegerField(default=0)
 
     class Meta:
@@ -67,6 +69,7 @@ class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name="choices")
     text = models.CharField(max_length=300)
     text_hi = models.CharField("text (Hindi)", max_length=300, blank=True)
+    text_gu = models.CharField("text (Gujarati)", max_length=300, blank=True)
     is_correct = models.BooleanField(default=False)
     order = models.PositiveSmallIntegerField(default=0)
 

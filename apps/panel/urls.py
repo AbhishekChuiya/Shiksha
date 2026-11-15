@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views, views_kb as kb, views_more as m
+from . import views, views_import as imp, views_kb as kb, views_more as m
 
 app_name = "panel"
 urlpatterns = [
@@ -31,6 +31,9 @@ urlpatterns = [
     path("sops/new/", m.sop_edit, name="sop_new"),
     path("sops/<int:pk>/", m.sop_edit, name="sop_edit"),
     path("sops/<int:pk>/delete/", m.sop_delete, name="sop_delete"),
+    # imports
+    path("import/", imp.import_center, name="import"),
+    path("import/sample/<slug:kind>.<slug:ext>", imp.import_sample, name="import_sample"),
     # knowledge base
     path("knowledge/", kb.kb_list, name="kb"),
     path("knowledge/new/", kb.kb_edit, name="kb_new"),

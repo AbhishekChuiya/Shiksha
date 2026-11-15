@@ -6,7 +6,7 @@
 {% if plant %}<nav class="tabs">{% for key, label in tabs %}<a class="{% if tab == key %}on{% endif %}" href="{% url 'panel:plant_tab' plant.pk key %}">{{ label }}</a>{% endfor %}</nav>{% endif %}
 <form method="post" enctype="multipart/form-data" data-dirty-guard>{% csrf_token %}
   {% if tab == "details" %}{% include "panel/_form_fields.html" %}
-  {% else %}{% for ed in editors %}{% include "panel/_editor.html" with key=ed.key title=ed.title fields=ed.fields rows=ed.rows blank=ed.blank empty_hint=ed.empty_hint add_label=ed.add_label info=ed.info has_hindi=ed.has_hindi %}{% endfor %}
+  {% else %}{% for ed in editors %}{% include "panel/_editor.html" with key=ed.key title=ed.title fields=ed.fields rows=ed.rows blank=ed.blank empty_hint=ed.empty_hint add_label=ed.add_label info=ed.info has_hindi=ed.has_hindi has_gujarati=ed.has_gujarati %}{% endfor %}
   {% if tab == "structure" and editors|length == 1 %}<div class="alert info">{% icon 'info' %}<div>Save your departments first — then you can add processes (like Extrusion) to each one.</div></div>{% endif %}{% endif %}
   <div class="pn-savebar"><button class="btn lg" type="submit">{% icon 'check' %}Save changes</button><a class="btn ghost" href="{% url 'panel:plants' %}">Back to plants</a>
     {% if plant and tab == "details" %}<span class="grow"></span><button class="btn ghost danger" type="submit" formaction="{% url 'panel:plant_delete' plant.pk %}" formnovalidate data-confirm="Delete {{ plant.name }} and everything in it? This cannot be undone.">{% icon 'trash' %}Delete plant</button>{% endif %}</div>

@@ -5,6 +5,21 @@
 
 <div class="pn-stats">{% for s in stats %}<a class="card hover pn-stat" href="{{ s.url }}"><span class="ico">{% icon s.icon %}</span><div><strong>{{ s.value }}</strong><span>{{ s.label }}</span></div></a>{% endfor %}</div>
 
+<div class="charts">
+  <section class="card chart-card"><h3>Learner activity</h3><p>Learners who studied each day (last 14 days)</p>
+    {% include "_chart_bars.html" with items=charts.daily maxv=charts.daily_max aria="Active learners per day" %}</section>
+  <section class="card chart-card"><h3>Certificates issued</h3><p>Per week, last 8 weeks</p>
+    {% include "_chart_bars.html" with items=charts.weeks maxv=charts.weeks_max aria="Certificates per week" %}</section>
+  <section class="card chart-card"><h3>Module status</h3><p>Across all learners</p>
+    {% include "_chart_donut.html" with d=charts.status center=charts.status.total caption="total" %}</section>
+</div>
+<div class="charts two">
+  <section class="card chart-card"><h3>Completion by department</h3><p>Share of started modules that are finished</p>
+    {% if charts.depts %}{% include "_chart_hbars.html" with rows=charts.depts %}{% else %}<div class="chart-empty">No learner activity yet.</div>{% endif %}</section>
+  <section class="card chart-card"><h3>Modules to look at</h3><p>Lowest quiz pass rates — these may need clearer steps</p>
+    {% if charts.hard %}{% include "_chart_hbars.html" with rows=charts.hard %}{% else %}<div class="chart-empty">No quiz attempts yet.</div>{% endif %}</section>
+</div>
+
 <div class="split" style="margin-top:20px">
   <div class="stack">
     <section class="card"><h3>Needs your attention</h3>

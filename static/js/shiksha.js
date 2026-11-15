@@ -186,12 +186,24 @@
   });
 
   // ---- Read aloud: voice follows the CONTENT language, not the UI language ----
-  var synth = window.speechSynthesis, current = null;
-  function contentLang(text, hint) {
-    if (hint) return hint;
+  var synth = window.speechSynthesis, current = null, token = 0;
+  function scriptLang(text, hint) {
     if (/[઀-૿]/.test(text)) return "gu-IN";
     if (/[ऀ-ॿ]/.test(text)) return "hi-IN";
-    return "en-IN";
+    return hint && hint.indexOf("en") === 0 ? hint : "en-IN";
+  }
+  // Gujarati and Devanagari letters sit in the same order in Unicode (offset 0x180), so Gujarati text can be
+  // read by a Hindi voice when no Gujarati voice is installed (very common on Windows / desktop Chrome).
+  function gu2dev(s) { return s.replace(/[઀-૿]/g, function (c) { return String.fromCharCode(c.charCodeAt(0) - 0x180); }); }
+  // Short pieces: browsers silently stop long utterances, and this also lets Pause / Stop react quickly.
+  function pieces(text, hint) {
+    var raw = text.replace(/\s+/g, " ").match(/[^.!?।\n]+[.!?।]*/g) || [text], out = [], buf = "";
+    raw.forEach(function (r) {
+      r = r.trim(); if (!r) return;
+      if ((buf + " " + r).length > 180 && buf) { out.push(buf); buf = r; } else { buf = buf ? buf + " " + r : r; }
+    });
+    if (buf) out.push(buf);
+    return out.map(function (x) { return { text: x, lang: scriptLang(x, hint) }; });
   }
   function loadVoices(cb) {
     var v = synth.getVoices();
@@ -199,31 +211,60 @@
     var done = false;
     function fin() { if (done) return; done = true; cb(synth.getVoices()); }
     synth.addEventListener("voiceschanged", fin, { once: true });
-    setTimeout(fin, 1200);
+    setTimeout(fin, 1500);
   }
   function pickVoice(voices, lang) {
     var base = lang.split("-")[0], norm = function (x) { return (x || "").replace("_", "-").toLowerCase(); };
     return voices.find(function (v) { return norm(v.lang) === lang.toLowerCase(); }) ||
            voices.find(function (v) { return norm(v.lang).indexOf(base) === 0; }) || null;
   }
-  var warnedVoice = false;
-  function stop() { if (synth) synth.cancel(); if (current) current.classList.remove("playing"); current = null; }
+  var warned = {};
+  function warnOnce(key, level, msg) { if (warned[key]) return; warned[key] = 1; toast(level, msg); }
+  function markStop(on) { $$("[data-speak-stop]").forEach(function (b) { b.classList.toggle("active", !!on && b.parentNode && b.parentNode.contains(current)); }); }
+  function stop() { token++; if (synth) synth.cancel(); if (current) current.classList.remove("playing"); current = null; markStop(false); }
+  // Every read-aloud button gets a Stop button beside it (added automatically, so no screen can forget it).
+  var STOP_SVG = '<svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
+  function addStopButtons() {
+    $$("[data-speak]").forEach(function (btn) {
+      var host = btn.parentNode; if (!host || host.querySelector("[data-speak-stop]")) return;
+      var b = document.createElement("button"); b.type = "button"; b.setAttribute("data-speak-stop", "");
+      var small = /\bsm\b/.test(btn.className), icon = btn.classList.contains("icon-btn");
+      b.className = "speak-stop " + (icon ? "icon-btn" : "btn secondary" + (small ? " sm" : ""));
+      var label = t("stop", "Stop"); b.title = label; b.setAttribute("aria-label", label);
+      b.innerHTML = STOP_SVG + (icon ? "" : "<span>" + label + "</span>");
+      btn.insertAdjacentElement("afterend", b);
+    });
+  }
+  addStopButtons();
   function speak(btn) {
     if (!synth) { toast("error", t("noTts", "Read-aloud is not supported on this browser.")); return; }
     if (current === btn) { if (synth.paused) { synth.resume(); btn.classList.add("playing"); } else { synth.pause(); btn.classList.remove("playing"); } return; }
     stop();
     var target = $(btn.getAttribute("data-speak")); if (!target) return;
     var text = target.innerText.trim(); if (!text) return;
-    var lang = contentLang(text, target.getAttribute("data-lang") || btn.getAttribute("data-lang"));
-    current = btn; btn.classList.add("playing");
+    var parts = pieces(text, target.getAttribute("data-lang") || btn.getAttribute("data-lang"));
+    var my = ++token; current = btn; btn.classList.add("playing"); markStop(true);
     loadVoices(function (voices) {
-      if (current !== btn) return;                      // stopped while voices were loading
-      var u = new SpeechSynthesisUtterance(text), v = pickVoice(voices, lang);
-      u.lang = lang; if (v) { try { u.voice = v; } catch (e) {} } u.rate = 0.95;
-      if (!v && voices.length && lang.indexOf("hi") === 0 && !warnedVoice) { warnedVoice = true; toast("info", t("noVoice", "No Hindi voice is installed on this device, so the default voice is used.")); }
-      u.onend = function () { if (current === btn) stop(); };
-      u.onerror = function () { if (current === btn) stop(); };
-      synth.speak(u);
+      if (my !== token) return;                          // stopped while voices were loading
+      var i = 0;
+      (function next() {
+        if (my !== token) return;
+        if (i >= parts.length) { stop(); return; }
+        var p = parts[i++], lang = p.lang, str = p.text, v = pickVoice(voices, lang);
+        if (!v && lang === "gu-IN") {                    // no Gujarati voice: use the Hindi voice on transliterated text
+          var hv = pickVoice(voices, "hi-IN");
+          if (hv) { v = hv; str = gu2dev(str); lang = "hi-IN"; warnOnce("gu2hi", "info", t("gu2hi", "Gujarati voice not found on this device — reading with the Hindi voice instead.")); }
+        }
+        if (!v && lang !== "en-IN" && voices.length) warnOnce("novoice", "info", t("noVoice", "No voice for this language is installed on this device, so the default voice is used."));
+        var u = new SpeechSynthesisUtterance(str);
+        u.lang = lang; if (v) { try { u.voice = v; } catch (e) {} } u.rate = 0.95;
+        u.onend = next;
+        u.onerror = function (ev) {
+          if (my !== token || (ev && (ev.error === "canceled" || ev.error === "interrupted"))) return;
+          warnOnce("ttserr", "error", t("ttsErr", "Couldn't read this aloud on this device.")); stop();
+        };
+        synth.speak(u);
+      })();
     });
   }
   document.addEventListener("click", function (e) {
@@ -359,6 +400,7 @@
   // =====================================================================
   var SWAP = ["mod-head", "mod-tabs", "sop-area"], busy = false;
   function swapFrom(doc) {
+    setTimeout(addStopButtons, 0);
     SWAP.forEach(function (id) { var o = document.getElementById(id), n = doc.getElementById(id); if (o && n) o.replaceWith(document.adoptNode(n)); });
   }
   function ensureStepVisible() {

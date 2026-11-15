@@ -12,7 +12,8 @@
       <h1>{{ module.display_title }}</h1>
       <div class="meta" style="margin-top:10px"><span>{% icon 'file' %}{{ steps_total }} {% translate "steps" %}</span><span>{% icon 'clock' %}{{ module.est_minutes }} {% translate "min" %}</span>{% if module.instructor %}<span>{% icon 'user' %}{{ module.instructor }}</span>{% endif %}</div>
     </div>
-    <div class="row" style="gap:18px">
+    <div class="row head-actions" style="gap:18px">
+      {% if tab != "sops" %}<a class="btn lg head-cta" href="{{ cta_url }}">{% if cta_key == "quiz" %}{% icon 'gauge' %}{% translate "Take the quiz" %}{% elif cta_key == "review" %}{% icon 'refresh' %}{% translate "Review this module" %}{% elif cta_key == "continue" %}{% icon 'play' %}{% translate "Continue learning" %}{% else %}{% icon 'play' %}{% translate "Start learning" %}{% endif %}</a>{% endif %}
       <a class="btn subtle" href="{% url 'incidents:create' %}?module={{ module.slug }}">{% icon 'flag-alt' %}{% translate "Report an issue" %}</a>
       <div class="ring" style="--p:{{ progress.percent }}"><div><div><strong>{{ progress.percent }}%</strong></div></div></div>
     </div>
@@ -30,12 +31,13 @@
 </nav>
 
 {% if tab == "overview" %}
+{% include "learning/_journey.html" %}
 {% include "learning/_gallery.html" with items=gallery group="module" %}
 <div class="split">
   <div class="card">
     <div class="row between"><p class="overline" style="margin:0">{% translate "Module overview" %}</p><button class="btn secondary sm" data-speak="#overview-text">{% icon 'speaker' %}{% translate "Listen" %}</button></div>
     <div class="prose" id="overview-text" style="margin-top:12px">{{ module.display_overview|linebreaks }}</div>
-    {% if LANG == "hi" and not module.overview_hi %}<p class="small muted"><span class="badge grey">EN</span> {% translate "Hindi translation not available — showing English" %}</p>{% endif %}
+    {% if LANG == "hi" and not module.overview_hi or LANG == "gu" and not module.overview_gu %}<p class="small muted"><span class="badge grey">EN</span> {% translate "Translation not available in this language — showing English" %}</p>{% endif %}
     {% if module.objective_list %}<p class="overline" style="margin-top:22px">{% translate "Learning objectives" %}</p>
     <ul style="padding:0;list-style:none;display:grid;gap:10px">{% for o in module.objective_list %}<li class="row" style="align-items:flex-start">{% icon 'check-circle' 'ok-i' %}<span>{{ o }}</span></li>{% endfor %}</ul>{% endif %}
   </div>

@@ -87,7 +87,7 @@
       {% endif %}
 
       <div class="dd">
-        <button type="button" class="dd-btn" title="{% translate 'Language' %}">{% icon 'globe' %}<span class="lbl">{% if LANG == 'hi' %}हिन्दी{% else %}English{% endif %}</span>{% icon 'chevron-down' 'chev' %}</button>
+        <button type="button" class="dd-btn" title="{% translate 'Language' %}">{% icon 'globe' %}<span class="lbl">{% if LANG == 'hi' %}हिन्दी{% elif LANG == 'gu' %}ગુજરાતી{% else %}English{% endif %}</span>{% icon 'chevron-down' 'chev' %}</button>
         <form class="dd-menu" method="post" action="{% url 'set_language' %}" style="min-width:190px">{% csrf_token %}
           <input type="hidden" name="next" value="{{ request.get_full_path }}">
           {% for code, name in LANGUAGE_CHOICES %}
@@ -109,7 +109,7 @@
           <a class="dd-item" href="{% url 'accounts:account' %}">{% icon 'user' %}{% translate "My account" %}</a>
           <a class="dd-item" href="{% url 'certificates:list' %}">{% icon 'award' %}{% translate "My certificates" %}</a>
           <a class="dd-item" href="{% url 'incidents:list' %}">{% icon 'alert' %}{% translate "My incidents" %}</a>
-          <a class="dd-item" href="{% url 'accounts:account' %}#password">{% icon 'key' %}{% translate "Change password" %}</a>
+          <a class="dd-item" href="{% url 'accounts:password_change' %}">{% icon 'key' %}{% translate "Change password" %}</a>
           <button type="button" class="dd-item theme-item" data-theme-toggle>{% icon 'moon' %}{% translate "Dark / light mode" %}</button>
           {% if can_toggle_view %}
           <div class="dd-sep"></div>
@@ -142,8 +142,8 @@
   <button type="button" data-nav-toggle><span class="bn-ico">{% icon 'grid' %}</span>{% translate "More" %}</button>
 </nav>{% endblock %}
 
-{% translate "Nice work! {n} to go." as m_cheer %}{% translate "Almost there — just {n} left!" as m_almost %}{% translate "Link copied to clipboard." as m_copied %}{% translate "Read-aloud is not supported on this browser." as m_notts %}{% translate "No Hindi voice is installed on this device, so the default voice is used." as m_novoice %}{% translate "Couldn't reach the server. Please try again." as m_net %}{% translate "Not now" as m_notnow %}{% translate "Continue" as m_cont %}{% translate "No results for" as m_nores %}{% translate "See all results for" as m_seeall %}
-<script id="i18n" type="application/json">{"copied":"{{ m_copied|escapejs }}","cheer":"{{ m_cheer|escapejs }}","almost":"{{ m_almost|escapejs }}","noTts":"{{ m_notts|escapejs }}","noVoice":"{{ m_novoice|escapejs }}","net":"{{ m_net|escapejs }}","notNow":"{{ m_notnow|escapejs }}","cont":"{{ m_cont|escapejs }}","noResults":"{{ m_nores|escapejs }}","seeAll":"{{ m_seeall|escapejs }}","lang":"{{ LANG }}"}</script>
+{% translate "Nice work! {n} to go." as m_cheer %}{% translate "Almost there — just {n} left!" as m_almost %}{% translate "Stop" as m_stop %}{% translate "Gujarati voice not found on this device — reading with the Hindi voice instead." as m_gu2hi %}{% translate "No voice found for this language. Please install a voice in your device's speech settings." as m_novoiceany %}{% translate "Couldn't read this aloud on this device." as m_ttserr %}{% translate "Link copied to clipboard." as m_copied %}{% translate "Read-aloud is not supported on this browser." as m_notts %}{% translate "No voice for this language is installed on this device, so the default voice is used." as m_novoice %}{% translate "Couldn't reach the server. Please try again." as m_net %}{% translate "Not now" as m_notnow %}{% translate "Continue" as m_cont %}{% translate "No results for" as m_nores %}{% translate "See all results for" as m_seeall %}
+<script id="i18n" type="application/json">{"copied":"{{ m_copied|escapejs }}","stop":"{{ m_stop|escapejs }}","gu2hi":"{{ m_gu2hi|escapejs }}","noVoiceAny":"{{ m_novoiceany|escapejs }}","ttsErr":"{{ m_ttserr|escapejs }}","cheer":"{{ m_cheer|escapejs }}","almost":"{{ m_almost|escapejs }}","noTts":"{{ m_notts|escapejs }}","noVoice":"{{ m_novoice|escapejs }}","net":"{{ m_net|escapejs }}","notNow":"{{ m_notnow|escapejs }}","cont":"{{ m_cont|escapejs }}","noResults":"{{ m_nores|escapejs }}","seeAll":"{{ m_seeall|escapejs }}","lang":"{{ LANG }}"}</script>
 <script src="{% static 'js/shiksha.js' %}"></script>
 {% block scripts %}{% endblock %}
 </body>

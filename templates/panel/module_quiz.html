@@ -24,7 +24,7 @@
     <details class="card pn-bulk"><summary>{% icon 'upload' %}<b>Import questions from Excel / CSV</b>{% icon 'chevron-down' 'chev' %}</summary>
       <form method="post" action="{% url 'panel:module_import' module.pk 'quiz' %}" enctype="multipart/form-data" style="margin-top:14px">{% csrf_token %}
         <p class="muted small">Columns: <code>question, option_a … option_d, correct</code> (A–D) and optionally <code>kind, explanation, question_hi, option_a_hi …</code>. Save from Excel as <b>CSV UTF-8</b>.</p>
-        <input type="file" name="csv" accept=".csv"><label class="pn-check sm"><input type="checkbox" name="mode" value="replace"><span>Replace all existing questions (otherwise these are added)</span></label>
+        <input type="file" name="csv" accept=".csv,.xlsx"><label class="pn-check sm"><input type="checkbox" name="mode" value="replace"><span>Replace all existing questions (otherwise these are added)</span></label>
         <div class="row wrap"><button class="btn" type="submit">{% icon 'upload' %}Import file</button><a class="btn ghost" href="{% url 'panel:sample_csv' 'quiz' %}">{% icon 'download' %}Sample file</a></div></form></details>
   </div>
   <form class="card" method="post" data-dirty-guard>{% csrf_token %}

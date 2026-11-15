@@ -1,0 +1,39 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "Profile photo" %}{% endblock %}
+{% block content %}
+<nav class="crumbs"><a href="{% url 'accounts:account' %}">{% translate "My account" %}</a>{% icon 'chevron-right' %}<b>{% translate "Profile photo" %}</b></nav>
+<div class="acct-page">
+  <form class="card" method="post" action="{% url 'accounts:photo_update' %}" enctype="multipart/form-data">{% csrf_token %}
+    <h2>{% translate "Profile photo" %}</h2>
+    <div class="photo-edit big">
+      <div class="photo-preview" id="photo-preview">{% if user.photo %}<img src="{{ user.photo.url }}" alt="">{% else %}<span>{{ user.initial }}</span>{% endif %}</div>
+      <p class="small muted">{% translate "JPG, PNG or WEBP, up to 5 MB. It is cropped to a square." %}</p>
+      <input type="file" name="photo" id="photo-input" accept="image/jpeg,image/png,image/webp" hidden>
+      <div class="row wrap" style="justify-content:center">
+        <label for="photo-input" class="btn secondary lg" role="button" tabindex="0">{% icon 'image' %}{% translate "Choose photo" %}</label>
+        <button class="btn lg" type="submit" id="photo-save" hidden>{% icon 'check' %}{% translate "Save photo" %}</button>
+      </div>
+      <div class="row wrap" style="justify-content:center;margin-top:6px">
+        {% if user.photo %}<button class="btn ghost danger" type="submit" name="action" value="remove" data-no-loading>{% icon 'trash' %}{% translate "Remove photo" %}</button>{% endif %}
+        <a class="btn ghost" href="{% url 'accounts:account' %}">{% translate "Cancel" %}</a>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+(function () {
+  var input = document.getElementById("photo-input"), box = document.getElementById("photo-preview"), save = document.getElementById("photo-save");
+  if (!input) return;
+  input.addEventListener("change", function () {
+    var f = input.files && input.files[0]; if (!f) return;
+    if (f.size > 5 * 1024 * 1024) { input.value = ""; window.shikshaToast("error", "{% translate 'The photo is too large. Please use an image under 5 MB.' as m %}{{ m|escapejs }}"); return; }
+    var r = new FileReader();
+    r.onload = function (e) { box.innerHTML = ""; var img = document.createElement("img"); img.src = e.target.result; img.alt = ""; box.appendChild(img); };
+    r.readAsDataURL(f); save.hidden = false;
+  });
+  document.querySelector('label[for="photo-input"]').addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); input.click(); } });
+})();
+</script>
+{% endblock %}

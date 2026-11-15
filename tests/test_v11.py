@@ -1,3 +1,4 @@
+import io
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
 from django.test import TestCase
@@ -11,7 +12,7 @@ from apps.learning.models import Module
 class AdvancedAdminTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         cls.boss = User.objects.get(email="test_admin@vishakha.com")
         cls.root = User.objects.create_superuser(email="root@vishakha.com", password="Str0ng-Pass-9917")
 
@@ -43,7 +44,7 @@ class AdvancedAdminTests(TestCase):
 class SafetyColourTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
 
     def test_groups_are_colour_coded(self):
         self.client.force_login(User.objects.get(employee_id="test_user"))
@@ -64,7 +65,7 @@ class SafetyColourTests(TestCase):
 class KnowledgeBaseTests(TestCase):
     @classmethod
     def setUpTestData(cls):
-        call_command("seed_demo", stdout=open("/dev/null", "w"))
+        call_command("seed_demo", stdout=io.StringIO())
         cls.learner = User.objects.get(employee_id="test_user")
         cls.boss = User.objects.get(employee_id="test_admin")
 
@@ -126,3 +127,27 @@ class KnowledgeBaseTests(TestCase):
     def test_categories_editor_page(self):
         self.client.force_login(self.boss)
         self.assertContains(self.client.get(reverse("panel:kb_categories")), "Machine manuals")
+
+
+class BestScoreTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_demo", stdout=io.StringIO())
+
+    def test_chart_has_one_bar_per_module_with_the_best_score(self):
+        from django.utils import timezone
+        from apps.core.charts import learner_charts
+        from apps.quizzes.models import Attempt, Quiz
+        u = User.objects.get(employee_id="test_user2")
+        quiz = Quiz.objects.get(module__slug="vmpl_melt_cast")
+        for score in (50, 0, 50, 100, 50):                 # several tries, the last one is worse
+            Attempt.objects.create(quiz=quiz, user=u, finished_at=timezone.now(), score_percent=score, passed=score >= 80)
+        scores = learner_charts(u, quiz.module.plant)["scores"]
+        self.assertEqual(len(scores), 1)
+        self.assertEqual((scores[0]["value"], scores[0]["tone"]), (100, "ok"))
+
+    def test_three_departments_exist(self):
+        from apps.plants.models import Department
+        names = set(Department.objects.filter(plant__code="vmpl-p1").values_list("name", flat=True))
+        self.assertTrue({"Production", "QC", "Maintenance"} <= names)
+        self.assertTrue(Module.objects.filter(department__name="Maintenance").exists())

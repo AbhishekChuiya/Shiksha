@@ -49,7 +49,7 @@ def kb_edit(request, pk=None):
     return render_panel(request, "panel/kb_edit.html", page_title=title, obj=obj, form=form,
                         crumbs=crumbs(("Knowledge base", reverse("panel:kb")), (title, None)),
                         groups=[("What is it?", ["title", "category", "plant", "is_active"]), ("The file", ["file", "url"]),
-                                ("Short description (optional)", ["description"]), ("Hindi (optional)", ["title_hi", "description_hi"]), ("Order", ["order"])])
+                                ("Short description (optional)", ["description"]), ("Hindi (optional)", ["title_hi", "description_hi"]), ("Gujarati (optional)", ["title_gu", "description_gu"]), ("Order", ["order"])])
 
 
 @admin_required

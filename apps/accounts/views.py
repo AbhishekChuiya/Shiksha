@@ -133,45 +133,42 @@ def sso_callback(request):
     return redirect(settings.LOGIN_REDIRECT_URL)
 
 
-class AccountView(auth_views.PasswordChangeView):
-    """My account: photo, name, password and read-only account details on one page."""
-    template_name = "accounts/account.html"
+from django.contrib.auth.decorators import login_required
+
+
+@login_required
+def account_home(request):
+    """My account: a simple menu. Each task (photo, details, password) opens on its own page."""
+    return render(request, "accounts/account.html", {"plants_list": request.user.accessible_plants()})
+
+
+class PasswordPage(auth_views.PasswordChangeView):
+    template_name = "accounts/password.html"
     success_url = reverse_lazy("accounts:account")
-
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields["old_password"].widget.attrs.pop("autofocus", None)  # don't scroll past the photo on page load
-        return form
-
-    def get_context_data(self, **kw):
-        ctx = super().get_context_data(**kw)
-        user = self.request.user
-        ctx.setdefault("profile_form", ProfileForm(instance=user))
-        ctx["plants_list"] = user.accessible_plants()
-        return ctx
 
     def form_valid(self, form):
         messages.success(self.request, _("Password updated."))
         return super().form_valid(form)   # PasswordChangeView keeps the user signed in
 
 
+@login_required
 def profile_update(request):
-    if not request.user.is_authenticated:
-        return redirect("accounts:login")
     form = ProfileForm(request.POST or None, instance=request.user)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        messages.success(request, _("Your name was updated. It will appear on your certificates."))
-    elif request.method == "POST":
+    if request.method == "POST":
+        if form.is_valid():
+            form.save()
+            messages.success(request, _("Your name was updated. It will appear on your certificates."))
+            return redirect("accounts:account")
         messages.error(request, _("Please enter both first and last name."))
-    return redirect("accounts:account")
+    return render(request, "accounts/details.html", {"profile_form": form, "plants_list": request.user.accessible_plants()})
 
 
-@require_POST
+@login_required
 def photo_update(request):
-    if not request.user.is_authenticated:
-        return redirect("accounts:login")
     user = request.user
+    page = lambda: render(request, "accounts/photo.html")
+    if request.method != "POST":
+        return page()
     if request.POST.get("action") == "remove":
         if user.photo:
             user.photo.delete(save=False)
@@ -182,13 +179,13 @@ def photo_update(request):
     upload = request.FILES.get("photo")
     if not upload:
         messages.error(request, _("Please choose a photo first."))
-        return redirect("accounts:account")
+        return page()
     try:
         processed = process_avatar(upload)
     except AvatarError as exc:
         messages.error(request, _("The photo is too large. Please use an image under 5 MB.") if str(exc) == "big"
                        else _("Please upload a JPG, PNG or WEBP image."))
-        return redirect("accounts:account")
+        return page()
     if user.photo:
         user.photo.delete(save=False)
     user.photo.save(processed.name, processed, save=True)

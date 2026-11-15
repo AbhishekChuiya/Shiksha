@@ -71,6 +71,11 @@ def has_hindi_value(row, fields):
 
 
 @register.filter
+def has_gujarati_value(row, fields):
+    return any(f.gujarati and (row["vals"].get(f.name) or row["errors"].get(f.name)) for f in fields)
+
+
+@register.filter
 def selected(value, option):
     return str(value) == str(option)
 

@@ -13,7 +13,7 @@
     </form>
     <form method="post" action="{% url 'panel:module_import' module.pk 'steps' %}" enctype="multipart/form-data">{% csrf_token %}
       <h4>Import from Excel / CSV</h4><p class="muted small">Columns: <code>step, text, text_hi</code> (Hindi optional). Save from Excel as <b>CSV UTF-8</b>.</p>
-      <input type="file" name="csv" accept=".csv">
+      <input type="file" name="csv" accept=".csv,.xlsx">
       <label class="pn-check sm"><input type="checkbox" name="mode" value="replace"><span>Replace the existing steps</span></label>
       <div class="row wrap"><button class="btn" type="submit">{% icon 'upload' %}Import file</button><a class="btn ghost" href="{% url 'panel:sample_csv' 'steps' %}">{% icon 'download' %}Sample file</a></div>
     </form>
@@ -22,7 +22,7 @@
 {% endif %}
 <form method="post" enctype="multipart/form-data" data-dirty-guard>{% csrf_token %}
   {% if tab == "details" %}{% include "panel/_form_fields.html" %}
-  {% else %}{% for ed in editors %}{% include "panel/_editor.html" with key=ed.key title=ed.title fields=ed.fields rows=ed.rows blank=ed.blank empty_hint=ed.empty_hint add_label=ed.add_label info=ed.info has_hindi=ed.has_hindi %}{% endfor %}{% endif %}
+  {% else %}{% for ed in editors %}{% include "panel/_editor.html" with key=ed.key title=ed.title fields=ed.fields rows=ed.rows blank=ed.blank empty_hint=ed.empty_hint add_label=ed.add_label info=ed.info has_hindi=ed.has_hindi has_gujarati=ed.has_gujarati %}{% endfor %}{% endif %}
   <div class="pn-savebar"><button class="btn lg" type="submit">{% icon 'check' %}{% if tab == "details" and not module %}Create module{% else %}Save changes{% endif %}</button><a class="btn ghost" href="{% url 'panel:modules' %}">Back to modules</a>
     {% if module and tab == "details" %}<span class="grow"></span><a class="btn ghost danger" href="{% url 'panel:module_delete' module.pk %}">{% icon 'trash' %}Delete module</a>{% endif %}</div>
 </form>
