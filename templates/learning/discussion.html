@@ -1,7 +1,7 @@
 {% extends "base.html" %}{% load i18n shiksha %}
 {% block title %}{% translate "Discussion" %}{% endblock %}
 {% block content %}
-<div class="page-head"><div><h1>{% translate "Discussion" %}</h1><p>{% translate "A shared space for every plant and module — ask questions, share tips and learn from each other." %}</p></div></div>
+<div class="page-head"><div><h1>{% translate "Discussion" %}</h1><p>{{ current_plant.name }} · {% translate "A shared space for everyone at this plant — ask questions, share tips and learn from each other." %}</p></div></div>
 
 <form class="card composer" method="post" action="{% url 'discussion:post' %}">{% csrf_token %}
   <input type="hidden" name="next" value="{{ request.get_full_path }}">
@@ -10,7 +10,7 @@
   <div class="row between wrap" style="margin-top:12px">
     <select name="module" aria-label="{% translate 'Related module (optional)' %}" class="topic-select">
       <option value="">{% translate "No specific module" %}</option>
-      {% for m in topics %}<option value="{{ m.slug }}" {% if module_filter and m.pk == module_filter.pk %}selected{% endif %}>{{ m.plant.name }} · {{ m.display_title }}</option>{% endfor %}
+      {% for m in topics %}<option value="{{ m.slug }}" {% if module_filter and m.pk == module_filter.pk %}selected{% endif %}>{{ m.display_title }}</option>{% endfor %}
     </select>
     <button class="btn" type="submit">{% icon 'chat' %}{% translate "Post" %}</button>
   </div>

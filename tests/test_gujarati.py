@@ -286,3 +286,43 @@ class SuperuserLoginAndSignupTests(TestCase):
         self.assertIn("પહેલું નામ", html)
         self.assertIn("અટક", html)
         self.assertNotIn(">First name<", html)
+
+
+class ThreeDLookTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_demo", stdout=io.StringIO())
+
+    def test_3d_scene_on_login_and_dashboard(self):
+        self.assertContains(self.client.get(reverse("accounts:login")), 'class="scene"')
+        self.client.force_login(User.objects.get(employee_id="test_user"))
+        html = self.client.get(reverse("core:dashboard")).content.decode()
+        self.assertIn('class="scene"', html)
+        self.assertIn("tilt-soft", html)
+
+    def test_tilt_respects_reduced_motion_and_touch(self):
+        js = open("static/js/shiksha.js", encoding="utf8").read()
+        self.assertIn("(hover: hover) and (pointer: fine)", js)
+        self.assertIn("if (reduced", js)
+        css = open("static/css/shiksha.css", encoding="utf8").read()
+        self.assertIn("prefers-reduced-motion: reduce) { .cube", css)
+
+    def test_voice_note_is_shown_once_per_device(self):
+        js = open("static/js/shiksha.js", encoding="utf8").read()
+        self.assertIn('store.get("shiksha-note-" + key)', js)
+
+
+class HeroLayoutAndCacheTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_demo", stdout=io.StringIO())
+
+    def test_scene_is_absolutely_positioned_inline_so_it_never_shifts_the_hero_grid(self):
+        self.client.force_login(User.objects.get(employee_id="test_user"))
+        html = self.client.get(reverse("core:dashboard")).content.decode()
+        self.assertIn('class="scene" aria-hidden="true" style="position:absolute', html)
+
+    def test_assets_are_cache_busted(self):
+        html = self.client.get(reverse("accounts:login")).content.decode()
+        self.assertRegex(html, r"shiksha\.css\?v=\d+")
+        self.assertRegex(html, r"shiksha\.js\?v=\d+")

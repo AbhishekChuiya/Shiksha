@@ -39,6 +39,9 @@ class Module(models.Model):
     overview = models.TextField(blank=True)
     overview_hi = models.TextField("overview (Hindi)", blank=True)
     overview_gu = models.TextField("overview (Gujarati)", blank=True)
+    purpose = models.TextField(blank=True, help_text="Why this process exists — shown on the Overview tab")
+    purpose_hi = models.TextField("purpose (Hindi)", blank=True)
+    purpose_gu = models.TextField("purpose (Gujarati)", blank=True)
     objectives = models.TextField(blank=True, help_text="One learning objective per line")
     objectives_hi = models.TextField("objectives (Hindi)", blank=True)
     objectives_gu = models.TextField("objectives (Gujarati)", blank=True)
@@ -79,6 +82,22 @@ class Module(models.Model):
         return localized(self, "overview")
 
     @property
+    def display_purpose(self):
+        return localized(self, "purpose")
+
+    @property
+    def accountable_summary(self):
+        """Everyone named as 'Accountable' in the Who-does-what table, each name once, in order."""
+        seen, out = set(), []
+        for role in self.roles.all():
+            for part in localized(role, "accountable").split("/"):
+                part = part.strip()
+                if part and part.lower() not in seen:
+                    seen.add(part.lower())
+                    out.append(part)
+        return " / ".join(out)
+
+    @property
     def objective_list(self):
         return [o.strip() for o in localized(self, "objectives").splitlines() if o.strip()]
 
@@ -86,7 +105,7 @@ class Module(models.Model):
         return SafetyGuideline.objects.filter(
             models.Q(module=self) | models.Q(module__isnull=True, plant=self.plant)
             | models.Q(module__isnull=True, plant__isnull=True)
-        )
+        ).filter(sop__isnull=True)      # rules that belong to ONE SOP are shown only inside that SOP
 
 
 class SafetyGuideline(models.Model):
@@ -98,6 +117,7 @@ class SafetyGuideline(models.Model):
 
     class Section(models.TextChoices):
         PPE = "ppe", "PPE required"
+        PRESTART = "prestart", "Pre-start checks"
         HAZARDS = "hazards", "Hazards — high-risk areas"
         PRACTICES = "practices", "Safe operating practices"
         DOS = "dos", "Do's"
@@ -108,6 +128,8 @@ class SafetyGuideline(models.Model):
     plant = models.ForeignKey("plants.Plant", null=True, blank=True, on_delete=models.CASCADE)
     module = models.ForeignKey(Module, null=True, blank=True, on_delete=models.CASCADE,
                                related_name="own_guidelines")
+    sop = models.ForeignKey("learning.ModuleSOP", null=True, blank=True, on_delete=models.CASCADE, related_name="guidelines",
+                            help_text="Leave empty for rules shared by the whole module")
     section = models.CharField(max_length=20, choices=Section.choices, default=Section.SAFETY)
     text = models.TextField()
     text_hi = models.TextField("text (Hindi)", blank=True)
@@ -127,6 +149,7 @@ class SafetyGuideline(models.Model):
 
 class SOPStep(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="steps")
+    sop = models.ForeignKey("learning.ModuleSOP", null=True, blank=True, on_delete=models.CASCADE, related_name="steps")
     number = models.PositiveSmallIntegerField()
     text = models.TextField()
     text_hi = models.TextField("text (Hindi)", blank=True)
@@ -134,8 +157,11 @@ class SOPStep(models.Model):
     image = models.ImageField(upload_to="modules/steps/", blank=True)
 
     class Meta:
-        ordering = ["module", "number"]
-        unique_together = [("module", "number")]
+        ordering = ["module", "sop", "number"]
+        constraints = [
+            models.UniqueConstraint(fields=["sop", "number"], condition=models.Q(sop__isnull=False), name="uniq_step_per_sop"),
+            models.UniqueConstraint(fields=["module", "number"], condition=models.Q(sop__isnull=True), name="uniq_step_per_module_without_sop"),
+        ]
 
     def __str__(self):
         return f"{self.module.title} — step {self.number}"
@@ -143,6 +169,109 @@ class SOPStep(models.Model):
     @property
     def display_text(self):
         return localized(self, "text")
+
+
+
+class ModuleSOP(models.Model):
+    """One procedure inside a module. A process often has several (e.g. Extrusion has 4); each has its own
+    steps, PPE, pre-start checks, hazards and safe-operating rules, and is acknowledged separately."""
+
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="sops")
+    title = models.CharField(max_length=200)
+    title_hi = models.CharField("title (Hindi)", max_length=200, blank=True)
+    title_gu = models.CharField("title (Gujarati)", max_length=200, blank=True)
+    code = models.CharField("document number", max_length=60, blank=True, help_text="e.g. VRPL-MANF-SOP-04")
+    revision = models.CharField(max_length=20, blank=True)
+    doc_date = models.DateField("document date", null=True, blank=True)
+    languages = models.CharField(max_length=80, blank=True, help_text="e.g. English + हिंदी")
+    intro = models.TextField("safety statement", blank=True, help_text="Shown above the “I agree” box")
+    intro_hi = models.TextField("safety statement (Hindi)", blank=True)
+    intro_gu = models.TextField("safety statement (Gujarati)", blank=True)
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["module", "order", "id"]
+        verbose_name = "SOP in module"
+        verbose_name_plural = "SOPs in module"
+
+    def __str__(self):
+        return f"{self.module.title} — {self.title}"
+
+    display_title = property(lambda self: localized(self, "title"))
+    display_intro = property(lambda self: localized(self, "intro"))
+
+    @property
+    def intro_paragraphs(self):
+        return [p.strip() for p in self.display_intro.split("\n") if p.strip()]
+
+
+class SOPAcknowledgement(models.Model):
+    """A learner agreed to the safety rules of one SOP."""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sop_acks")
+    sop = models.ForeignKey(ModuleSOP, on_delete=models.CASCADE, related_name="acks")
+    at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = [("user", "sop")]
+
+
+class ModuleRole(models.Model):
+    """'Who does what': one row of the responsibility table."""
+
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="roles")
+    activity = models.TextField()
+    activity_hi = models.TextField("activity (Hindi)", blank=True)
+    activity_gu = models.TextField("activity (Gujarati)", blank=True)
+    responsible = models.CharField(max_length=200, blank=True)
+    responsible_hi = models.CharField("responsible (Hindi)", max_length=200, blank=True)
+    responsible_gu = models.CharField("responsible (Gujarati)", max_length=200, blank=True)
+    accountable = models.CharField(max_length=200, blank=True)
+    accountable_hi = models.CharField("accountable (Hindi)", max_length=200, blank=True)
+    accountable_gu = models.CharField("accountable (Gujarati)", max_length=200, blank=True)
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["module", "order", "id"]
+
+    display_activity = property(lambda self: localized(self, "activity"))
+    display_responsible = property(lambda self: localized(self, "responsible"))
+    display_accountable = property(lambda self: localized(self, "accountable"))
+
+
+class ModuleEscalation(models.Model):
+    """'Who to call': a situation and what to do about it."""
+
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="escalations")
+    situation = models.CharField(max_length=200)
+    situation_hi = models.CharField("situation (Hindi)", max_length=200, blank=True)
+    situation_gu = models.CharField("situation (Gujarati)", max_length=200, blank=True)
+    action = models.CharField(max_length=200, default="Escalate immediately")
+    action_hi = models.CharField("action (Hindi)", max_length=200, blank=True)
+    action_gu = models.CharField("action (Gujarati)", max_length=200, blank=True)
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["module", "order", "id"]
+
+    display_situation = property(lambda self: localized(self, "situation"))
+    display_action = property(lambda self: localized(self, "action"))
+
+
+class ModuleRecord(models.Model):
+    """A form or record that belongs to this process, with its document number."""
+
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="records")
+    name = models.CharField(max_length=200)
+    name_hi = models.CharField("name (Hindi)", max_length=200, blank=True)
+    name_gu = models.CharField("name (Gujarati)", max_length=200, blank=True)
+    code = models.CharField("document number", max_length=80, blank=True)
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["module", "order", "id"]
+
+    display_name = property(lambda self: localized(self, "name"))
 
 
 class VideoLesson(models.Model):
@@ -218,10 +347,12 @@ class ModuleImage(models.Model):
 
 
 class DiscussionPost(models.Model):
-    """One global discussion space. A post may be tagged to a module; replies point at their parent."""
+    """One discussion space per plant (shared by every module of that plant). A post may be tagged to a module; replies point at their parent."""
 
     module = models.ForeignKey(Module, null=True, blank=True, on_delete=models.SET_NULL, related_name="posts",
                                help_text="Optional topic tag")
+    plant = models.ForeignKey("plants.Plant", null=True, blank=True, on_delete=models.CASCADE, related_name="discussion_posts",
+                              help_text="Each plant has its own discussion space")
     parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE, related_name="replies")
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="discussion_posts")
     body = models.TextField()

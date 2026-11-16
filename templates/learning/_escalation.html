@@ -1,0 +1,6 @@
+{% load i18n shiksha %}{% if escalations or accountable %}
+<aside class="card esc-card">
+  <h3>{% icon 'zap' %}{% translate "Who to call — Escalation" %}</h3>
+  {% if accountable %}<div class="esc-who"><span class="esc-ico">{% icon 'user' %}</span><div><small>{% translate "Accountable" %}</small><strong>{{ accountable }}</strong></div></div>{% endif %}
+  {% for e in escalations %}<div class="esc-item">{% icon 'alert' %}<span>{{ e.display_situation }}</span><strong>{{ e.display_action }}</strong></div>{% endfor %}
+</aside>{% endif %}

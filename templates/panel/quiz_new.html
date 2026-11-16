@@ -1,0 +1,51 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+{% include "panel/_crumbs.html" %}
+<div class="pn-head"><div><h1>Create a quiz</h1><p class="muted">Choose where the quiz belongs, then add its questions on the next page.</p></div></div>
+{% if not modules %}<div class="card empty"><h3>Every module already has a quiz</h3><p>Create a new module first, or open an existing quiz from the list.</p><a class="btn" href="{% url 'panel:module_new' %}">Add a module</a> <a class="btn secondary" href="{% url 'panel:quizzes' %}">Back to quizzes</a></div>
+{% else %}
+<form method="post" id="quiz-wizard">{% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert error">{% icon 'alert' %}<div>{{ form.non_field_errors|join:" " }}</div></div>{% endif %}
+  <section class="card pn-group"><h3><span class="qw-n">1</span>Where does the quiz belong?</h3>
+    <div class="pn-grid">
+      <div class="pn-field"><label for="qw-plant">Plant <span class="req">*</span></label>
+        <select name="plant" id="qw-plant" required><option value="">Choose a plant…</option>{% for p in plants %}<option value="{{ p.pk }}" {% if form.plant.value|stringformat:'s' == p.pk|stringformat:'s' %}selected{% endif %}>{{ p.name }}</option>{% endfor %}</select>{{ form.plant.errors }}</div>
+      <div class="pn-field"><label for="qw-dept">Category (department) <span class="req">*</span></label>
+        <select name="department" id="qw-dept" required><option value="">Choose a category…</option>{% for d in departments %}<option value="{{ d.pk }}" data-plant="{{ d.plant_id }}" {% if form.department.value|stringformat:'s' == d.pk|stringformat:'s' %}selected{% endif %}>{{ d.name }}</option>{% endfor %}</select>
+        <p class="pn-help">Production, QC, Maintenance … Learners find quizzes under these categories.</p>{{ form.department.errors }}</div>
+      <div class="pn-field wide"><label for="qw-module">Module <span class="req">*</span></label>
+        <select name="module" id="qw-module" required><option value="">Choose a module…</option>{% for m in modules %}<option value="{{ m.pk }}" data-plant="{{ m.plant_id }}" data-dept="{{ m.department_id }}" {% if form.module.value|stringformat:'s' == m.pk|stringformat:'s' %}selected{% endif %}>{{ m.title }}</option>{% endfor %}</select>
+        <p class="pn-help">Only modules that do not have a quiz yet are listed.</p>{{ form.module.errors }}</div>
+    </div></section>
+  <section class="card pn-group"><h3><span class="qw-n">2</span>Quiz rules</h3>
+    <div class="pn-grid">
+      <div class="pn-field"><label for="id_pass_percent">Pass mark (%)</label>{{ form.pass_percent }}{{ form.pass_percent.errors }}</div>
+      <div class="pn-field"><label for="id_questions_per_attempt">{{ form.questions_per_attempt.label }}</label>{{ form.questions_per_attempt }}<p class="pn-help">{{ form.questions_per_attempt.help_text }}</p></div>
+      <div class="pn-field"><label for="id_time_limit_minutes">{{ form.time_limit_minutes.label }}</label>{{ form.time_limit_minutes }}</div>
+      <div class="pn-field"><label for="id_max_attempts">{{ form.max_attempts.label }}</label>{{ form.max_attempts }}<p class="pn-help">{{ form.max_attempts.help_text }}</p></div>
+      <div class="pn-field wide"><label for="id_title">{{ form.title.label }}</label>{{ form.title }}<p class="pn-help">{{ form.title.help_text }}</p></div>
+    </div></section>
+  <div class="pn-savebar"><button class="btn lg" type="submit">{% icon 'check' %}Create quiz and add questions</button><a class="btn ghost" href="{% url 'panel:quizzes' %}">Cancel</a></div>
+</form>
+<script>
+(function () {
+  var plant = document.getElementById("qw-plant"), dept = document.getElementById("qw-dept"), mod = document.getElementById("qw-module");
+  function filter(sel, test) {
+    var keep = sel.value, ok = false;
+    [].slice.call(sel.options).forEach(function (o) { if (!o.value) return; var show = test(o); o.hidden = !show; o.disabled = !show; if (show && o.value === keep) ok = true; });
+    if (!ok) sel.value = "";
+  }
+  function sync() {
+    filter(dept, function (o) { return !plant.value || o.dataset.plant === plant.value; });
+    filter(mod, function (o) { return (!plant.value || o.dataset.plant === plant.value) && (!dept.value || o.dataset.dept === dept.value); });
+  }
+  plant.addEventListener("change", sync); dept.addEventListener("change", sync);
+  mod.addEventListener("change", function () {            // picking a module fills plant + category for you
+    var o = mod.options[mod.selectedIndex]; if (!o || !o.value) return;
+    plant.value = o.dataset.plant; sync(); dept.value = o.dataset.dept; sync(); mod.value = o.value;
+  });
+  sync();
+})();
+</script>
+{% endif %}
+{% endblock %}

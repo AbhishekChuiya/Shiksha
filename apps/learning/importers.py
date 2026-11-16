@@ -1,4 +1,6 @@
 """Bulk import of SOP steps and quiz questions from CSV rows (used by the admin panel and the manage.py commands)."""
+import re
+
 from django.db import transaction
 from django.utils.text import slugify
 
@@ -6,7 +8,7 @@ from apps.quizzes.models import Choice, Question, Quiz
 
 from apps.plants.models import Department, Plant, Process
 
-from .models import Module, SOPStep
+from .models import Module, ModuleSOP, SOPStep
 
 
 class ImportError_(ValueError):
@@ -14,17 +16,18 @@ class ImportError_(ValueError):
 
 
 @transaction.atomic
-def import_steps(module, rows, replace=True):
+def import_steps(module, rows, replace=True, sop=None):
     rows = [r for r in rows if (r.get("text") or "").strip()]
     if not rows:
         raise ImportError_("No steps found. The file needs a header row with: step, text (and optionally text_hi).")
+    existing = module.steps.filter(sop=sop)
     start = 0
     if replace:
-        module.steps.all().delete()
+        existing.delete()
     else:
-        start = module.steps.count()
+        start = existing.count()
     for i, r in enumerate(rows, start=1):
-        SOPStep.objects.create(module=module, number=start + i, text=r["text"].strip(), text_hi=(r.get("text_hi") or "").strip(), text_gu=(r.get("text_gu") or "").strip())
+        SOPStep.objects.create(module=module, sop=sop, number=start + i, text=r["text"].strip(), text_hi=(r.get("text_hi") or "").strip(), text_gu=(r.get("text_gu") or "").strip())
     return len(rows)
 
 
@@ -49,7 +52,7 @@ def import_quiz(module, rows, pass_percent=None, replace=True):
             raise ImportError_(f"Row {r.get('_row', i + 2)}: 'correct' must be one of {', '.join(x.upper() for x in letters)}.")
         q = Question.objects.create(quiz=quiz, order=base + i, text=r["question"].strip(), text_hi=(r.get("question_hi") or "").strip(), text_gu=(r.get("question_gu") or "").strip(),
                                     kind=(r.get("kind") or "Diagnostic").strip(), explanation=(r.get("explanation") or "").strip(),
-                                    explanation_gu=(r.get("explanation_gu") or "").strip())
+                                    explanation_hi=(r.get("explanation_hi") or "").strip(), explanation_gu=(r.get("explanation_gu") or "").strip())
         for j, k in enumerate(letters):
             Choice.objects.create(question=q, order=j, text=r[f"option_{k}"].strip(), text_hi=(r.get(f"option_{k}_hi") or "").strip(), text_gu=(r.get(f"option_{k}_gu") or "").strip(), is_correct=(k == correct))
     return len(rows)
@@ -79,6 +82,15 @@ def find_module(ident, plant=None):
     if len(hit) > 1:
         return None, f"“{ident}” matches {len(hit)} modules — use the module's slug instead"
     return None, f"no module called “{ident}” — create it first (Import → Modules) or check the spelling"
+
+
+def _resolve_sop(module, ident):
+    """The SOP a row belongs to: matched by document number or title inside the module; created if it is new."""
+    ident = (ident or "").strip()
+    if not ident:
+        return None
+    hit = module.sops.filter(code__iexact=ident).first() or module.sops.filter(title__iexact=ident).first()
+    return hit or ModuleSOP.objects.create(module=module, title=ident, order=module.sops.count())
 
 
 def _raise_errors(errors):
@@ -138,7 +150,7 @@ def import_modules(rows, default_plant=None):
             module = Module(plant=plant, slug=slug or _unique_slug(plant, title), status="draft", order=Module.objects.filter(plant=plant).count())
         if dept_name:
             module.department = Department.objects.get_or_create(plant=module.plant, name=dept_name, defaults={"order": module.plant.departments.count()})[0]
-        for f in ("title", "title_hi", "title_gu", "category", "category_hi", "category_gu", "summary", "summary_hi", "summary_gu", "overview", "overview_hi", "overview_gu", "instructor"):
+        for f in ("title", "title_hi", "title_gu", "purpose", "purpose_hi", "purpose_gu", "category", "category_hi", "category_gu", "summary", "summary_hi", "summary_gu", "overview", "overview_hi", "overview_gu", "instructor"):
             v = (r.get(f) or "").strip()
             if v:
                 setattr(module, f, v)
@@ -176,12 +188,13 @@ def import_steps_bulk(rows, replace=False):
         elif not (r.get("text") or "").strip():
             errors.append(f"Row {n}: the step text is empty")
         else:
-            groups.setdefault(module.pk, (module, []))[1].append(r)
+            sop = _resolve_sop(module, r.get("sop"))
+            groups.setdefault((module.pk, sop.pk if sop else None), (module, sop, []))[2].append(r)
     _raise_errors(errors)
     total = 0
-    for module, items in groups.values():
+    for module, sop, items in groups.values():
         items.sort(key=lambda x: (int(x["step"]) if (x.get("step") or "").isdigit() else 10**6, x.get("_row", 0)))
-        total += import_steps(module, items, replace=replace)
+        total += import_steps(module, items, replace=replace, sop=sop)
     return total, len(groups)
 
 
@@ -207,3 +220,53 @@ def import_quiz_bulk(rows, replace=False):
             errors.append(f"{module.title}: {exc}")
     _raise_errors(errors)
     return total, len(groups)
+
+
+PLANT_TEXT_FIELDS = ("company", "location", "location_hi", "location_gu", "tagline", "tagline_hi", "tagline_gu", "about", "about_hi", "about_gu")
+
+
+def _split_list(value):
+    return [x.strip() for x in re.split(r"[,;|\n]", value or "") if x.strip()]
+
+
+@transaction.atomic
+def import_plants(rows):
+    """Create plants (or update the ones with the same name) and their departments. Photos / banner / videos stay manual."""
+    rows = [r for r in rows if (r.get("name") or "").strip()]
+    if not rows:
+        raise ImportError_("No plants found. The file needs a header row with at least: name.")
+    created = updated = 0
+    for r in rows:
+        name = r["name"].strip()
+        plant = Plant.objects.filter(name__iexact=name).first()
+        is_new = plant is None
+        if is_new:
+            plant = Plant(name=name, order=Plant.objects.count())
+        for f in PLANT_TEXT_FIELDS:
+            v = (r.get(f) or "").strip()
+            if v:
+                setattr(plant, f, v)
+        code = slugify(r.get("code") or "")[:20]
+        if code:
+            plant.code = code
+        elif is_new:
+            base = slugify(name)[:18] or "plant"
+            plant.code, n = base, 2
+            while Plant.objects.filter(code=plant.code).exists():
+                plant.code, n = f"{base}-{n}", n + 1
+        elif not plant.code:
+            plant.code = slugify(name)[:20]
+        if Plant.objects.filter(code=plant.code).exclude(pk=plant.pk).exists():
+            raise ImportError_(f"Row {r.get('_row', '?')}: the code “{plant.code}” is already used by another plant.")
+        plant.save()
+        hi, gu = _split_list(r.get("departments_hi")), _split_list(r.get("departments_gu"))
+        for i, dept in enumerate(_split_list(r.get("departments"))):
+            d, _ = Department.objects.get_or_create(plant=plant, name=dept, defaults={"order": plant.departments.count()})
+            if i < len(hi) and not d.name_hi:
+                d.name_hi = hi[i]
+            if i < len(gu) and not d.name_gu:
+                d.name_gu = gu[i]
+            d.save()
+        created += is_new
+        updated += not is_new
+    return created, updated

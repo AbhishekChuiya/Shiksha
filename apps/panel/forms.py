@@ -117,7 +117,7 @@ class ModuleForm(PanelForm):
     class Meta:
         model = Module
         fields = ["title", "title_hi", "title_gu", "plant", "department", "process", "category", "category_hi", "category_gu", "library", "summary", "summary_hi", "summary_gu",
-                  "overview", "overview_hi", "overview_gu", "objectives", "objectives_hi", "objectives_gu", "cover", "est_minutes", "instructor", "sop_document", "status", "order", "slug"]
+                  "overview", "overview_hi", "overview_gu", "purpose", "purpose_hi", "purpose_gu", "objectives", "objectives_hi", "objectives_gu", "cover", "est_minutes", "instructor", "sop_document", "status", "order", "slug"]
         labels = {"title": "Module title", "est_minutes": "Estimated time (minutes)", "sop_document": "Linked SOP", "cover": "Cover photo",
                   "library": "Library", "category": "Category (filter chip)", "status": "Status", "order": "Position in lists", "slug": "Web address name"}
         help_texts = {"title": "e.g. Melt & Cast", "summary": "One or two lines shown on the module card.", "overview": "Shown on the Overview tab. Press Enter twice for a new paragraph.",
@@ -125,7 +125,7 @@ class ModuleForm(PanelForm):
                       "status": "Draft = hidden from learners. Published = visible.", "slug": "Leave blank to create it from the title.",
                       "category": "Learners can filter by this, e.g. Extrusion.", "order": "Lower numbers appear first inside a department."}
         widgets = {"overview": forms.Textarea(attrs={"rows": 7}), "overview_hi": forms.Textarea(attrs={"rows": 7}), "overview_gu": forms.Textarea(attrs={"rows": 7}), "objectives": forms.Textarea(attrs={"rows": 4}),
-                   "objectives_hi": forms.Textarea(attrs={"rows": 4}), "objectives_gu": forms.Textarea(attrs={"rows": 4}), "summary": forms.Textarea(attrs={"rows": 2}), "summary_hi": forms.Textarea(attrs={"rows": 2}), "summary_gu": forms.Textarea(attrs={"rows": 2})}
+                   "objectives_hi": forms.Textarea(attrs={"rows": 4}), "objectives_gu": forms.Textarea(attrs={"rows": 4}), "purpose": forms.Textarea(attrs={"rows": 3}), "purpose_hi": forms.Textarea(attrs={"rows": 3}), "purpose_gu": forms.Textarea(attrs={"rows": 3}), "summary": forms.Textarea(attrs={"rows": 2}), "summary_hi": forms.Textarea(attrs={"rows": 2}), "summary_gu": forms.Textarea(attrs={"rows": 2})}
 
     def __init__(self, *a, **kw):
         super().__init__(*a, **kw)
@@ -285,4 +285,28 @@ class KBItemForm(PanelForm):
         has_file = data.get("file") or (self.instance.pk and self.instance.file and not data.get("file__clear"))
         if not has_file and not data.get("url"):
             raise forms.ValidationError("Upload a file or paste a link.")
+        return data
+
+
+class QuizCreateForm(forms.Form):
+    """Create the quiz of a module — plant, category (department) and module are chosen step by step."""
+
+    plant = forms.ModelChoiceField(Plant.objects.all(), label="Plant")
+    department = forms.ModelChoiceField(Department.objects.all(), label="Category (department)")
+    module = forms.ModelChoiceField(Module.objects.filter(quiz__isnull=True), label="Module")
+    title = forms.CharField(required=False, max_length=160, label="Quiz title (optional)", help_text="Leave empty to use “<module name> — SOP Quiz”.")
+    pass_percent = forms.IntegerField(min_value=1, max_value=100, initial=80, label="Pass mark (%)")
+    questions_per_attempt = forms.IntegerField(required=False, min_value=1, label="Questions per attempt (optional)", help_text="Leave empty to ask every question.")
+    time_limit_minutes = forms.IntegerField(required=False, min_value=1, label="Time limit in minutes (optional)")
+    max_attempts = forms.IntegerField(required=False, min_value=1, label="Maximum attempts (optional)", help_text="Leave empty for unlimited attempts.")
+
+    def clean(self):
+        data = super().clean()
+        plant, dept, module = data.get("plant"), data.get("department"), data.get("module")
+        if plant and dept and dept.plant_id != plant.pk:
+            self.add_error("department", "This department belongs to a different plant.")
+        if module and plant and module.plant_id != plant.pk:
+            self.add_error("module", "This module belongs to a different plant.")
+        if module and dept and module.department_id != dept.pk:
+            self.add_error("module", "This module is in a different department.")
         return data

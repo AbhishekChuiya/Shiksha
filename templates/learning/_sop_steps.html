@@ -1,6 +1,24 @@
 {% load i18n shiksha %}
 <div id="sop-area">
-{% if progress.safety_ack_at %}
+{% if sop_cards %}
+<div class="sop-pick" role="tablist" aria-label="{% translate 'Procedures in this module' %}">
+  {% for c in sop_cards %}<a class="sop-pick-card {% if c.current %}on{% endif %} {% if c.total and c.done == c.total %}full{% endif %}" data-soft role="tab" aria-selected="{% if c.current %}true{% else %}false{% endif %}" href="?tab=sops&sop={{ c.sop.id }}">
+    <span class="sp-top"><span class="sp-n">{% if c.total and c.done == c.total %}{% icon 'check' %}{% else %}{{ c.number }}{% endif %}</span><span class="sp-c">{{ c.done }}/{{ c.total }}</span></span>
+    <strong>{{ c.sop.display_title }}</strong></a>{% endfor %}
+</div>
+{% endif %}
+{% if sel_sop %}
+<div class="sop-head">
+  <h2>{{ sel_sop.display_title }}</h2>
+  <div class="docinfo">
+    {% if sel_sop.code %}<span>{% icon 'file' %}<b>{% translate "Document" %}</b>{{ sel_sop.code }}</span>{% endif %}
+    {% if sel_sop.revision %}<span><b>{% translate "Revision" %}</b>{{ sel_sop.revision }}</span>{% endif %}
+    {% if sel_sop.doc_date %}<span><b>{% translate "Date" %}</b>{{ sel_sop.doc_date|date:"d-m-Y" }}</span>{% endif %}
+    {% if sel_sop.languages %}<span><b>{% translate "Languages" %}</b>{{ sel_sop.languages }}</span>{% endif %}
+  </div>
+</div>
+{% endif %}
+{% if safety_ok %}
 <details class="card safe-done">
   <summary>{% icon 'shield' %}<span>{% translate "Safety guidelines acknowledged" %}</span>{% icon 'check-circle' 'okc' %}<span class="grow"></span><span class="small muted view-lbl">{% translate "Review" %}</span>{% icon 'chevron-down' 'chev' %}</summary>
   <div style="margin-top:16px">{% include "learning/_guidelines.html" with groups=guideline_groups %}</div>
@@ -9,40 +27,41 @@
 {% if has_guidelines %}{% include "learning/_guidelines.html" with groups=guideline_groups %}{% endif %}
 <div class="card confirm">
   <h3 style="display:flex;gap:10px;align-items:center">{% icon 'shield' %}{% translate "Confirm safety guidelines" %}</h3>
-  <form method="post" action="{% url 'learning:ack_safety' module.slug %}" data-soft-form>{% csrf_token %}
+  {% for para in sel_sop.intro_paragraphs %}<p class="safety-intro">{{ para }}</p>{% endfor %}
+  <form method="post" action="{% url 'learning:ack_safety' module.slug %}" data-soft-form>{% csrf_token %}{% if sel_sop %}<input type="hidden" name="sop" value="{{ sel_sop.id }}">{% endif %}
     <label class="consent"><input type="checkbox" data-consent="agree-btn"><span>{% translate "I have read and understood the safety, environment, quality and discipline guidelines above, and I will follow them." %}</span></label>
     <button class="btn success" id="agree-btn" type="submit" disabled>{% icon 'check' %}{% translate "I agree — unlock steps" %}</button>
   </form>
 </div>
 {% endif %}
 
-{% if not progress.safety_ack_at %}
-<div class="locked">{% icon 'lock' %}<strong>{% translate "SOP steps are locked" %}</strong>{% blocktranslate with n=steps_total %}Confirm the safety guidelines above to unlock the {{ n }}-step procedure.{% endblocktranslate %}</div>
+{% if not safety_ok %}
+<div class="locked">{% icon 'lock' %}<strong>{% translate "SOP steps are locked" %}</strong>{% blocktranslate with n=sop_total %}Confirm the safety guidelines above to unlock the {{ n }}-step procedure.{% endblocktranslate %}</div>
 {% elif not step %}
 <div class="card empty" style="margin-top:18px"><h3>{% translate "SOP steps are not uploaded yet" %}</h3></div>
 {% else %}
-<div class="sop-progress {% if progress.percent == 100 %}complete{% endif %}" role="group" data-done="{{ steps_done }}" data-total="{{ steps_total }}" aria-label="{% translate 'SOP progress' %}">
+<div class="sop-progress {% if sop_percent == 100 %}complete{% endif %}" role="group" data-done="{{ sop_done }}" data-total="{{ sop_total }}" aria-label="{% translate 'SOP progress' %}">
   <div class="sop-top">
     <div class="sop-labels">
-      <strong>{% blocktranslate with i=step_index t=steps_total %}Step {{ i }} of {{ t }}{% endblocktranslate %}</strong>
-      <span class="muted small">{% blocktranslate with d=steps_done t=steps_total p=progress.percent %}{{ d }} of {{ t }} done · {{ p }}%{% endblocktranslate %}</span>
+      <strong>{% blocktranslate with i=step_index t=sop_total %}Step {{ i }} of {{ t }}{% endblocktranslate %}</strong>
+      <span class="muted small">{% blocktranslate with d=sop_done t=sop_total p=sop_percent %}{{ d }} of {{ t }} done · {{ p }}%{% endblocktranslate %}</span>
     </div>
     <div class="dd jump-box">
       <button type="button" class="dd-btn" aria-haspopup="true" aria-expanded="false">{% icon 'grid' %}<span>{% translate "Jump to step" %}</span>{% icon 'chevron-down' 'chev' %}</button>
       <div class="dd-menu jump-menu">
-        <div class="jump-go"><input type="number" min="1" max="{{ steps_total }}" inputmode="numeric" data-jump-input placeholder="{% translate 'Step number' %}" aria-label="{% translate 'Go to step number' %}"><button type="button" class="btn sm" data-jump-go>{% translate "Go" %}</button></div>
-        <div class="jump-list">{% for d in step_dots %}<a class="dd-item jump-item {% if d.current %}cur{% endif %} {% if d.done %}done{% endif %}" data-soft href="?tab=sops&step={{ d.number }}"><span class="jn">{% if d.done and not d.current %}{% icon 'check' %}{% else %}{{ d.number }}{% endif %}</span><span class="jt">{{ d.preview }}</span></a>{% endfor %}</div>
+        <div class="jump-go"><input type="number" min="1" max="{{ sop_total }}" inputmode="numeric" data-jump-input placeholder="{% translate 'Step number' %}" aria-label="{% translate 'Go to step number' %}"><button type="button" class="btn sm" data-jump-go>{% translate "Go" %}</button></div>
+        <div class="jump-list">{% for d in step_dots %}<a class="dd-item jump-item {% if d.current %}cur{% endif %} {% if d.done %}done{% endif %}" data-soft href="?tab=sops{{ sopq }}&step={{ d.number }}"><span class="jn">{% if d.done and not d.current %}{% icon 'check' %}{% else %}{{ d.number }}{% endif %}</span><span class="jt">{{ d.preview }}</span></a>{% endfor %}</div>
       </div>
     </div>
   </div>
-  <div class="sop-track" role="progressbar" aria-valuemin="0" aria-valuemax="{{ steps_total }}" aria-valuenow="{{ steps_done }}"><i class="sop-fill" style="width:{{ progress.percent }}%"></i><span class="sop-mark" style="left:{{ mark_percent }}%" title="{% translate 'You are here' %}"></span></div>
+  <div class="sop-track" role="progressbar" aria-valuemin="0" aria-valuemax="{{ sop_total }}" aria-valuenow="{{ sop_done }}"><i class="sop-fill" style="width:{{ sop_percent }}%"></i><span class="sop-mark" style="left:{{ mark_percent }}%" title="{% translate 'You are here' %}"></span></div>
 </div>
 
 <div class="step-col">
   <div class="card step-card" id="step-card" data-step="{{ step.number }}">
     <div class="step-text">
       <div class="step-top">
-        <span class="step-no">{% blocktranslate with i=step_index t=steps_total %}Step {{ i }} of {{ t }}{% endblocktranslate %}{% if step_done %}<span class="badge ok">{% icon 'check' %}{% translate "Done" %}</span>{% endif %}</span>
+        <span class="step-no">{% blocktranslate with i=step_index t=sop_total %}Step {{ i }} of {{ t }}{% endblocktranslate %}{% if step_done %}<span class="badge ok">{% icon 'check' %}{% translate "Done" %}</span>{% endif %}</span>
         <span class="row" style="gap:8px">
           <button class="icon-btn" type="button" data-speak="#step-text" data-auto title="{% translate 'Read aloud — click again to pause' %}" aria-label="{% translate 'Read aloud' %}">{% icon 'speaker' %}</button>
           <button class="icon-btn txt-size" type="button" data-textsize title="{% translate 'Text size' %}" aria-label="{% translate 'Change text size' %}"><b>A</b><small>A</small></button>
@@ -51,7 +70,7 @@
       </div>
       <p class="step-body" id="step-text">{{ step.display_text }}</p>
       {% if LANG == "hi" and not step.text_hi or LANG == "gu" and not step.text_gu %}<p class="small muted" style="margin:-14px 0 16px"><span class="badge grey">EN</span> {% translate "Translation not available in this language — showing English" %}</p>{% endif %}
-      <form class="step-actions" method="post" action="{% url 'learning:toggle_step' module.slug step.number %}" data-soft-form>{% csrf_token %}
+      <form class="step-actions" method="post" action="{% url 'learning:toggle_step' module.slug step.number %}" data-soft-form>{% csrf_token %}{% if sel_sop %}<input type="hidden" name="sop" value="{{ sel_sop.id }}">{% endif %}
         {% if step_done %}<input type="hidden" name="action" value="unmark"><button class="btn secondary" type="submit">{% icon 'refresh' %}{% translate "Unmark" %}</button>
         {% else %}<button class="btn lg" type="submit" data-enter-submit>{% icon 'check' %}{% if next_step %}{% translate "Mark complete & next" %}{% else %}{% translate "Mark complete" %}{% endif %}</button>{% endif %}
       </form>
@@ -62,9 +81,9 @@
     </div>
   </div>
   <div class="step-nav">
-    {% if prev_step %}<a class="btn secondary" data-soft data-key-prev href="?tab=sops&step={{ prev_step.number }}">{% icon 'arrow-left' %}{% translate "Previous" %}</a>{% else %}<span class="btn secondary disabled">{% icon 'arrow-left' %}{% translate "Previous" %}</span>{% endif %}
+    {% if prev_step %}<a class="btn secondary" data-soft data-key-prev href="?tab=sops{{ sopq }}&step={{ prev_step.number }}">{% icon 'arrow-left' %}{% translate "Previous" %}</a>{% else %}<span class="btn secondary disabled">{% icon 'arrow-left' %}{% translate "Previous" %}</span>{% endif %}
     <span class="hint"><label class="autoread"><input type="checkbox" data-autoread> {% translate "Read steps aloud automatically" %}</label><span><kbd>←</kbd> <kbd>→</kbd></span></span>
-    {% if next_step %}<a class="btn secondary" data-soft data-key-next href="?tab=sops&step={{ next_step.number }}">{% translate "Next" %}{% icon 'arrow-right' %}</a>{% else %}<span class="btn secondary disabled">{% translate "Next" %}{% icon 'arrow-right' %}</span>{% endif %}
+    {% if next_step %}<a class="btn secondary" data-soft data-key-next href="?tab=sops{{ sopq }}&step={{ next_step.number }}">{% translate "Next" %}{% icon 'arrow-right' %}</a>{% else %}<span class="btn secondary disabled">{% translate "Next" %}{% icon 'arrow-right' %}</span>{% endif %}
   </div>
   {% if quiz %}<div class="m-quiz">{% if quiz_unlocked %}<a class="btn dark block" href="?tab=quiz">{% translate "Take quiz" %}{% icon 'arrow-right' %}</a>{% else %}<span class="btn dark block disabled">{% icon 'lock' %}{% translate "Quiz locked — finish all steps" %}</span>{% endif %}</div>{% endif %}
 </div>

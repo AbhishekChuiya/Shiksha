@@ -1701,6 +1701,52 @@ msgstr ""
 msgid "Back to employee sign in"
 msgstr "कर्मचारी साइन इन पर वापस जाएँ"
 
+msgid "Purpose"
+msgstr "उद्देश्य"
+
+msgid "Who does what"
+msgstr "कौन क्या करता है"
+
+msgid "Activity"
+msgstr "गतिविधि"
+
+msgid "Responsible"
+msgstr "ज़िम्मेदार"
+
+msgid "Accountable"
+msgstr "उत्तरदायी"
+
+msgid "Records"
+msgstr "रिकॉर्ड"
+
+msgid "Who to call — Escalation"
+msgstr "किसे बुलाएँ — एस्केलेशन"
+
+msgid "Revision"
+msgstr "संशोधन"
+
+msgid "Date"
+msgstr "तारीख"
+
+msgid "Languages"
+msgstr "भाषाएँ"
+
+msgid "Document"
+msgstr "दस्तावेज़"
+
+msgid "Pre-start checks"
+msgstr "शुरू करने से पहले की जाँच"
+
+msgid "Procedures in this module"
+msgstr "इस मॉड्यूल की प्रक्रियाएँ"
+
+msgid ""
+"A shared space for everyone at this plant — ask questions, share tips and "
+"learn from each other."
+msgstr ""
+"इस प्लांट में सभी के लिए एक साझा जगह — प्रश्न पूछें, सुझाव साझा करें और "
+"एक-दूसरे से सीखें।"
+
 msgid "Go to step number"
 msgstr "चरण संख्या पर जाएँ"
 

@@ -26,6 +26,7 @@ urlpatterns = [
     path("modules/<int:pk>/<slug:tab>/", views.module_edit, name="module_tab"),
     path("samples/<slug:kind>.csv", views.sample_csv, name="sample_csv"),
     path("quizzes/", views.quiz_list, name="quizzes"),
+    path("quizzes/new/", views.quiz_new, name="quiz_new"),
     # sops
     path("sops/", m.sop_list, name="sops"),
     path("sops/new/", m.sop_edit, name="sop_new"),
@@ -34,6 +35,7 @@ urlpatterns = [
     # imports
     path("import/", imp.import_center, name="import"),
     path("import/sample/<slug:kind>.<slug:ext>", imp.import_sample, name="import_sample"),
+    path("export/<slug:kind>/", imp.export_data, name="export"),
     # knowledge base
     path("knowledge/", kb.kb_list, name="kb"),
     path("knowledge/new/", kb.kb_edit, name="kb_new"),

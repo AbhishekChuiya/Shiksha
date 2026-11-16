@@ -1,6 +1,6 @@
 {% extends "panel/base.html" %}{% load shiksha panel %}
 {% block content %}
-<div class="pn-head"><div><h1>Modules</h1><p class="muted">{{ total }} module{{ total|pluralize }}{% if issue %} · filtered{% endif %}</p></div><div class="row wrap"><a class="btn secondary" href="{% url 'panel:import' %}">{% icon 'upload' %}Import from Excel</a><a class="btn" href="{% url 'panel:module_new' %}">{% icon 'plus' %}Add module</a></div></div>
+<div class="pn-head"><div><h1>Modules</h1><p class="muted">{{ total }} module{{ total|pluralize }}{% if issue %} · filtered{% endif %}</p></div><div class="row wrap"><a class="btn ghost" href="{% url 'panel:export' 'modules' %}">{% icon 'download' %}Download Excel</a><a class="btn secondary" href="{% url 'panel:import' %}">{% icon 'upload' %}Import from Excel</a><a class="btn" href="{% url 'panel:module_new' %}">{% icon 'plus' %}Add module</a></div></div>
 <form class="pn-filters" method="get">
   <div class="search"><input type="search" name="q" value="{{ q }}" placeholder="Search by title…">{% icon 'search' %}</div>
   <select name="plant" onchange="this.form.submit()"><option value="">All plants</option>{% for p in plants %}<option value="{{ p.pk }}" {% if plant == p.pk|stringformat:'s' %}selected{% endif %}>{{ p.name }}</option>{% endfor %}</select>
@@ -12,17 +12,18 @@
 <div class="card flush table-wrap">
   <div class="pn-bulkbar" data-bulkbar hidden><span data-bulkcount></span><button class="btn sm" name="action" value="publish">Publish</button><button class="btn sm secondary" name="action" value="unpublish">Hide from learners</button></div>
   <table class="table pn-table">
-    <thead><tr><th style="width:36px"><input type="checkbox" data-checkall aria-label="Select all"></th><th>Module</th><th>Plant · Department</th><th>Steps</th><th>Quiz</th><th>Status</th><th></th></tr></thead>
+    <thead><tr><th style="width:36px"><input type="checkbox" data-checkall aria-label="Select all"></th><th>Module</th><th>Plant · Department</th><th>Setup</th><th>Steps</th><th>Quiz</th><th>Status</th><th></th></tr></thead>
     <tbody>
     {% for m in page %}<tr>
       <td><input type="checkbox" name="ids" value="{{ m.pk }}" data-check></td>
       <td><a class="pn-title" href="{% url 'panel:module_edit' m.pk %}">{% if m.cover %}<img src="{{ m.cover.url }}" alt="">{% else %}<span class="pn-thumb">{% icon 'layers' %}</span>{% endif %}<span><strong>{{ m.title }}</strong><small>{% if m.title_hi %}{{ m.title_hi }}{% else %}<i class="muted">no Hindi title</i>{% endif %}</small></span></a></td>
       <td>{{ m.plant.name }}<div class="small muted">{{ m.department.name }}</div></td>
+      <td class="setup-cell"><div class="bar {% if m.setup_percent == 100 %}ok{% endif %}"><i style="width:{{ m.setup_percent }}%"></i></div><small>{% if m.setup_next %}Next: <a href="{% url 'panel:module_tab' m.pk m.setup_next.tab %}">{{ m.setup_next.label }}</a>{% else %}Ready{% endif %}</small></td>
       <td>{% if m.n_steps %}{{ m.n_steps }}{% else %}<span class="badge warn">none</span>{% endif %}</td>
       <td>{% if m.n_q %}{{ m.n_q }} Q{% else %}<span class="muted">—</span>{% endif %}</td>
       <td><span class="badge {% if m.status == 'published' %}ok{% else %}warn{% endif %}">{{ m.get_status_display }}</span></td>
       <td class="pn-actions"><a class="btn secondary sm" href="{% url 'panel:module_edit' m.pk %}">{% icon 'edit2' %}Edit</a><a class="icon-btn sm" target="_blank" href="{{ m.get_absolute_url }}" title="Preview as learner" aria-label="Preview">{% icon 'eye' %}</a></td>
-    </tr>{% empty %}<tr><td colspan="7"><div class="empty"><h3>No modules found</h3><a class="btn" href="{% url 'panel:module_new' %}">Add a module</a></div></td></tr>{% endfor %}
+    </tr>{% empty %}<tr><td colspan="8"><div class="empty"><h3>No modules found</h3><a class="btn" href="{% url 'panel:module_new' %}">Add a module</a></div></td></tr>{% endfor %}
     </tbody></table>
 </div></form>
 {% include "panel/_pager.html" %}

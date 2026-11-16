@@ -44,7 +44,7 @@ class FlowTests(TestCase):
     def test_plant_isolation(self):
         self.learner.plants.add(self.melt.plant)  # an admin restricted this user to VMPL P1
         other = Plant.objects.get(code="vrpl")
-        dept = Department.objects.create(plant=other, name="Production")
+        dept = Department.objects.get_or_create(plant=other, name="Production")[0]
         m = Module.objects.create(slug="vrpl_x", plant=other, department=dept, title="VRPL only")
         self.assertEqual(self.client.get(m.get_absolute_url()).status_code, 403)
         # cannot switch to a plant you don't have
@@ -138,7 +138,7 @@ class SuggestTests(TestCase):
 
     def test_suggest_is_plant_scoped(self):
         other = Plant.objects.get(code="vrpl")
-        dept = Department.objects.create(plant=other, name="Production")
+        dept = Department.objects.get_or_create(plant=other, name="Production")[0]
         Module.objects.create(slug="vrpl_secret", plant=other, department=dept, title="Secret VRPL melt")
         titles = [x["title"] for x in self.client.get(reverse("core:suggest") + "?q=melt").json()["results"]]
         self.assertNotIn("Secret VRPL melt", titles)

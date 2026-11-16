@@ -8,7 +8,7 @@
   {% include "_favicons.html" %}
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
-  <link rel="stylesheet" href="{% static 'css/shiksha.css' %}">
+  <link rel="stylesheet" href="{% static 'css/shiksha.css' %}?v={{ ASSET_V }}">
   {% block head %}{% endblock %}
 </head>
 <body class="{% if view_as_learner %}has-viewbar{% endif %}">
@@ -144,7 +144,7 @@
 
 {% translate "Nice work! {n} to go." as m_cheer %}{% translate "Almost there — just {n} left!" as m_almost %}{% translate "Stop" as m_stop %}{% translate "Gujarati voice not found on this device — reading with the Hindi voice instead." as m_gu2hi %}{% translate "No voice found for this language. Please install a voice in your device's speech settings." as m_novoiceany %}{% translate "Couldn't read this aloud on this device." as m_ttserr %}{% translate "Link copied to clipboard." as m_copied %}{% translate "Read-aloud is not supported on this browser." as m_notts %}{% translate "No voice for this language is installed on this device, so the default voice is used." as m_novoice %}{% translate "Couldn't reach the server. Please try again." as m_net %}{% translate "Not now" as m_notnow %}{% translate "Continue" as m_cont %}{% translate "No results for" as m_nores %}{% translate "See all results for" as m_seeall %}
 <script id="i18n" type="application/json">{"copied":"{{ m_copied|escapejs }}","stop":"{{ m_stop|escapejs }}","gu2hi":"{{ m_gu2hi|escapejs }}","noVoiceAny":"{{ m_novoiceany|escapejs }}","ttsErr":"{{ m_ttserr|escapejs }}","cheer":"{{ m_cheer|escapejs }}","almost":"{{ m_almost|escapejs }}","noTts":"{{ m_notts|escapejs }}","noVoice":"{{ m_novoice|escapejs }}","net":"{{ m_net|escapejs }}","notNow":"{{ m_notnow|escapejs }}","cont":"{{ m_cont|escapejs }}","noResults":"{{ m_nores|escapejs }}","seeAll":"{{ m_seeall|escapejs }}","lang":"{{ LANG }}"}</script>
-<script src="{% static 'js/shiksha.js' %}"></script>
+<script src="{% static 'js/shiksha.js' %}?v={{ ASSET_V }}"></script>
 {% block scripts %}{% endblock %}
 </body>
 </html>

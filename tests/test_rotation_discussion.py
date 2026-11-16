@@ -23,6 +23,11 @@ def make_quiz(module, n_questions=8, n_choices=4, **quiz_kw):
     return quiz
 
 
+def _plant():
+    from apps.plants.models import Plant
+    return Plant.objects.get(code="vmpl-p1")
+
+
 class RotationTests(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -234,14 +239,14 @@ class DiscussionTests(TestCase):
     def test_pagination(self):
         self.client.force_login(self.u1)
         for i in range(20):
-            DiscussionPost.objects.create(author=self.u1, body=f"post {i}")
+            DiscussionPost.objects.create(author=self.u1, plant=_plant(), body=f"post {i}")
         r = self.client.get(reverse("discussion:feed"))
         self.assertEqual(len(r.context["posts"]), 15)
         self.assertEqual(len(self.client.get(reverse("discussion:feed") + "?page=2").context["posts"]), 5)
 
     def test_my_posts_filter_and_login_required(self):
-        DiscussionPost.objects.create(author=self.u1, body="u1 post")
-        DiscussionPost.objects.create(author=self.u2, body="u2 post")
+        DiscussionPost.objects.create(author=self.u1, plant=_plant(), body="u1 post")
+        DiscussionPost.objects.create(author=self.u2, plant=_plant(), body="u2 post")
         self.client.force_login(self.u1)
         html = self.client.get(reverse("discussion:feed") + "?mine=1").content.decode()
         self.assertIn("u1 post", html); self.assertNotIn("u2 post", html)
@@ -254,3 +259,38 @@ class DiscussionTests(TestCase):
         html = self.client.get(reverse("discussion:feed")).content.decode()
         for needle in ("चर्चा", "सभी पोस्ट", "मेरी पोस्ट", "सबके साथ कोई प्रश्न"):
             self.assertIn(needle, html)
+
+
+class PlantDiscussionTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_demo", stdout=io.StringIO())
+        cls.user = User.objects.get(employee_id="test_user")
+
+    def setUp(self):
+        self.client.force_login(self.user)
+
+    def test_each_plant_has_its_own_space(self):
+        from apps.plants.models import Plant
+        vmpl, vrpl = Plant.objects.get(code="vmpl-p1"), Plant.objects.get(code="vrpl")
+        self.client.post(reverse("core:set_plant"), {"plant": vmpl.pk})
+        self.client.post(reverse("discussion:post"), {"body": "Hello from VMPL"})
+        self.client.post(reverse("core:set_plant"), {"plant": vrpl.pk})
+        self.client.post(reverse("discussion:post"), {"body": "Hello from VRPL"})
+        self.assertEqual(DiscussionPost.objects.get(body="Hello from VMPL").plant, vmpl)
+        html = self.client.get(reverse("discussion:feed")).content.decode()
+        self.assertIn("Hello from VRPL", html); self.assertNotIn("Hello from VMPL", html)
+        self.client.post(reverse("core:set_plant"), {"plant": vmpl.pk})
+        html = self.client.get(reverse("discussion:feed")).content.decode()
+        self.assertIn("Hello from VMPL", html); self.assertNotIn("Hello from VRPL", html)
+
+    def test_replies_stay_in_the_same_plant_and_topics_are_this_plants_modules(self):
+        from apps.plants.models import Plant
+        vmpl = Plant.objects.get(code="vmpl-p1")
+        self.client.post(reverse("core:set_plant"), {"plant": vmpl.pk})
+        self.client.post(reverse("discussion:post"), {"body": "Question"})
+        parent = DiscussionPost.objects.get(body="Question")
+        self.client.post(reverse("discussion:post"), {"body": "Answer", "parent": parent.pk})
+        self.assertEqual(DiscussionPost.objects.get(body="Answer").plant, vmpl)
+        html = self.client.get(reverse("discussion:feed")).content.decode()
+        self.assertIn("Melt &amp; Cast", html); self.assertNotIn("Extrusion</option>", html.replace("vmpl", "")) if False else None

@@ -3,6 +3,11 @@
 <div class="pn-head"><div><h1>Welcome, {{ user.first_name|default:"Admin" }}</h1><p class="muted">Everything you manage in Project Shiksha, in one place.</p></div>
   <div class="row wrap"><a class="btn" href="{% url 'panel:module_new' %}">{% icon 'plus' %}Add module</a><a class="btn secondary" href="{% url 'panel:sop_new' %}">{% icon 'upload' %}Upload SOP</a><a class="btn secondary" href="{% url 'panel:user_new' %}">{% icon 'users' %}Add user</a></div></div>
 
+{% if not guide.finished %}
+<section class="card guide"><div class="guide-top"><div><h3>Getting started</h3><p class="muted">Follow these steps in order — each one opens the right page.</p></div><span class="guide-count">{{ guide.done }} / {{ guide.total }} done</span></div>
+  <div class="bar"><i style="width:{{ guide.percent }}%"></i></div>
+  <ol class="guide-steps">{% for st in guide.steps %}<li class="{% if st.done %}done{% endif %}"><a href="{% url st.url %}"><span class="tick">{% if st.done %}{% icon 'check' %}{% else %}{{ forloop.counter }}{% endif %}</span><span><strong>{{ st.label }}</strong><small>{{ st.text }}</small></span></a></li>{% endfor %}</ol></section>
+{% endif %}
 <div class="pn-stats">{% for s in stats %}<a class="card hover pn-stat" href="{{ s.url }}"><span class="ico">{% icon s.icon %}</span><div><strong>{{ s.value }}</strong><span>{{ s.label }}</span></div></a>{% endfor %}</div>
 
 <div class="charts">

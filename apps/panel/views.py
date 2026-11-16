@@ -20,14 +20,16 @@ from apps.core.models import AuditLog
 from apps.incidents.models import Incident
 from apps.learning.importers import ImportError_, import_quiz, import_steps
 from apps.learning.tables import TableError, read_table
-from apps.learning.models import (DiscussionPost, Module, ModuleImage, ModuleProgress, ProblemSolution, SafetyGuideline, SOPStep, VideoLesson)
+from apps.learning.models import (DiscussionPost, Module, ModuleEscalation, ModuleImage, ModuleProgress, ModuleRecord, ModuleRole, ModuleSOP, ProblemSolution,
+                                  SafetyGuideline, SOPStep, VideoLesson)
 from apps.plants.models import Department, Plant, PlantPhoto, Process
 from apps.quizzes.models import Attempt, Choice, Question, Quiz
 from apps.sops.models import SOPDocument
 
 from .decorators import admin_required
+from .readiness import module_checks, setup_guide
 from .editor import Editor, F
-from .forms import ModuleForm, PlantForm, QuestionForm, QuizSettingsForm
+from .forms import ModuleForm, PlantForm, QuestionForm, QuizCreateForm, QuizSettingsForm
 
 PER_PAGE = 25
 
@@ -91,7 +93,7 @@ def dashboard(request):
     if open_inc:
         attention.append({"level": "warn", "text": f"{open_inc} incident(s) are waiting for review", "url": reverse("panel:incidents") + "?status=open"})
     hidden = DiscussionPost.objects.filter(is_hidden=True).count()
-    return render_panel(request, "panel/dashboard.html", page_title="Overview", stats=stats, attention=attention,
+    return render_panel(request, "panel/dashboard.html", page_title="Overview", stats=stats, attention=attention, guide=setup_guide(),
                         charts=_safe_charts(), activity=AuditLog.objects.select_related("actor")[:8], new_users=User.objects.order_by("-date_joined")[:5], hidden_posts=hidden)
 
 
@@ -179,7 +181,7 @@ def plant_delete(request, pk):
 
 
 # ----------------------------------------------------------------------------- editor page helper
-def _editor_page(request, template, editors, ctx, *, redirect_name, redirect_kwargs, saved="Saved.", log=None, extra_validate=None):
+def _editor_page(request, template, editors, ctx, *, redirect_name, redirect_kwargs, saved="Saved.", log=None, extra_validate=None, query=""):
     parsed = {}
     if request.method == "POST":
         all_ok = True
@@ -195,14 +197,14 @@ def _editor_page(request, template, editors, ctx, *, redirect_name, redirect_kwa
             if log:
                 audit(request, log[0], log[1])
             messages.success(request, saved)
-            return redirect(redirect_name, **redirect_kwargs)
+            return redirect(reverse(redirect_name, kwargs=redirect_kwargs) + query)
         messages.error(request, problem or "Some rows need attention — they are marked in red. Nothing was saved yet.")
     ctx["editors"] = [ed.context(parsed.get(ed.key)) for ed in editors]
     return render_panel(request, template, **ctx)
 
 
 # ----------------------------------------------------------------------------- modules
-MODULE_TABS = [("details", "Details"), ("images", "Photos"), ("steps", "SOP steps"), ("safety", "Safety rules"),
+MODULE_TABS = [("details", "Details"), ("images", "Photos"), ("process", "Process info"), ("sops", "SOPs"), ("steps", "SOP steps"), ("safety", "Safety rules"),
                ("videos", "Videos"), ("problems", "Problems & solutions"), ("quiz", "Quiz")]
 
 
@@ -225,6 +227,8 @@ def module_list(request):
     elif issue == "nohindi":
         qs = qs.filter(title_hi="")
     page = paginate(request, qs)
+    for m in page:
+        m.checks, m.setup_percent, m.setup_next = module_checks(m)
     return render_panel(request, "panel/module_list.html", page_title="Modules", page=page, q=q, plant=plant, status=status, issue=issue,
                         plants=Plant.objects.all(), total=page.paginator.count, base=qurl(request))
 
@@ -251,12 +255,15 @@ def _module_counts(module):
     if module is None:
         return {}
     quiz = getattr(module, "quiz", None)
-    return {"steps": module.steps.count(), "images": module.images.count(), "videos": module.videos.count(), "problems": module.problems.count(),
+    return {"sops": module.sops.count(), "process": module.roles.count() + module.escalations.count() + module.records.count(),
+            "steps": module.steps.count(), "images": module.images.count(), "videos": module.videos.count(), "problems": module.problems.count(),
             "safety": module.own_guidelines.count(), "quiz": quiz.questions.count() if quiz else 0}
 
 
 def _module_ctx(module, tab, title=None):
+    checks, percent, nxt = module_checks(module) if module else ([], 0, None)
     return {"module": module, "tab": tab, "tabs": MODULE_TABS, "counts": _module_counts(module), "page_title": title or (module.title if module else "New module"),
+            "checks": checks, "setup_percent": percent, "setup_next": nxt,
             "crumbs": crumbs(("Modules", reverse("panel:modules")), (module.title if module else "New module", None))}
 
 
@@ -277,21 +284,48 @@ def module_edit(request, pk=None, tab="details"):
             messages.success(request, f"“{obj.title}” saved." + ("" if pk else " Now add the SOP steps."))
             return redirect("panel:module_tab", pk=obj.pk, tab="details" if pk else "steps")
         ctx.update(form=form, groups=[("Basics", ["title", "plant", "department", "process", "category", "library", "est_minutes", "instructor"]),
-                                        ("Cover photo", ["cover"]), ("What learners read", ["summary", "overview", "objectives"]),
-                                        ("Hindi (optional)", ["title_hi", "category_hi", "summary_hi", "overview_hi", "objectives_hi"]), ("Gujarati (optional)", ["title_gu", "category_gu", "summary_gu", "overview_gu", "objectives_gu"]),
+                                        ("Cover photo", ["cover"]), ("What learners read", ["summary", "overview", "objectives", "purpose"]),
+                                        ("Hindi (optional)", ["title_hi", "category_hi", "summary_hi", "overview_hi", "objectives_hi", "purpose_hi"]), ("Gujarati (optional)", ["title_gu", "category_gu", "summary_gu", "overview_gu", "objectives_gu", "purpose_gu"]),
                                         ("Publishing", ["status", "sop_document", "order", "slug"])])
         return render_panel(request, "panel/module_edit.html", **ctx)
 
     if tab == "quiz":
         return _module_quiz(request, module, ctx)
 
-    eds = _module_editors(module, tab)
+    sops, sop = list(module.sops.all()), None
+    if tab in ("steps", "safety") and sops:
+        sop = next((x for x in sops if str(x.id) == request.GET.get("sop")), sops[0])
+    ctx.update(sops=sops, sop=sop)
+    eds = _module_editors(module, tab, sop)
     return _editor_page(request, "panel/module_edit.html", eds, ctx, redirect_name="panel:module_tab", redirect_kwargs={"pk": module.pk, "tab": tab},
-                        saved="Saved.", log=(f"module.{tab}", module))
+                        saved="Saved.", log=(f"module.{tab}", module), query=f"?sop={sop.pk}" if sop else "")
 
 
-def _module_editors(module, tab):
+def _module_editors(module, tab, sop=None):
     hindi = dict(hindi=True)
+    if tab == "process":
+        return [
+            Editor("roles", ModuleRole, [F("activity", "Activity", "textarea", required=True, rows=2), F("responsible", "Responsible", width="half"), F("accountable", "Accountable", width="half"),
+                                         F("activity_hi", "Activity (Hindi)", "textarea", rows=2, **hindi), F("responsible_hi", "Responsible (Hindi)", **hindi), F("accountable_hi", "Accountable (Hindi)", **hindi)],
+                   {"module": module}, title="Who does what", noun="activity", add_label="Add a row",
+                   info="A responsibility table: for each activity, who does it and who is accountable. Learners see it as a table on the Overview tab. The “Accountable” names also appear in the Who-to-call card.",
+                   empty_hint="Optional — leave empty if this process has no responsibility table."),
+            Editor("escalations", ModuleEscalation, [F("situation", "When this happens…", required=True), F("action", "…do this", required=True, placeholder="Escalate immediately"),
+                                                     F("situation_hi", "Situation (Hindi)", **hindi), F("action_hi", "Action (Hindi)", **hindi)],
+                   {"module": module}, title="Escalation — who to call", noun="situation", add_label="Add a situation",
+                   info="Shown in the “Who to call — Escalation” card, e.g. “Process parameter outage → Escalate immediately”.", empty_hint="Optional."),
+            Editor("records", ModuleRecord, [F("name", "Record / form name", required=True, width="half"), F("code", "Document number", width="half"), F("name_hi", "Name (Hindi)", **hindi)],
+                   {"module": module}, title="Records", noun="record", add_label="Add a record",
+                   info="Forms and registers used in this process, e.g. “Daily Production Report — VRPL/IMS/PRD/F/01”.", empty_hint="Optional.")]
+    if tab == "sops":
+        return [Editor("sops", ModuleSOP, [F("title", "SOP title", required=True), F("code", "Document number", placeholder="VRPL-MANF-SOP-04", width="half"), F("revision", "Revision", placeholder="02", width="half"),
+                                           F("doc_date", "Document date", "date", width="half"), F("languages", "Languages", placeholder="English + हिंदी", width="half"),
+                                           F("intro", "Safety statement (shown above the “I agree” box)", "textarea", rows=3),
+                                           F("title_hi", "SOP title (Hindi)", **hindi), F("intro_hi", "Safety statement (Hindi)", "textarea", rows=3, **hindi)],
+                       {"module": module}, title="SOPs in this module", noun="SOP", add_label="Add a SOP",
+                       info="A process can have several SOPs (e.g. Extrusion has four). Each SOP gets its own steps, PPE, pre-start checks, hazards and safe-operating rules, and learners agree to its safety rules separately. "
+                            "Leave this empty for a simple module with one list of steps. Removing a SOP also removes its steps and rules.",
+                       empty_hint="No SOPs yet — a module without SOPs just has one list of steps.")]
     if tab == "images":
         return [Editor("gallery", ModuleImage, [F("image", "Photo", "image", required=True), F("caption", "Caption"), F("caption_hi", "Caption (Hindi)", **hindi)],
                        {"module": module}, title="Overview photos", noun="photo",
@@ -300,16 +334,21 @@ def _module_editors(module, tab):
     if tab == "steps":
         return [Editor("steps", SOPStep, [F("text", "What the learner must do", "textarea", required=True, rows=3), F("text_hi", "Hindi text", "textarea", rows=3, **hindi),
                                           F("image", "Photo (optional)", "image")],
-                       {"module": module}, order_field=None, number_field="number", title="SOP steps", noun="step",
+                       {"module": module, "sop": sop}, order_field=None, number_field="number", title="SOP steps" + (f" — {sop.title}" if sop else ""), noun="step",
                        info="Steps are numbered automatically in the order shown. Use the arrows to reorder. To add many at once, use “Paste or import” above.",
                        empty_hint="No steps yet — add the first one, or paste a whole list above.")]
     if tab == "safety":
         sec = list(SafetyGuideline.Section.choices)
         fields = [F("section", "Group", "select", required=True, choices=sec), F("text", "Rule", "textarea", required=True, rows=2), F("text_hi", "Hindi text", "textarea", rows=2, **hindi)]
-        return [Editor("safe_mod", SafetyGuideline, fields, {"module": module}, title="Rules for this module only", noun="rule",
-                       info="Learners must tick “I agree” on these before the SOP steps unlock."),
+        editors = []
+        if sop:
+            editors.append(Editor("safe_sop", SafetyGuideline, fields, {"module": module, "sop": sop}, title=f"Rules for this SOP only — {sop.title}", noun="rule",
+                                  info="PPE, pre-start checks, hazards, safe practices, do's and don'ts for THIS SOP. Learners agree to them before this SOP's steps unlock."))
+        editors += [Editor("safe_mod", SafetyGuideline, fields, {"module": module, "sop": None}, title="Rules for the whole module" if sop else "Rules for this module only", noun="rule",
+                       info="Shown with every SOP of this module. Learners must tick “I agree” before the SOP steps unlock."),
                 Editor("safe_plant", SafetyGuideline, fields, {"plant": module.plant, "module": None}, title=f"Rules for every module at {module.plant.name}", noun="rule",
                        info="Shown on all modules of this plant. Changing them here changes every module.")]
+        return editors
     if tab == "videos":
         return [Editor("videos", VideoLesson, [F("title", "Title", required=True), F("title_hi", "Title (Hindi)", hindi=True), F("file", "Video file (MP4)", "file"), F("url", "…or video link", "text", placeholder="https://"),
                                                 F("duration_minutes", "Minutes", "number"), F("transcript", "Transcript (helps search & the AI assistant)", "textarea", rows=3)],
@@ -357,6 +396,9 @@ def module_import(request, pk, kind):
     module = get_object_or_404(Module, pk=pk)
     back = reverse("panel:module_tab", kwargs={"pk": pk, "tab": "steps" if kind == "steps" else "quiz"})
     replace = request.POST.get("mode") == "replace"
+    sop = module.sops.filter(pk=request.POST.get("sop")).first() if (request.POST.get("sop") or "").isdigit() else None
+    if sop:
+        back += f"?sop={sop.pk}"
     try:
         if kind == "steps":
             pasted = (request.POST.get("paste") or "").strip()
@@ -368,7 +410,7 @@ def module_import(request, pk, kind):
                 rows = [{"text": l} for l in lines if l]
             else:
                 raise ImportError_("Paste some steps (one per line) or choose a CSV file.")
-            n = import_steps(module, rows, replace=replace)
+            n = import_steps(module, rows, replace=replace, sop=sop)
             messages.success(request, f"{n} step(s) {'replaced' if replace else 'added'}.")
         else:
             upload = request.FILES.get("csv")
@@ -489,10 +531,42 @@ def question_action(request, pk, qid, action):
 
 @admin_required
 def quiz_list(request):
-    qs = (Quiz.objects.select_related("module__plant").annotate(n_q=Count("questions", distinct=True), tries=Count("attempts", distinct=True),
-                                                                 passed=Count("attempts", filter=Q(attempts__passed=True), distinct=True)).order_by("module__plant__name", "module__title"))
+    qs = (Quiz.objects.select_related("module__plant", "module__department").annotate(n_q=Count("questions", distinct=True), tries=Count("attempts", distinct=True),
+                                                                                    passed=Count("attempts", filter=Q(attempts__passed=True), distinct=True))
+          .order_by("module__plant__name", "module__department__order", "module__title"))
     q = (request.GET.get("q") or "").strip()
+    plant, cat, state = request.GET.get("plant") or "", (request.GET.get("cat") or "").strip(), request.GET.get("state") or ""
     if q:
         qs = qs.filter(module__title__icontains=q)
-    no_quiz = Module.objects.filter(quiz__isnull=True).select_related("plant").order_by("plant__name", "title")
-    return render_panel(request, "panel/quiz_list.html", page_title="Quizzes", quizzes=qs, q=q, no_quiz=no_quiz[:30], no_quiz_count=no_quiz.count())
+    if plant.isdigit():
+        qs = qs.filter(module__plant_id=plant)
+    if cat:
+        qs = qs.filter(module__department__name__iexact=cat)
+    if state == "empty":
+        qs = qs.filter(n_q=0)
+    elif state == "off":
+        qs = qs.filter(is_active=False)
+    no_quiz = Module.objects.filter(quiz__isnull=True).select_related("plant", "department").order_by("plant__name", "department__order", "title")
+    if plant.isdigit():
+        no_quiz = no_quiz.filter(plant_id=plant)
+    if cat:
+        no_quiz = no_quiz.filter(department__name__iexact=cat)
+    cats = sorted(set(Department.objects.values_list("name", flat=True)), key=str.lower)
+    return render_panel(request, "panel/quiz_list.html", page_title="Quizzes", quizzes=qs, q=q, plant=plant, cat=cat, state=state, plants=Plant.objects.all(), cats=cats,
+                        no_quiz=no_quiz[:30], no_quiz_count=no_quiz.count())
+
+
+@admin_required
+def quiz_new(request):
+    """Create a quiz step by step: plant → category (department) → module → settings."""
+    form = QuizCreateForm(request.POST or None, initial={"pass_percent": 80, "plant": request.GET.get("plant"), "module": request.GET.get("module")})
+    if request.method == "POST" and form.is_valid():
+        d = form.cleaned_data
+        quiz = Quiz.objects.create(module=d["module"], title=d.get("title") or "", pass_percent=d["pass_percent"], time_limit_minutes=d.get("time_limit_minutes"),
+                                   max_attempts=d.get("max_attempts"), questions_per_attempt=d.get("questions_per_attempt"))
+        audit(request, "quiz.create", quiz)
+        messages.success(request, f"Quiz created for “{d['module'].title}”. Now add the questions.")
+        return redirect("panel:module_tab", pk=d["module"].pk, tab="quiz")
+    modules = Module.objects.filter(quiz__isnull=True).select_related("plant", "department").order_by("plant__name", "department__order", "title")
+    return render_panel(request, "panel/quiz_new.html", page_title="Create a quiz", form=form, plants=Plant.objects.all(), departments=Department.objects.select_related("plant").order_by("plant__name", "order", "name"),
+                        modules=modules, crumbs=crumbs(("Quizzes", reverse("panel:quizzes")), ("Create a quiz", None)))

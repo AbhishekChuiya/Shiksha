@@ -1,10 +1,11 @@
 {% extends "base.html" %}{% load i18n shiksha %}
 {% block title %}{% translate "Dashboard" %}{% endblock %}
 {% block content %}
-<section class="hero">
+<section class="hero tilt-soft">
+  {% include "_scene.html" %}
   <div style="position:relative;z-index:1">
     <span class="eyebrow">{% icon 'building' %}{{ current_plant.name }}</span>
-    <h1>{% trans greeting %}, {{ user.first_name|default:user.email }} 👋</h1>
+    <h1>{% trans greeting %}, {{ user.first_name|default:user.email }} <span class="wave" aria-hidden="true">👋</span></h1>
     {% if resume %}
     <p class="hero-sub">{% translate "Continue where you left off" %}</p>
     <div class="hero-resume"><strong>{{ resume.module.display_title }}</strong>

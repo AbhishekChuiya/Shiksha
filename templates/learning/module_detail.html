@@ -34,14 +34,25 @@
 {% include "learning/_journey.html" %}
 {% include "learning/_gallery.html" with items=gallery group="module" %}
 <div class="split">
-  <div class="card">
-    <div class="row between"><p class="overline" style="margin:0">{% translate "Module overview" %}</p><button class="btn secondary sm" data-speak="#overview-text">{% icon 'speaker' %}{% translate "Listen" %}</button></div>
-    <div class="prose" id="overview-text" style="margin-top:12px">{{ module.display_overview|linebreaks }}</div>
-    {% if LANG == "hi" and not module.overview_hi or LANG == "gu" and not module.overview_gu %}<p class="small muted"><span class="badge grey">EN</span> {% translate "Translation not available in this language — showing English" %}</p>{% endif %}
-    {% if module.objective_list %}<p class="overline" style="margin-top:22px">{% translate "Learning objectives" %}</p>
-    <ul style="padding:0;list-style:none;display:grid;gap:10px">{% for o in module.objective_list %}<li class="row" style="align-items:flex-start">{% icon 'check-circle' 'ok-i' %}<span>{{ o }}</span></li>{% endfor %}</ul>{% endif %}
+  <div class="stack">
+    <div class="card">
+      <div class="row between"><p class="overline" style="margin:0">{% translate "Module overview" %}</p><button class="btn secondary sm" data-speak="#overview-text">{% icon 'speaker' %}{% translate "Listen" %}</button></div>
+      <div class="prose" id="overview-text" style="margin-top:12px">{{ module.display_overview|linebreaks }}</div>
+      {% if LANG == "hi" and not module.overview_hi or LANG == "gu" and not module.overview_gu %}<p class="small muted"><span class="badge grey">EN</span> {% translate "Translation not available in this language — showing English" %}</p>{% endif %}
+      {% if module.objective_list %}<p class="overline" style="margin-top:22px">{% translate "Learning objectives" %}</p>
+      <ul class="obj-list">{% for o in module.objective_list %}<li>{% icon 'check-circle' 'ok-i' %}<span>{{ o }}</span></li>{% endfor %}</ul>{% endif %}
+    </div>
+    {% if module.display_purpose %}<div class="card"><p class="overline">{% translate "Purpose" %}</p><div class="prose">{{ module.display_purpose|linebreaks }}</div></div>{% endif %}
+    {% if roles %}<div class="card"><p class="overline">{% translate "Who does what" %}</p>
+      <div class="table-wrap"><table class="table roles-table"><thead><tr><th>{% translate "Activity" %}</th><th>{% translate "Responsible" %}</th><th>{% translate "Accountable" %}</th></tr></thead>
+        <tbody>{% for r in roles %}<tr><td>{{ r.display_activity }}</td><td>{{ r.display_responsible }}</td><td>{{ r.display_accountable }}</td></tr>{% endfor %}</tbody></table></div></div>{% endif %}
+    {% if records %}<div class="card"><p class="overline">{% translate "Records" %}</p>
+      <ul class="records-list">{% for r in records %}<li>{% icon 'file' %}<span>{{ r.display_name }}</span>{% if r.code %}<code>{{ r.code }}</code>{% endif %}</li>{% endfor %}</ul></div>{% endif %}
   </div>
-  {% include "learning/_details.html" %}
+  <div class="stack">
+    {% include "learning/_escalation.html" %}
+    {% include "learning/_details.html" %}
+  </div>
 </div>
 
 {% elif tab == "videos" %}

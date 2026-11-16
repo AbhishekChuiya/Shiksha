@@ -219,7 +219,12 @@
            voices.find(function (v) { return norm(v.lang).indexOf(base) === 0; }) || null;
   }
   var warned = {};
-  function warnOnce(key, level, msg) { if (warned[key]) return; warned[key] = 1; toast(level, msg); }
+  // Information notes ("reading with the Hindi voice") appear ONE time on a device — it is already reading, no need to repeat it.
+  function warnOnce(key, level, msg) {
+    if (warned[key]) return; warned[key] = 1;
+    if (level === "info") { if (store.get("shiksha-note-" + key)) return; store.set("shiksha-note-" + key, "1"); }
+    toast(level, msg);
+  }
   function markStop(on) { $$("[data-speak-stop]").forEach(function (b) { b.classList.toggle("active", !!on && b.parentNode && b.parentNode.contains(current)); }); }
   function stop() { token++; if (synth) synth.cancel(); if (current) current.classList.remove("playing"); current = null; markStop(false); }
   // Every read-aloud button gets a Stop button beside it (added automatically, so no screen can forget it).
@@ -559,6 +564,32 @@
       var el = e.target.closest && e.target.closest(SEL); if (!el || el.disabled || el.classList.contains("disabled")) return;
       el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
       el.addEventListener("animationend", function done(ev) { if (ev.animationName === "pop") { el.classList.remove("pop"); el.removeEventListener("animationend", done); } });
+    }, { passive: true });
+  })();
+
+  // ---- 3D: cards tilt toward the pointer; the sign-in scene has parallax depth. Mouse devices only, never with "reduce motion".
+  (function () {
+    if (reduced || !window.matchMedia || !matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    var SEL = ".mod-card, .kbx-card, .kbx-tile, .quick-big a, .stat, .chart-card, .acct-menu .card, .journey li, .card.hover, .tilt-soft", cur = null, raf = 0, ev = null;
+    function reset(el) { if (!el) return; el.style.transform = ""; el.classList.remove("tilting"); }
+    function apply() {
+      raf = 0; if (!ev) return;
+      var el = ev.target.closest && ev.target.closest(SEL);
+      if (cur && cur !== el) reset(cur);
+      cur = el; if (!el) return;
+      var r = el.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width, y = (ev.clientY - r.top) / r.height;
+      var max = el.classList.contains("tilt-soft") || r.width > 600 ? 2.2 : 7;
+      el.classList.add("tilting");
+      el.style.transform = "perspective(1000px) rotateX(" + ((0.5 - y) * max * 2).toFixed(2) + "deg) rotateY(" + ((x - 0.5) * max * 2).toFixed(2) + "deg) translateZ(8px)";
+    }
+    document.addEventListener("pointermove", function (e) { ev = e; if (!raf) raf = requestAnimationFrame(apply); }, { passive: true });
+    document.addEventListener("pointerleave", function () { reset(cur); cur = null; });
+    window.addEventListener("blur", function () { reset(cur); cur = null; });
+    // parallax: elements with data-depth drift slightly with the pointer (sign-in page)
+    var layers = $$("[data-depth]");
+    if (layers.length) document.addEventListener("pointermove", function (e) {
+      var nx = e.clientX / innerWidth - 0.5, ny = e.clientY / innerHeight - 0.5;
+      layers.forEach(function (l) { var d = parseFloat(l.getAttribute("data-depth")) || 10; l.style.translate = (nx * d).toFixed(1) + "px " + (ny * d).toFixed(1) + "px"; });
     }, { passive: true });
   })();
 })();

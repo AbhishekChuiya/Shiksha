@@ -1,6 +1,6 @@
 {% extends "panel/base.html" %}{% load shiksha panel %}
 {% block content %}
-<div class="pn-head"><div><h1>Plants</h1><p class="muted">Each plant has its own photos, departments, modules and SOPs.</p></div><a class="btn" href="{% url 'panel:plant_new' %}">{% icon 'plus' %}Add plant</a></div>
+<div class="pn-head"><div><h1>Plants</h1><p class="muted">Each plant has its own photos, departments, modules and SOPs.</p></div><div class="row wrap"><a class="btn ghost" href="{% url 'panel:export' 'plants' %}">{% icon 'download' %}Download Excel</a><a class="btn secondary" href="{% url 'panel:import' %}#plants">{% icon 'upload' %}Import plants from Excel</a><a class="btn" href="{% url 'panel:plant_new' %}">{% icon 'plus' %}Add plant</a></div></div>
 <form class="pn-filters" method="get"><div class="search"><input type="search" name="q" value="{{ q }}" placeholder="Search plants…">{% icon 'search' %}</div><button class="btn secondary" type="submit">Search</button></form>
 <div class="pn-cards">
 {% for p in plants %}

@@ -32,8 +32,8 @@ class ImportTests(TestCase):
         return self.client.post(reverse("panel:import"), {"kind": kind, "file": f, **extra}, follow=True)
 
     def test_page_and_samples_download(self):
-        self.assertContains(self.client.get(reverse("panel:import")), "Sample Excel")
-        for kind in ("modules", "steps", "quiz"):
+        self.assertContains(self.client.get(reverse("panel:import")), "Download sample (Excel)")
+        for kind in ("plants", "modules", "steps", "quiz"):
             for ext in ("xlsx", "csv"):
                 r = self.client.get(reverse("panel:import_sample", args=[kind, ext]))
                 self.assertEqual(r.status_code, 200)
@@ -99,3 +99,28 @@ class ImportTests(TestCase):
         m = Module.objects.get(slug="vmpl_melt_cast")
         self.client.post(reverse("panel:module_import", args=[m.pk, "steps"]), {"csv": xlsx([["step", "text"], [1, "From Excel"]]), "mode": "replace"})
         self.assertEqual(list(m.steps.values_list("text", flat=True)), ["From Excel"])
+
+
+    def test_plants_import_creates_plants_and_departments(self):
+        from apps.plants.models import Department, Plant
+        f = self.client.get(reverse("panel:import_sample", args=["plants", "xlsx"])).content
+        r = self.up("plants", SimpleUploadedFile("p.xlsx", f))
+        self.assertContains(r, "plant(s) added")
+        p = Plant.objects.get(name="VRPL")
+        self.assertEqual(set(p.departments.values_list("name", flat=True)) >= {"Production", "QC", "Maintenance"}, True)
+        self.assertEqual(p.departments.get(name="QC").name_gu, "ક્યુસી")
+        self.assertEqual(p.location_gu, "ગુજરાત")
+        r = self.up("plants", xlsx([["name", "about"], ["vrpl", "Updated text"]]))
+        self.assertContains(r, "0 plant(s) added, 1 updated")
+        p.refresh_from_db(); self.assertEqual(p.about, "Updated text")
+
+    def test_plant_code_conflict_is_reported(self):
+        r = self.up("plants", xlsx([["name", "code"], ["Brand New Plant", "vrpl"]]))
+        self.assertContains(r, "already used")
+
+    def test_steps_sample_has_no_step_number_column_and_has_languages(self):
+        from openpyxl import load_workbook
+        wb = load_workbook(io.BytesIO(self.client.get(reverse("panel:import_sample", args=["steps", "xlsx"])).content))
+        head = [c.value for c in wb.worksheets[0][1]]
+        self.assertEqual(head, ["module", "sop", "text", "text_hi", "text_gu"])
+        self.assertIn("do NOT need a step number", " ".join(str(c.value) for row in wb["How to fill"].iter_rows() for c in row))

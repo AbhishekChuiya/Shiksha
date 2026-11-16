@@ -239,7 +239,10 @@ def sample_users_csv(request):
 def discussion_list(request):
     q = (request.GET.get("q") or "").strip()
     show = request.GET.get("show") or ""
-    qs = DiscussionPost.objects.select_related("author", "module", "parent__author").order_by("-created_at")
+    qs = DiscussionPost.objects.select_related("author", "module", "plant", "parent__author").order_by("-created_at")
+    plant = request.GET.get("plant") or ""
+    if plant.isdigit():
+        qs = qs.filter(plant_id=plant)
     if q:
         qs = qs.filter(Q(body__icontains=q) | Q(author__email__icontains=q) | Q(author__first_name__icontains=q))
     if show == "hidden":
@@ -249,7 +252,7 @@ def discussion_list(request):
     elif show == "posts":
         qs = qs.filter(parent__isnull=True)
     page = paginate(request, qs)
-    return render_panel(request, "panel/discussion_list.html", page_title="Discussion", page=page, q=q, show=show, total=page.paginator.count, base=qurl(request))
+    return render_panel(request, "panel/discussion_list.html", page_title="Discussion", page=page, q=q, show=show, plant=plant, plants=Plant.objects.all(), total=page.paginator.count, base=qurl(request))
 
 
 # ----------------------------------------------------------------------------- incidents

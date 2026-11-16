@@ -17,7 +17,7 @@ from apps.core.access import check_plant_access, require_plant
 from apps.core.models import AuditLog
 from apps.plants.models import Department
 
-from .models import DiscussionPost, Module, SOPStep
+from .models import DiscussionPost, Module, ModuleSOP, SOPAcknowledgement, SOPStep
 from .services import get_progress, refresh_completion
 
 TABS = ["overview", "videos", "sops", "quiz", "problems", "discussion"]
@@ -66,6 +66,7 @@ PAGE_SIZE = 24
 # (section key, label, icon, colour class) — the colour tells the learner at a glance what kind of rule it is.
 GUIDELINE_STYLES = [
     ("ppe", _l("PPE required"), "shield", "g-ppe"),
+    ("prestart", _l("Pre-start checks"), "check-circle", "g-pre"),
     ("hazards", _l("Hazards — high-risk areas"), "zap", "g-hazard"),
     ("practices", _l("Safe operating practices"), "shield", "g-good"),
     ("dos", _l("Do's"), "check-circle", "g-do"),
@@ -196,25 +197,45 @@ def module_detail(request, slug):
         gallery = [{"url": module.cover.url, "caption": module.display_title}] if module.cover else []
         gallery += [{"url": im.image.url, "caption": im.display_caption} for im in module.images.all()]
         ctx["gallery"] = gallery
+        ctx.update(roles=list(module.roles.all()), escalations=list(module.escalations.all()), records=list(module.records.all()),
+                   accountable=module.accountable_summary)
     if tab == "sops":
-        guidelines = list(module.safety_guidelines())
-        ctx["guideline_groups"] = guideline_groups(guidelines)
-        ctx["has_guidelines"] = bool(guidelines)
-        if steps:
+        sops = list(module.sops.all())
+        sel = None
+        if sops:                                   # a module can hold several procedures (SOPs)
+            try:
+                sid = int(request.GET.get("sop", 0))
+            except ValueError:
+                sid = 0
+            sel = (next((x for x in sops if x.id == sid), None)
+                   or next((x for x in sops if any(st.sop_id == x.id and st.id not in done_ids for st in steps)), None) or sops[0])
+        sop_steps = [x for x in steps if x.sop_id == (sel.id if sel else None)]
+        sop_done = sum(1 for x in sop_steps if x.id in done_ids)
+        acks = set(SOPAcknowledgement.objects.filter(user=request.user, sop__module=module).values_list("sop_id", flat=True))
+        guidelines = list(module.safety_guidelines()) + (list(sel.guidelines.all()) if sel else [])
+        cards = []
+        for x in sops:
+            xs = [st for st in steps if st.sop_id == x.id]
+            cards.append({"sop": x, "number": len(cards) + 1, "total": len(xs), "done": sum(1 for st in xs if st.id in done_ids), "current": sel is not None and x.id == sel.id})
+        ctx.update(sel_sop=sel, sop_cards=cards, sopq=f"&sop={sel.id}" if sel else "",
+                   safety_ok=(sel.id in acks) if sel else bool(progress.safety_ack_at),
+                   sop_total=len(sop_steps), sop_done=sop_done, sop_percent=round(100 * sop_done / len(sop_steps)) if sop_steps else 0,
+                   guideline_groups=guideline_groups(guidelines), has_guidelines=bool(guidelines))
+        if sop_steps:
             try:
                 n = int(request.GET.get("step", 0))
             except ValueError:
                 n = 0
             if not n:  # resume at first unfinished step
-                n = next((s.number for s in steps if s.id not in done_ids), steps[-1].number)
-            idx = next((i for i, s in enumerate(steps) if s.number == n), 0)
-            step = steps[idx]
+                n = next((x.number for x in sop_steps if x.id not in done_ids), sop_steps[-1].number)
+            idx = next((i for i, x in enumerate(sop_steps) if x.number == n), 0)
+            step = sop_steps[idx]
             ctx.update(step_dots=[{"number": x.number, "done": x.id in done_ids, "current": x.id == step.id,
-                                   "preview": Truncator(x.display_text).chars(70)} for x in steps],
-                       mark_percent=round(100 * (idx + 0.5) / len(steps), 1),
+                                   "preview": Truncator(x.display_text).chars(70)} for x in sop_steps],
+                       mark_percent=round(100 * (idx + 0.5) / len(sop_steps), 1),
                        step=step, step_index=idx + 1, step_done=step.id in done_ids,
-                       prev_step=steps[idx - 1] if idx > 0 else None,
-                       next_step=steps[idx + 1] if idx + 1 < len(steps) else None)
+                       prev_step=sop_steps[idx - 1] if idx > 0 else None,
+                       next_step=sop_steps[idx + 1] if idx + 1 < len(sop_steps) else None)
     elif tab == "videos":
         ctx["videos"] = module.videos.all()
     elif tab == "problems":
@@ -226,24 +247,38 @@ def module_detail(request, slug):
     return render(request, "learning/module_detail.html", ctx)
 
 
+def _posted_sop(request, module):
+    sid = request.POST.get("sop") or request.GET.get("sop") or ""
+    return module.sops.filter(pk=sid).first() if sid.isdigit() else None
+
+
+def _sop_query(sop):
+    return f"&sop={sop.pk}" if sop else ""
+
+
 @login_required
 @require_POST
 def acknowledge_safety(request, slug):
     module = _module_for(request, slug)
     progress = get_progress(request.user, module)
+    sop = _posted_sop(request, module)
+    if sop:
+        SOPAcknowledgement.objects.get_or_create(user=request.user, sop=sop)
     if not progress.safety_ack_at:
         progress.safety_ack_at = timezone.now()
         progress.save(update_fields=["safety_ack_at"])
-    return redirect(f"{reverse('learning:module_detail', args=[slug])}?tab=sops")
+    return redirect(f"{reverse('learning:module_detail', args=[slug])}?tab=sops{_sop_query(sop)}")
 
 
 @login_required
 @require_POST
 def toggle_step(request, slug, number):
     module = _module_for(request, slug)
-    step = get_object_or_404(SOPStep, module=module, number=number)
+    sop = _posted_sop(request, module)
+    step = get_object_or_404(SOPStep, module=module, sop=sop, number=number)
     progress = get_progress(request.user, module)
-    if not progress.safety_ack_at:
+    acked = SOPAcknowledgement.objects.filter(user=request.user, sop=sop).exists() if sop else bool(progress.safety_ack_at)
+    if not acked:
         messages.error(request, _("Please acknowledge the safety guidelines first."))
     elif request.POST.get("action") == "unmark":
         progress.completed_steps.remove(step)
@@ -256,10 +291,10 @@ def toggle_step(request, slug, number):
             request.session["celebrate"] = "module"
         elif progress.all_steps_done and not was_all:
             request.session["celebrate"] = "steps"
-        nxt = module.steps.filter(number__gt=number).first()
+        nxt = module.steps.filter(sop=sop, number__gt=number).first()
         if nxt:
             number = nxt.number
-    return redirect(f"{reverse('learning:module_detail', args=[slug])}?tab=sops&step={number}")
+    return redirect(f"{reverse('learning:module_detail', args=[slug])}?tab=sops{_sop_query(sop)}&step={number}")
 
 
 @login_required
@@ -288,6 +323,9 @@ def _visible_posts(user):
 def feed_context(request, module=None, mine=False, page=1):
     """Top-level posts (newest first, pinned on top) with their replies, for one page."""
     qs = _visible_posts(request.user).filter(parent__isnull=True)
+    plant = module.plant if module is not None else getattr(request, "plant", None)
+    if plant is not None:
+        qs = qs.filter(plant=plant)          # every plant has its own space
     if module is not None:
         qs = qs.filter(module=module)
     if mine:
@@ -308,13 +346,13 @@ def discussion(request):
     module = None
     slug = request.GET.get("module")
     if slug:
-        module = Module.objects.filter(slug=slug, status=Module.Status.PUBLISHED).first()
+        module = Module.objects.filter(slug=slug, status=Module.Status.PUBLISHED, plant=request.plant).first()
     mine = request.GET.get("mine") == "1"
     ctx = feed_context(request, module, mine, request.GET.get("page"))
     ctx.update({
         "module_filter": module, "mine": mine,
-        "topics": Module.objects.filter(status=Module.Status.PUBLISHED).select_related("plant").order_by("plant__name", "title"),
-        "total": DiscussionPost.objects.filter(parent__isnull=True, is_hidden=False).count(),
+        "topics": Module.objects.filter(status=Module.Status.PUBLISHED, plant=request.plant).select_related("plant").order_by("title") if request.plant else Module.objects.none(),
+        "total": DiscussionPost.objects.filter(parent__isnull=True, is_hidden=False, plant=request.plant).count() if request.plant else 0,
     })
     return render(request, "learning/discussion.html", ctx)
 
@@ -338,7 +376,8 @@ def discussion_post(request):
     module = None
     if parent is None and request.POST.get("module"):
         module = Module.objects.filter(slug=request.POST["module"], status=Module.Status.PUBLISHED).first()
-    DiscussionPost.objects.create(author=request.user, body=body, parent=parent, module=module or (parent.module if parent else None))
+    plant = parent.plant if parent else (module.plant if module else getattr(request, "plant", None))
+    DiscussionPost.objects.create(author=request.user, body=body, parent=parent, plant=plant, module=module or (parent.module if parent else None))
     messages.success(request, _("Reply posted.") if parent else _("Posted."))
     return redirect(back)
 

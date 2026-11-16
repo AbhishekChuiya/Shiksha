@@ -103,6 +103,7 @@ class Command(BaseCommand):
         for i, (sec, t, hi) in enumerate(COLOURED_GUIDELINES):
             SafetyGuideline.objects.get_or_create(plant=vmpl, module=None, section=sec, text=t, defaults={"order": i, "text_hi": hi})
         call_command("seed_knowledge", stdout=io.StringIO())
+        call_command("seed_process_demo", stdout=io.StringIO())
 
         for order, (cat, dept, summary, n_steps) in enumerate(VMPL_MODULES):
             slug = "vmpl_" + cat.lower().replace(" — ", "_").replace(" & ", "_").replace(" ", "_")

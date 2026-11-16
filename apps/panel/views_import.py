@@ -7,16 +7,24 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 
-from apps.learning.importers import ImportError_, import_modules, import_quiz_bulk, import_steps_bulk
+from apps.learning.importers import ImportError_, import_modules, import_plants, import_quiz_bulk, import_steps_bulk
 from apps.learning.models import Module
 from apps.learning.tables import TableError, read_table
 from apps.plants.models import Plant
 
+from . import exports
 from .decorators import admin_required
 from .views import audit, render_panel
 
 # (column, required?, what to write)
 COLUMNS = {
+    "plants": [
+        ("name", True, "Short plant name, e.g. VRPL"), ("code", False, "Short web name (letters, numbers, dash). Made from the name if empty"),
+        ("company", False, "Legal company name"), ("location", False, "Town / state"), ("tagline", False, "One line under the plant name"), ("about", False, "A few paragraphs about the plant"),
+        ("departments", False, "Department names separated by commas, e.g. Production, QC, Maintenance (created if new)"),
+        ("location_hi, tagline_hi, about_hi, departments_hi", False, "The same text in Hindi (departments in the same order)"),
+        ("location_gu, tagline_gu, about_gu, departments_gu", False, "The same text in Gujarati (departments in the same order)"),
+    ],
     "modules": [
         ("title", True, "Module name, e.g. Melt & Cast"), ("department", True, "Production, QC or Maintenance (created if new)"),
         ("plant", False, "Plant name. Leave empty to use the plant you pick on this page"), ("category", False, "Filter chip, e.g. Extrusion"),
@@ -26,7 +34,7 @@ COLUMNS = {
         ("title_hi / summary_hi / overview_hi / objectives_hi / category_hi", False, "The same text in Hindi"), ("…_gu (title_gu, summary_gu …)", False, "The same text in Gujarati"), ("slug", False, "Leave empty — made automatically. Fill it only to update an existing module"),
     ],
     "steps": [
-        ("module", True, "The module's name or slug (see Modules list)"), ("step", False, "Order number. Leave empty to keep the order of the rows"),
+        ("module", True, "The module's name or slug (see Modules list)"), ("sop", False, "Which SOP of the module (its document number or title). Created if new. Leave empty for a module without SOPs"), ("step", False, "Order number inside the SOP. Leave empty to keep the order of the rows"),
         ("text", True, "The instruction for this step"), ("text_hi", False, "The same instruction in Hindi"), ("text_gu", False, "The same instruction in Gujarati"),
     ],
     "quiz": [
@@ -36,7 +44,7 @@ COLUMNS = {
         ("question_hi, option_a_hi …", False, "The same text in Hindi"), ("question_gu, option_a_gu …", False, "The same text in Gujarati"),
     ],
 }
-TITLES = {"modules": "Modules", "steps": "SOP steps", "quiz": "Quiz questions"}
+TITLES = {"plants": "Plants", "modules": "Modules", "steps": "SOP steps", "quiz": "Quiz questions"}
 
 
 @admin_required
@@ -51,7 +59,11 @@ def import_center(request):
             if not upload:
                 raise ImportError_("Choose a file first.")
             rows = read_table(upload)
-            if kind == "modules":
+            if kind == "plants":
+                created, updated = import_plants(rows)
+                messages.success(request, f"Done — {created} plant(s) added, {updated} updated. Now add each plant's photos and videos by hand (Plants → Photos).")
+                n = created + updated
+            elif kind == "modules":
                 plant = Plant.objects.filter(pk=request.POST.get("plant") or 0).first()
                 created, updated = import_modules(rows, default_plant=plant)
                 messages.success(request, f"Done — {created} module(s) added, {updated} updated. New modules start as Draft: review them, then publish.")
@@ -66,8 +78,9 @@ def import_center(request):
         except (ImportError_, TableError) as exc:
             messages.error(request, str(exc))
         return redirect("panel:import")
-    cards = [{"kind": k, "title": TITLES[k], "cols": COLUMNS[k]} for k in ("modules", "steps", "quiz")]
-    return render_panel(request, "panel/import.html", page_title="Import from Excel", cards=cards, plants=Plant.objects.all(), module_count=Module.objects.count())
+    cards = [{"kind": k, "title": TITLES[k], "cols": COLUMNS[k]} for k in ("plants", "modules", "steps", "quiz")]
+    return render_panel(request, "panel/import.html", page_title="Import from Excel", cards=cards, plants=Plant.objects.all(), module_count=Module.objects.count(),
+                        downloads=[(k, v[0], v[2]) for k, v in exports.DATASETS.items()])
 
 
 def _sample(kind):
@@ -76,20 +89,37 @@ def _sample(kind):
     m2 = mods[1].slug if len(mods) > 1 else m1
     plant = Plant.objects.order_by("order").first()
     pname = plant.name if plant else "VMPL P1"
-    if kind == "modules":
-        head = ["title", "department", "plant", "category", "summary", "overview", "objectives", "est_minutes", "library", "status", "title_hi", "summary_hi"]
+    if kind == "plants":
+        head = ["name", "code", "company", "location", "tagline", "about", "departments", "location_hi", "tagline_hi", "about_hi", "departments_hi",
+                "location_gu", "tagline_gu", "about_gu", "departments_gu"]
+        rows = [["VRPL", "vrpl", "Vishakha Renewable Private Limited", "Gujarat", "Solar encapsulant films", "A few paragraphs about the plant.", "Production, QC, Maintenance",
+                 "गुजरात", "सोलर एनकैप्सुलेंट फ़िल्में", "प्लांट के बारे में कुछ पंक्तियाँ।", "प्रोडक्शन, क्यूसी, मेंटेनेंस",
+                 "ગુજરાત", "સોલાર એન્કેપ્સ્યુલન્ટ ફિલ્મો", "પ્લાન્ટ વિશે થોડી લીટીઓ.", "પ્રોડક્શન, ક્યુસી, મેન્ટેનન્સ"]]
+    elif kind == "modules":
+        head = ["title", "department", "plant", "category", "summary", "overview", "purpose", "objectives", "est_minutes", "library", "status",
+                "title_hi", "summary_hi", "title_gu", "summary_gu"]
         rows = [["Homogenizing", "Production", pname, "Homogenizing", "Heating and cooling billets before extrusion.", "Covers the furnace cycle and cooling.",
-                 "Explain the cycle|Check temperatures|Record the log", 25, "production", "draft", "होमोजेनाइज़िंग", "एक्सट्रूज़न से पहले बिलेट को गर्म और ठंडा करना।"],
-                ["Preventive Maintenance", "Maintenance", pname, "Preventive Maintenance", "Planned servicing of machines.", "", "", 15, "department", "draft", "", ""]]
+                 "Condition billets for a clean extrusion.", "Explain the cycle|Check temperatures|Record the log", 25, "production", "draft",
+                 "होमोजेनाइज़िंग", "एक्सट्रूज़न से पहले बिलेट को गर्म और ठंडा करना।", "હોમોજેનાઇઝિંગ", "એક્સ્ટ્રુઝન પહેલાં બિલેટને ગરમ અને ઠંડા કરવા."],
+                ["Preventive Maintenance", "Maintenance", pname, "Preventive Maintenance", "Planned servicing of machines.", "", "", "", 15, "department", "draft", "", "", "", ""]]
     elif kind == "steps":
-        head = ["module", "step", "text", "text_hi", "text_gu"]
-        rows = [[m1, 1, "Inspect the furnace internally after cleaning.", "सफ़ाई के बाद फ़र्नेस का आंतरिक निरीक्षण करें।", "સફાઈ પછી ફર્નેસનું આંતરિક નિરીક્ષણ કરો."], [m1, 2, "Check the cooling water flow.", "", ""],
-                [m2, 1, "Wear all PPE before entering the shop floor.", "", ""]]
+        head = ["module", "sop", "text", "text_hi", "text_gu"]
+        rows = [[m1, "SOP 1 — Start-up", "Inspect the furnace internally after cleaning.", "सफ़ाई के बाद फ़र्नेस का आंतरिक निरीक्षण करें।", "સફાઈ પછી ફર્નેસનું આંતરિક નિરીક્ષણ કરો."],
+                [m1, "SOP 1 — Start-up", "Check the cooling water flow.", "", ""],
+                [m1, "SOP 2 — Shut-down", "Switch off the heaters.", "", ""],
+                [m2, "", "Wear all PPE before entering the shop floor.", "", ""]]
     else:
-        head = ["module", "question", "option_a", "option_b", "option_c", "option_d", "correct", "kind", "explanation", "question_hi", "option_a_hi", "option_b_hi", "option_c_hi", "option_d_hi"]
+        head = ["module", "question", "option_a", "option_b", "option_c", "option_d", "correct", "kind", "explanation",
+                "question_hi", "option_a_hi", "option_b_hi", "option_c_hi", "option_d_hi", "explanation_hi",
+                "question_gu", "option_a_gu", "option_b_gu", "option_c_gu", "option_d_gu", "explanation_gu"]
         rows = [[m1, "What should be checked first?", "Gas pressure", "Furnace interior", "Billet speed", "Water temperature", "B", "Diagnostic", "Always inspect before starting.",
-                 "सबसे पहले क्या जाँचना चाहिए?", "गैस दाब", "फ़र्नेस का आंतरिक भाग", "बिलेट की गति", "पानी का तापमान"]]
+                 "सबसे पहले क्या जाँचना चाहिए?", "गैस दाब", "फ़र्नेस का आंतरिक भाग", "बिलेट की गति", "पानी का तापमान", "शुरू करने से पहले हमेशा निरीक्षण करें।",
+                 "સૌથી પહેલા શું તપાસવું જોઈએ?", "ગૅસ દબાણ", "ફર્નેસનો અંદરનો ભાગ", "બિલેટની ગતિ", "પાણીનું તાપમાન", "શરૂ કરતા પહેલાં હંમેશા નિરીક્ષણ કરો."]]
     notes = [("Column", "Needed?", "What to write")] + [(c, "Yes" if req else "Optional", d) for c, req, d in COLUMNS[kind]]
+    if kind == "steps":
+        notes.append(("(no step number)", "-", "You do NOT need a step number. Steps are numbered automatically in the order of the rows, starting from 1 in every SOP."))
+    if kind == "plants":
+        notes.append(("(photos & videos)", "-", "Photos, the banner and videos are not imported — add them by hand under Plants → Photos."))
     return head, rows, notes
 
 
@@ -133,4 +163,23 @@ def import_sample(request, kind, ext):
         wb.save(out)
         resp = HttpResponse(out.getvalue(), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     resp["Content-Disposition"] = f'attachment; filename="{fname}"'
+    return resp
+
+
+@admin_required
+def export_data(request, kind):
+    """Download what the application holds, as one Excel file (same columns as the import files)."""
+    import datetime
+    if kind == "all":
+        sheets = [(title, *fn()) for title, fn in exports.EVERYTHING]
+        name = "everything"
+    elif kind in exports.DATASETS:
+        title, fn, _ = exports.DATASETS[kind]
+        sheets = [(title, *fn())]
+        name = kind
+    else:
+        raise Http404
+    audit(request, "export", None, kind=kind)
+    resp = HttpResponse(exports.workbook(sheets), content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    resp["Content-Disposition"] = f'attachment; filename="shiksha_{name}_{datetime.date.today():%Y-%m-%d}.xlsx"'
     return resp

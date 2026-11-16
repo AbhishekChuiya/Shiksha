@@ -101,3 +101,13 @@
     document.addEventListener("change", function (e) { if (e.target.matches && e.target.matches("[data-check]")) refresh(); });
   }
 })();
+
+/* Import centre: show the chosen file name in the drop box */
+document.addEventListener("change", function (e) {
+  var input = e.target;
+  if (!input.matches || !input.matches(".imp-drop input[type=file]")) return;
+  var box = input.closest(".imp-drop"), label = box.querySelector("b"), name = input.files && input.files[0] ? input.files[0].name : "";
+  box.classList.toggle("has-file", !!name);
+  if (!label.dataset.orig) label.dataset.orig = label.textContent;
+  label.textContent = name || label.dataset.orig;
+});

@@ -34,8 +34,23 @@ def quiz_list(request):
     quizzes = (Quiz.objects.filter(module__plant=plant, is_active=True,
                                    module__status=Module.Status.PUBLISHED)
                .select_related("module").order_by("module__order", "module__title"))
-    rows = [{"quiz": q, **_quiz_state(request.user, q)} for q in quizzes]
-    return render(request, "quizzes/quiz_list.html", {"rows": rows})
+    rows = [{"quiz": q, **_quiz_state(request.user, q)} for q in quizzes.select_related("module__department")]
+    # categories = the module's department (Production, QC, Maintenance …)
+    cats = {}
+    for r in rows:
+        d = r["quiz"].module.department
+        c = cats.setdefault(d.pk, {"dept": d, "key": str(d.pk), "rows": [], "passed": 0})
+        c["rows"].append(r)
+        c["passed"] += 1 if r["passed"] else 0
+    cats = sorted(cats.values(), key=lambda c: (c["dept"].order, c["dept"].name))
+    for c in cats:
+        c["tone"] = {"production": "red", "qc": "blue", "maintenance": "amber"}.get(c["dept"].name.strip().lower(), "teal")
+        c["count"] = len(c["rows"])
+    chosen = request.GET.get("dept") or ""
+    shown = [c for c in cats if c["key"] == chosen] or cats
+    if not any(c["key"] == chosen for c in cats):
+        chosen = ""
+    return render(request, "quizzes/quiz_list.html", {"cats": cats, "groups": shown, "chosen": chosen, "total": len(rows), "rows": rows})
 
 
 @login_required
