@@ -148,6 +148,8 @@ class SOPStep(models.Model):
 class VideoLesson(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="videos")
     title = models.CharField(max_length=160)
+    title_hi = models.CharField("title (Hindi)", max_length=160, blank=True)
+    title_gu = models.CharField("title (Gujarati)", max_length=160, blank=True)
     file = models.FileField(upload_to="modules/videos/", blank=True)
     url = models.URLField(blank=True, help_text="External/CDN URL, used if no file uploaded")
     duration_minutes = models.PositiveSmallIntegerField(null=True, blank=True)
@@ -163,6 +165,8 @@ class VideoLesson(models.Model):
     @property
     def source(self):
         return self.file.url if self.file else self.url
+
+    display_title = property(lambda self: localized(self, "title"))
 
 
 class ProblemSolution(models.Model):

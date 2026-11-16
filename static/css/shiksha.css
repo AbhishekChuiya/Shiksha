@@ -1233,3 +1233,13 @@ body { font-size: 16.5px; line-height: 1.6; }
 .speak-stop { opacity: .55; transition: opacity .2s, background .2s, color .2s; } .speak-stop.active { opacity: 1; color: #fff; background: var(--brand); border-color: var(--brand); }
 .speak-stop .i { width: 16px; height: 16px; } .speak-stop.btn { gap: 6px; }
 [data-speak].playing { background: var(--brand-50); color: var(--brand); border-color: var(--brand-200); }
+
+/* language switcher on sign-in pages */
+.auth-lang { display: flex; justify-content: flex-end; gap: 6px; margin: 0 auto 8px; max-width: 440px; width: 100%; padding: 4px; }
+.auth-lang button { padding: 8px 14px; border-radius: 99px; border: 1px solid #e2e5ec; background: #fff; color: #4b5260; font: inherit; font-size: .88rem; font-weight: 600; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.auth-lang button:hover { border-color: #c8102e; color: #c8102e; } .auth-lang button.on { background: #c8102e; border-color: #c8102e; color: #fff; }
+.auth-main { flex-direction: column; }
+.auth-lang { max-width: 410px; padding: 0; margin-bottom: 18px; }
+
+.sso-pending { text-align: left; } .sso-eyebrow { display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; font-weight: 800; color: var(--brand); margin-bottom: 14px; }
+.sso-eyebrow .i { width: 14px; height: 14px; } .sso-pending .btn { margin-top: 8px; }

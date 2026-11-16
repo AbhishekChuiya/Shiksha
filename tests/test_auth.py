@@ -138,9 +138,13 @@ class SSOTests(TestCase):
         r = self.client.get(reverse("accounts:sso_callback"))
         self.assertRedirects(r, reverse("accounts:login"))
 
-    def test_sso_disabled_button_absent(self):
+    def test_sso_not_configured_shows_button_and_a_friendly_page(self):
         with override_settings(SSO_ENABLED=False):
-            self.assertNotContains(self.client.get(reverse("accounts:login")), "Continue with Microsoft")
+            self.assertContains(self.client.get(reverse("accounts:login")), "Login via SSO")
+            r = self.client.get(reverse("accounts:sso_login"))
+            self.assertContains(r, "SSO is being set up")
+            self.assertContains(r, "Back to employee sign in")
+            self.assertContains(r, reverse("accounts:login"))
 
 
 class EmailTests(TestCase):

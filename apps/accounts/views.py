@@ -99,8 +99,7 @@ def _redirect_uri(request):
 
 def sso_login(request):
     if not settings.SSO_ENABLED:
-        messages.error(request, _("Microsoft sign-in is not configured yet."))
-        return redirect("accounts:login")
+        return render(request, "accounts/sso_pending.html")
     return redirect(sso.begin(request, _redirect_uri(request)))
 
 

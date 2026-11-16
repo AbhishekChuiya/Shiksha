@@ -6,6 +6,7 @@
     python manage.py seed_hindi
 """
 from django.core.management.base import BaseCommand
+from django.db.models import Q
 
 from apps.learning.models import Module, SafetyGuideline, SOPStep
 from apps.plants.models import Department, Plant, Process
@@ -104,7 +105,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **opts):
         n = 0
-        for plant in Plant.objects.filter(code="vmpl-p1"):
+        for plant in Plant.objects.filter(Q(code="vmpl-p1") | Q(about__startswith="Vishakha Metals Private Limited")):
             for f, v in VMPL.items():
                 n += fill(plant, f, v)
             plant.save()

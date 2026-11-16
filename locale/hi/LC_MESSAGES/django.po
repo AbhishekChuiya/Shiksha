@@ -1325,8 +1325,8 @@ msgid "%(m)s — SOP Quiz"
 msgstr "%(m)s — एसओपी क्विज़"
 
 msgid ""
-"Plant SOPs, step-by-step training, quizzes and certificates — in English and"
-" हिन्दी."
+"Plant SOPs, step-by-step training, quizzes and certificates — in English, "
+"हिन्दी and ગુજરાતી."
 msgstr ""
 "प्लांट के एसओपी, चरण-दर-चरण प्रशिक्षण, क्विज़ और प्रमाणपत्र — English और "
 "हिन्दी में।"
@@ -1681,6 +1681,25 @@ msgstr "तारीख और समय"
 
 msgid "Photo / document"
 msgstr "फ़ोटो / दस्तावेज़"
+
+msgid "Login via SSO"
+msgstr "SSO से लॉगिन"
+
+msgid "Company single sign-on"
+msgstr "कंपनी सिंगल साइन-ऑन"
+
+msgid "SSO is being set up"
+msgstr "SSO सेट किया जा रहा है"
+
+msgid ""
+"Company single sign-on is not active yet. Please sign in with your Employee "
+"ID or company email and password for now."
+msgstr ""
+"कंपनी सिंगल साइन-ऑन अभी चालू नहीं है। कृपया अभी अपनी कर्मचारी आईडी या कंपनी "
+"ईमेल और पासवर्ड से साइन इन करें।"
+
+msgid "Back to employee sign in"
+msgstr "कर्मचारी साइन इन पर वापस जाएँ"
 
 msgid "Go to step number"
 msgstr "चरण संख्या पर जाएँ"

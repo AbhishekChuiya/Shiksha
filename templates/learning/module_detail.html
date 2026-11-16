@@ -46,7 +46,7 @@
 
 {% elif tab == "videos" %}
 <div class="split"><div class="stack">
-  {% for v in videos %}<div class="card"><h3>{{ v.title }}</h3>{% if v.source %}<video controls preload="metadata" style="width:100%;border-radius:12px;background:#000" src="{{ v.source }}"></video>{% endif %}{% if v.duration_minutes %}<p class="small muted" style="margin:10px 0 0">{% icon 'clock' %} {{ v.duration_minutes }} {% translate "min" %}</p>{% endif %}</div>
+  {% for v in videos %}<div class="card"><h3>{{ v.display_title }}</h3>{% if v.source %}<video controls preload="metadata" style="width:100%;border-radius:12px;background:#000" src="{{ v.source }}"></video>{% endif %}{% if v.duration_minutes %}<p class="small muted" style="margin:10px 0 0">{% icon 'clock' %} {{ v.duration_minutes }} {% translate "min" %}</p>{% endif %}</div>
   {% empty %}<div class="card empty">{% icon 'video' %}<h3>{% translate "Video lessons are coming soon" %}</h3><p>{% translate "Meanwhile, learn this process step-by-step in the SOP steps tab." %}</p><a class="btn" href="?tab=sops">{% translate "Go to SOP steps" %}{% icon 'arrow-right' %}</a></div>{% endfor %}
 </div>{% include "learning/_details.html" %}</div>
 

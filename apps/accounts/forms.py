@@ -15,7 +15,8 @@ class LoginForm(AuthenticationForm):
     def clean_username(self):
         value = self.cleaned_data["username"].strip()
         domains = settings.ALLOWED_EMAIL_DOMAINS
-        if "@" in value and domains and value.rsplit("@", 1)[-1].lower() not in domains:
+        is_super = User.objects.filter(email__iexact=value, is_superuser=True).exists()
+        if "@" in value and domains and value.rsplit("@", 1)[-1].lower() not in domains and not is_super:
             raise forms.ValidationError(
                 _("Only company accounts can sign in. Please use your %(d)s email.") %
                 {"d": ", ".join("@" + d for d in domains)})
@@ -71,7 +72,7 @@ class SignupForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ["first_name", "last_name", "email", "employee_id"]
-        labels = {"email": _("Company email"), "employee_id": _("Employee ID (optional)")}
+        labels = {"first_name": _("First name"), "last_name": _("Last name"), "email": _("Company email"), "employee_id": _("Employee ID (optional)")}
 
     def __init__(self, *a, **kw):
         super().__init__(*a, **kw)

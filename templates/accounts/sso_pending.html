@@ -1,0 +1,10 @@
+{% extends "accounts/base_auth.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "Company single sign-on" %}{% endblock %}
+{% block content %}
+<div class="sso-pending">
+  <span class="sso-eyebrow">{% icon 'lock' %}{% translate "Company single sign-on" %}</span>
+  <h2>{% translate "SSO is being set up" %}</h2>
+  <p class="sub">{% translate "Company single sign-on is not active yet. Please sign in with your Employee ID or company email and password for now." %}</p>
+  <a class="btn lg block" href="{% url 'accounts:login' %}">{% icon 'arrow-left' %}{% translate "Back to employee sign in" %}</a>
+</div>
+{% endblock %}

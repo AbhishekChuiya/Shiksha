@@ -311,7 +311,7 @@ def _module_editors(module, tab):
                 Editor("safe_plant", SafetyGuideline, fields, {"plant": module.plant, "module": None}, title=f"Rules for every module at {module.plant.name}", noun="rule",
                        info="Shown on all modules of this plant. Changing them here changes every module.")]
     if tab == "videos":
-        return [Editor("videos", VideoLesson, [F("title", "Title", required=True), F("file", "Video file (MP4)", "file"), F("url", "…or video link", "text", placeholder="https://"),
+        return [Editor("videos", VideoLesson, [F("title", "Title", required=True), F("title_hi", "Title (Hindi)", hindi=True), F("file", "Video file (MP4)", "file"), F("url", "…or video link", "text", placeholder="https://"),
                                                 F("duration_minutes", "Minutes", "number"), F("transcript", "Transcript (helps search & the AI assistant)", "textarea", rows=3)],
                        {"module": module}, title="Video lessons", noun="video", max_file_mb=500,
                        info="Upload an MP4, or paste a link if the video is hosted elsewhere. Large files are best uploaded to your video host and linked.",

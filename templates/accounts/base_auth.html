@@ -1,5 +1,5 @@
 {% load static i18n shiksha %}<!doctype html>
-<html lang="en">
+<html lang="{{ LANGUAGE_CODE|default:'en' }}">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{% block title %}{% translate "Sign in" %}{% endblock %} · Project Shiksha</title>
@@ -15,7 +15,7 @@
     <a href="{% url 'core:dashboard' %}"><img class="wm" src="{% static 'img/brand/logo-white.png' %}" alt="Vishakha"></a>
     <div class="auth-copy">
       <h1>{% translate "Learn the right way. Every shift." %}</h1>
-      <p>{% translate "Plant SOPs, step-by-step training, quizzes and certificates — in English and हिन्दी." %}</p>
+      <p>{% translate "Plant SOPs, step-by-step training, quizzes and certificates — in English, हिन्दी and ગુજરાતી." %}</p>
       <ul class="auth-points">
         <li>{% icon 'shield' %}{% translate "Safety-first guided procedures" %}</li>
         <li>{% icon 'speaker' %}{% translate "Listen to any step in your language" %}</li>
@@ -26,6 +26,10 @@
     <div class="auth-foot">© Vishakha Group · Project Shiksha</div>
   </section>
   <section class="auth-main">
+    <form class="auth-lang" method="post" action="{% url 'set_language' %}" aria-label="{% translate 'Language' %}">{% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path }}">
+      {% for code, name in LANGUAGE_CHOICES %}<button type="submit" name="language" value="{{ code }}" class="{% if code == LANGUAGE_CODE %}on{% endif %}" lang="{{ code }}">{{ name }}</button>{% endfor %}
+    </form>
     <div class="auth-box">
       <img class="logo-m" src="{% static 'img/brand/logo.png' %}" alt="Vishakha">
       {% for m in messages %}<div class="alert {{ m.level_tag }}">{% if m.level_tag == 'success' %}{% icon 'check-circle' %}{% elif m.level_tag == 'error' %}{% icon 'alert' %}{% else %}{% icon 'info' %}{% endif %}<div>{{ m }}</div></div>{% endfor %}

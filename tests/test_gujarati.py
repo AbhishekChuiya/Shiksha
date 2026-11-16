@@ -205,3 +205,84 @@ class GujaratiContentEverywhereTests(TestCase):
         self.assertIn("gu2dev", js)
         self.assertIn("0x180", js)
         self.assertIn("pieces(", js)
+
+
+class DefaultLanguageAndLoginSwitcherTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_demo", stdout=io.StringIO())
+
+    def test_default_is_english_even_if_browser_asks_for_other_languages(self):
+        r = self.client.get(reverse("accounts:login"), HTTP_ACCEPT_LANGUAGE="gu-IN,hi;q=0.9")
+        self.assertContains(r, '<html lang="en">')
+        self.assertContains(r, "Welcome back")
+
+    def test_login_page_has_language_buttons_and_they_work(self):
+        html = self.client.get(reverse("accounts:login")).content.decode()
+        for label in ("English", "हिन्दी", "ગુજરાતી"):
+            self.assertIn(label, html)
+        r = self.client.post(reverse("set_language"), {"language": "gu", "next": reverse("accounts:login")}, follow=True)
+        self.assertContains(r, '<html lang="gu">')
+        self.assertContains(r, "ફરી સ્વાગત છે")                 # "Welcome back"
+
+    def test_language_switcher_on_every_auth_page(self):
+        for name in ("accounts:login", "accounts:signup", "accounts:password_reset"):
+            self.assertContains(self.client.get(reverse(name)), 'name="language"', msg_prefix=name)
+
+    def test_chosen_language_survives_sign_out(self):
+        self.client.post(reverse("set_language"), {"language": "gu", "next": "/"})
+        self.assertEqual(self.client.cookies["django_language"].value, "gu")
+        self.client.force_login(User.objects.get(employee_id="test_user"))
+        self.client.post(reverse("accounts:logout"))
+        self.assertContains(self.client.get(reverse("accounts:login")), '<html lang="gu">')
+
+    def test_plant_text_fills_itself_on_migrate_for_any_plant_code(self):
+        import importlib
+        from django.apps import apps
+        from apps.plants.models import Plant
+        mig = importlib.import_module("apps.plants.migrations.0005_fill_demo_plant_translations")
+        plant = Plant.objects.get(code="vmpl-p1")
+        Plant.objects.filter(pk=plant.pk).update(code="my-own-code", about_gu="", about_hi="", tagline_gu="")
+        mig.fill(apps, None)
+        plant.refresh_from_db()
+        self.assertIn("વિશાખા મેટલ્સ", plant.about_gu)
+        self.assertIn("विशाखा", plant.about_hi)
+
+    def test_video_titles_can_be_translated(self):
+        from apps.learning.models import Module, VideoLesson
+        m = Module.objects.get(slug="vmpl_melt_cast")
+        VideoLesson.objects.create(module=m, title="Furnace start-up", title_gu="ફર્નેસ શરૂ કરવી", url="https://example.com/v.mp4")
+        self.client.force_login(User.objects.get(employee_id="test_user"))
+        self.client.cookies["django_language"] = "gu"
+        self.assertContains(self.client.get(reverse("learning:module_detail", args=[m.slug]) + "?tab=videos"), "ફર્નેસ શરૂ કરવી")
+
+
+class SuperuserLoginAndSignupTests(TestCase):
+    def test_superuser_with_any_email_can_open_the_django_admin(self):
+        User.objects.create_superuser(email="abhi@example.org", password="abhi")
+        self.assertTrue(self.client.login(username="abhi@example.org", password="abhi"))
+        self.assertEqual(self.client.get("/admin/").status_code, 200)
+
+    def test_admin_login_form_accepts_the_superuser(self):
+        User.objects.create_superuser(email="abhi@example.org", password="abhi")
+        r = self.client.post("/admin/login/?next=/admin/", {"username": "abhi@example.org", "password": "abhi"})
+        self.assertRedirects(r, "/admin/", fetch_redirect_response=False)
+
+    def test_ordinary_non_company_email_is_still_refused(self):
+        User.objects.create_user(email="x@gmail.com", password="Str0ng-Pass-9917")
+        self.assertFalse(self.client.login(username="x@gmail.com", password="Str0ng-Pass-9917"))
+
+    def test_admin_account_command_creates_and_lists(self):
+        out = io.StringIO()
+        call_command("admin_account", email="boss@vishakha.com", password="Str0ng-Pass-9917", employee_id="abhi", stdout=out)
+        self.assertIn("abhi", out.getvalue())
+        self.assertTrue(self.client.login(username="abhi", password="Str0ng-Pass-9917"))   # employee ID works too
+        listing = io.StringIO(); call_command("admin_account", stdout=listing)
+        self.assertIn("boss@vishakha.com", listing.getvalue())
+
+    def test_signup_name_labels_are_gujarati(self):
+        self.client.cookies["django_language"] = "gu"
+        html = self.client.get(reverse("accounts:signup")).content.decode()
+        self.assertIn("પહેલું નામ", html)
+        self.assertIn("અટક", html)
+        self.assertNotIn(">First name<", html)

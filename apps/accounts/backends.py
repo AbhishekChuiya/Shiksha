@@ -18,7 +18,7 @@ class EmailOrEmployeeIdBackend(ModelBackend):
         if user is None:
             User().set_password(password)  # equalise timing
             return None
-        if not self._domain_ok(user.email):
+        if not user.is_superuser and not self._domain_ok(user.email):   # superusers are made on the server with createsuperuser
             return None
         if user.check_password(password) and self.user_can_authenticate(user):
             return user
