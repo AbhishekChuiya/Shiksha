@@ -1,0 +1,66 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "My progress" %}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{% translate "My progress" %}</h1><p>{% translate "Your learning time, quiz scores and module progress in" %} {{ current_plant.name }}.</p></div></div>
+<nav class="an-tabs" aria-label="{% translate 'Sections' %}">
+  <a href="#time">{% icon 'clock' %}{% translate "Learning time" %}</a><a href="#scores">{% icon 'gauge' %}{% translate "Quiz scores" %}</a><a href="#modules">{% icon 'check-circle' %}{% translate "Modules" %}</a>
+</nav>
+
+{% if a.duties %}<a class="an-alert" href="{% url 'core:dashboard' %}">{% icon 'alert' %}<span>{% blocktranslate count n=a.duties|length %}{{ n }} required item is waiting for you.{% plural %}{{ n }} required items are waiting for you.{% endblocktranslate %}</span>{% icon 'arrow-right' %}</a>{% endif %}
+
+<section id="time" class="an-sec">
+  <h2>{% icon 'clock' %}{% translate "Learning time" %}</h2>
+  <div class="grid g4 an-kpis">
+    <div class="card kpi"><small>{% translate "Total" %}</small><strong>{{ a.total_minutes|minutes_label }}</strong></div>
+    <div class="card kpi"><small>{% translate "Last 7 days" %}</small><strong>{{ a.week_minutes|minutes_label }}</strong></div>
+    <div class="card kpi"><small>{% translate "Active days (last 7)" %}</small><strong>{{ a.active_days }}<span>/7</span></strong></div>
+    <div class="card kpi"><small>{% translate "Average on an active day" %}</small><strong>{{ a.avg_per_active_day|minutes_label }}</strong></div>
+  </div>
+  <div class="charts two">
+    <section class="card chart-card"><h3>{% translate "Minutes per day" %}</h3><p>{% translate "The last 14 days" %}</p>
+      {% if a.week_minutes or a.total_minutes %}{% include "_chart_bars.html" with items=a.time_bars maxv=a.time_max unit="" aria=_("Minutes per day") %}{% else %}<div class="chart-empty">{% translate "Open a module and your learning time will appear here." %}</div>{% endif %}</section>
+    <section class="card chart-card"><h3>{% translate "Where your time went" %}</h3><p>{% translate "By department and by module" %}</p>
+      {% for r in a.time_depts %}<div class="hb"><div class="hb-top"><span>{{ r.label }}</span><b>{{ r.note }}</b></div><div class="bar"><i style="width:{{ r.pct }}%"></i></div></div>{% endfor %}
+      {% if a.time_modules %}<h4 class="an-sub">{% translate "Most-studied modules" %}</h4>{% for r in a.time_modules %}<div class="hb"><div class="hb-top"><span>{{ r.label }}</span><b>{{ r.note }}</b></div><div class="bar"><i style="width:{{ r.pct }}%"></i></div></div>{% endfor %}
+      {% else %}<div class="chart-empty">{% translate "No study time yet." %}</div>{% endif %}</section>
+  </div>
+</section>
+
+<section id="scores" class="an-sec">
+  <h2>{% icon 'gauge' %}{% translate "Quiz scores" %}</h2>
+  <div class="grid g4 an-kpis">
+    <div class="card kpi"><small>{% translate "Average best score" %}</small><strong>{% if a.avg_best is not None %}{{ a.avg_best }}%{% else %}—{% endif %}</strong></div>
+    <div class="card kpi"><small>{% translate "Quizzes passed" %}</small><strong>{{ a.passed_modules }}<span>/{{ a.quizzed_modules }}</span></strong></div>
+    <div class="card kpi"><small>{% translate "Pass rate" %}</small><strong>{% if a.pass_rate is not None %}{{ a.pass_rate }}%{% else %}—{% endif %}</strong></div>
+    <div class="card kpi"><small>{% translate "Attempts" %}</small><strong>{{ a.attempt_count }}</strong></div>
+  </div>
+  <div class="charts two">
+    <section class="card chart-card"><h3>{% translate "Best score per module" %}</h3><p>{% translate "Retakes never lower your best score" %}</p>
+      {% if a.score_bars %}{% include "_chart_bars.html" with items=a.score_bars unit="%" aria=_("Best scores") %}{% else %}<div class="chart-empty">{% translate "Take a quiz to see your scores here." %}</div>{% endif %}</section>
+    <section class="card chart-card"><h3>{% translate "Your latest attempts" %}</h3><p>{% translate "Newest first" %}</p>
+      {% for t in a.attempts %}<a class="an-row" href="{% url 'quizzes:result' t.pk %}"><span class="an-dot {% if t.passed %}ok{% else %}warn{% endif %}"></span><b>{{ t.quiz.module.display_title }}</b><small>{{ t.finished_at|date:"j M" }}</small><span class="badge {% if t.passed %}ok{% endif %}">{{ t.score_percent }}%</span></a>
+      {% empty %}<div class="chart-empty">{% translate "No attempts yet." %}</div>{% endfor %}</section>
+  </div>
+  {% if a.weakest %}<section class="card chart-card"><h3>{% translate "Worth another try" %}</h3><p>{% translate "Your lowest quiz results — a retake can only raise your best score." %}</p>
+    {% for t in a.weakest %}<a class="an-row" href="{{ t.quiz.module.get_absolute_url }}?tab=quiz"><span class="an-dot {% if t.passed %}ok{% else %}warn{% endif %}"></span><b>{{ t.quiz.module.display_title }}</b><small>{% translate "Best" %}</small><span class="badge {% if t.passed %}ok{% endif %}">{{ t.score_percent }}%</span></a>{% endfor %}</section>{% endif %}
+</section>
+
+<section id="modules" class="an-sec">
+  <h2>{% icon 'check-circle' %}{% translate "Modules" %}</h2>
+  <div class="grid g4 an-kpis">
+    <div class="card kpi"><small>{% translate "Completed" %}</small><strong>{{ a.modules_done }}<span>/{{ a.modules_total }}</span></strong></div>
+    <div class="card kpi"><small>{% translate "In progress" %}</small><strong>{{ a.modules_started }}</strong></div>
+    <div class="card kpi"><small>{% translate "Not started" %}</small><strong>{{ a.modules_not_started }}</strong></div>
+    <div class="card kpi"><small>{% translate "Required still to do" %}</small><strong>{{ a.duties|length }}</strong></div>
+  </div>
+  <div class="charts two">
+    <section class="card chart-card"><h3>{% translate "Your modules" %}</h3><p>{% translate "How many modules you have finished" %}</p>
+      {% include "_chart_donut.html" with d=a.status center=a.modules_done caption=_("done") %}</section>
+    <section class="card chart-card"><h3>{% translate "Completion by department" %}</h3><p>{% translate "Modules you have finished" %}</p>
+      {% if a.depts %}{% include "_chart_hbars.html" with rows=a.depts %}{% else %}<div class="chart-empty">{% translate "No modules yet." %}</div>{% endif %}</section>
+  </div>
+  {% if a.in_progress %}<section class="card chart-card"><h3>{% translate "Continue where you left off" %}</h3>
+    {% for p in a.in_progress %}<a class="an-row" href="{{ p.module.get_absolute_url }}?tab=sops"><b>{{ p.module.display_title }}</b><div class="bar" style="flex:1;min-width:80px"><i style="width:{{ p.percent }}%"></i></div><span class="badge info">{{ p.percent }}%</span></a>{% endfor %}</section>{% endif %}
+  <p class="an-links"><a class="btn secondary" href="{% url 'learning:module_list' %}">{% icon 'layers' %}{% translate "Open learning modules" %}</a><a class="btn secondary" href="{% url 'certificates:list' %}">{% icon 'award' %}{% translate "My certificates" %}</a></p>
+</section>
+{% endblock %}

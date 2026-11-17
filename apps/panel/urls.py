@@ -6,6 +6,7 @@ app_name = "panel"
 urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("help/", m.help_page, name="help"),
+    path("announce/", m.announce, name="announce"),
     # plants
     path("plants/", views.plant_list, name="plants"),
     path("plants/new/", views.plant_edit, name="plant_new"),

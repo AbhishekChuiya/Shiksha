@@ -1,6 +1,7 @@
 {% extends "base.html" %}{% load static shiksha panel %}
 {% block title %}{{ page_title|default:"Admin" }} · Admin panel{% endblock %}
-{% block brand_tag %}Admin panel{% endblock %}
+{% block brand_badge %}<div class="admin-badge">{% icon 'shield' %}<span>Admin console</span></div>{% endblock %}
+{% block side_tip %}{% endblock %}
 {% block sidebar_nav %}
 <nav class="nav panel-nav">
   <a href="{% url 'panel:dashboard' %}" data-tip="Overview" class="{% if request.path == '/manage/' %}active{% endif %}">{% icon 'home' %}<span>Overview</span></a>
@@ -13,7 +14,7 @@
   <a href="{% url 'panel:quizzes' %}" data-tip="Quizzes" class="{% pn_active '/manage/quizzes' %}">{% icon 'gauge' %}<span>Quizzes</span></a>
   <div class="nav-label">People</div>
   <a href="{% url 'panel:users' %}" data-tip="Users" class="{% pn_active '/manage/users' %}">{% icon 'users' %}<span>Users</span></a>
-  <a href="{% url 'panel:discussion' %}" data-tip="Discussion" class="{% pn_active '/manage/discussion' %}">{% icon 'chat' %}<span>Discussion</span></a>
+  <a href="{% url 'panel:announce' %}" data-tip="Send a notification" class="{% pn_active '/manage/announce' %}">{% icon 'megaphone' %}<span>Send a notification</span></a>
   <a href="{% url 'panel:certificates' %}" data-tip="Certificates" class="{% pn_active '/manage/certificates' %}">{% icon 'award' %}<span>Certificates</span></a>
   <div class="nav-label">Insights</div>
   <a href="{% url 'panel:incidents' %}" data-tip="Incidents" class="{% pn_active '/manage/incidents' %}">{% icon 'alert' %}<span>Incidents</span></a>

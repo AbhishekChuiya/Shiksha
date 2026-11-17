@@ -43,13 +43,13 @@ def structure():
 
 
 def modules():
-    head = ["title", "department", "plant", "category", "summary", "overview", "purpose", "objectives", "est_minutes", "library", "status", "slug", "instructor"]
+    head = ["title", "department", "plant", "category", "summary", "overview", "purpose", "objectives", "est_minutes", "library", "status", "slug", "instructor", "required", "due_date"]
     for lang in ("_hi", "_gu"):
         head += [f"{f}{lang}" for f in ("title", "category", "summary", "overview", "purpose", "objectives")]
     rows = []
     for m in Module.objects.select_related("plant", "department").order_by("plant__order", "department__order", "order", "title"):
         row = [m.title, m.department.name, m.plant.name, m.category, m.summary, m.overview, m.purpose, "|".join(x.strip() for x in m.objectives.splitlines() if x.strip()),
-               m.est_minutes, m.library, m.status, m.slug, m.instructor]
+               m.est_minutes, m.library, m.status, m.slug, m.instructor, "yes" if m.is_mandatory else "no", m.due_date.isoformat() if m.due_date else ""]
         for lang in ("_hi", "_gu"):
             row += [getattr(m, f"{f}{lang}") if f != "objectives" else "|".join(x.strip() for x in getattr(m, f"objectives{lang}").splitlines() if x.strip())
                     for f in ("title", "category", "summary", "overview", "purpose", "objectives")]

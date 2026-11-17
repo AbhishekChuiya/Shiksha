@@ -83,6 +83,12 @@ class Command(BaseCommand):
         for i, (code, name) in enumerate(PLANTS):
             plants[code], _ = Plant.objects.update_or_create(
                 code=code, defaults={"name": name, "order": i})
+        from apps.plants.journeys import STAGES
+        from apps.plants.models import PlantStage
+        for plant in plants.values():
+            prefix = next((k for k in STAGES if plant.name.upper().startswith(k)), None)
+            if prefix and not PlantStage.objects.filter(plant=plant).exists():
+                PlantStage.objects.bulk_create([PlantStage(plant=plant, name=n, order=i) for i, n in enumerate(STAGES[prefix])])
         vmpl = plants["vmpl-p1"]
         vmpl.company = "Vishakha Metals Private Limited"
         vmpl.tagline = "Offering end-to-end capabilities from aluminium extrusion to fabrication and finishing with inhouse anodizing facility"

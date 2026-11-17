@@ -10,14 +10,30 @@
   </div>
 </div>
 {% if cert.user_id == user.id %}<p class="small muted no-print">{% translate "Name wrong or misspelt?" %} <a href="{% url 'accounts:account' %}">{% translate "Update it in My account" %}</a> {% translate "— your certificates use the name in your profile." %}</p>{% endif %}
-<div class="cert">
-  <img class="logo" src="{% static 'img/brand/logo.png' %}" alt="Vishakha">
-  <div style="letter-spacing:.22em;font-size:.78rem;color:#8a6b2a">PROJECT SHIKSHA</div>
-  <h1>Certificate of Completion</h1><p>This is to certify that</p>
-  <div class="name">{{ cert.holder_name }}</div>
-  <p>has successfully completed the learning module</p>
-  <h2 style="font-family:Georgia,serif;font-size:1.7rem">{{ cert.module.title }}</h2>
-  <p>at {{ cert.module.plant.company|default:cert.module.plant.name }} ({{ cert.module.plant.name }}){% if cert.score_percent is not None %} with an assessment score of <strong>{{ cert.score_percent }}%</strong>{% endif %}.</p>
-  <div class="cert-foot"><span>{% translate "Issued" %}: {{ cert.issued_at|date:"d F Y" }}</span><span>{% translate "Certificate ID" %}: {{ cert.short_code }}</span></div>
+<div class="certx">
+  <div class="cx-frame">
+    <i class="cx-c tl"></i><i class="cx-c tr"></i><i class="cx-c bl"></i><i class="cx-c br"></i>
+    <header class="cx-top"><img class="cx-logo" src="{% static 'img/brand/logo.png' %}" alt="Vishakha"><span class="cx-brand">PROJECT SHIKSHA · LEARNING PLATFORM</span></header>
+    <p class="cx-kicker">CERTIFICATE</p>
+    <h1 class="cx-title">of Completion</h1>
+    <p class="cx-small">This is to certify that</p>
+    <div class="cx-name">{{ cert.holder_name }}</div>
+    <p class="cx-small">has successfully completed the learning module</p>
+    <h2 class="cx-module">{{ cert.module.title }}</h2>
+    <ul class="cx-meta">
+      <li><small>Plant</small><b>{{ cert.module.plant.company|default:cert.module.plant.name }} ({{ cert.module.plant.name }})</b></li>
+      {% if cert.module.department_id %}<li><small>Department</small><b>{{ cert.module.department.name }}</b></li>{% endif %}
+      {% if cert.score_percent is not None %}<li><small>Assessment score</small><b>{{ cert.score_percent }}%</b></li>{% endif %}
+      <li><small>{% translate "Issued" %}</small><b>{{ cert.issued_at|date:"d F Y" }}</b></li>
+    </ul>
+    <div class="cx-bottom">
+      {% for s in signers %}
+      <div class="cx-sig"><svg viewBox="0 0 190 56" aria-hidden="true"><path d="{{ s.path }}" fill="none" stroke="#1d2a5b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="cx-line"></span>{% if s.name %}<b>{{ s.name }}</b>{% endif %}<small>{{ s.title }}</small></div>
+      {% if forloop.first %}<div class="cx-seal" aria-hidden="true"><span>{% icon 'check' %}</span><em>VERIFIED<br>LEARNER</em></div>{% endif %}
+      {% endfor %}
+      <div class="cx-qr"><div>{{ qr|safe }}</div><small>{% translate "Certificate ID" %}</small><b>{{ cert.short_code }}</b></div>
+    </div>
+  </div>
 </div>
 {% endblock %}

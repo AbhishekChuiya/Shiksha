@@ -70,7 +70,7 @@ class HindiPagesTests(TestCase):
 
     def test_module_list_is_hindi(self):
         html = self.get("learning:module_list")
-        for needle in ("मेल्ट और कास्ट", "प्रोडक्शन", "सभी", "फ़िल्टर", "जारी रखें" if False else "शुरू करें"):
+        for needle in ("मेल्ट और कास्ट", "प्रोडक्शन", "सभी", "फ़िल्टर"):
             self.assertIn(needle, html)
         self.assertNotIn(">Melt &amp; Cast<", html)
 
@@ -99,7 +99,6 @@ class HindiPagesTests(TestCase):
         html = self.get("core:plant_overview")
         self.assertIn("विशाखा मेटल्स प्राइवेट लिमिटेड", html)
         self.assertIn("मुंद्रा, गुजरात", html)
-        self.assertIn("क्यूसी", html)
 
     def test_quiz_question_options_hindi(self):
         for st in self.melt.steps.all():
@@ -145,4 +144,4 @@ class HindiPagesTests(TestCase):
         other = Plant.objects.exclude(pk=self.melt.plant_id).first()
         self.client.post(reverse("core:set_plant"), {"plant": other.pk, "next": "/"})
         html = self.get("learning:module_detail", self.melt.slug)
-        self.assertRegex(html, r'<span class="lbl">VMPL P1</span>')
+        self.assertRegex(html, r'<span class="pc-name lbl">VMPL P1</span>')

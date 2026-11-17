@@ -6,13 +6,14 @@
   <script>document.documentElement.setAttribute("data-theme","light");</script>
   {% include "_favicons.html" %}
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="{% static 'css/shiksha.css' %}?v={{ ASSET_V }}">
+  <link rel="stylesheet" href="{% static 'css/theme-v3.css' %}?v={{ ASSET_V }}">
 </head>
 <body>
 <div class="auth">
   <section class="auth-brand">
-    <a href="{% url 'core:dashboard' %}"><img class="wm" src="{% static 'img/brand/logo-white.png' %}" alt="Vishakha"></a>
+    <a class="auth-logo" href="{% url 'core:dashboard' %}" aria-label="Shiksha by Vishakha"><span class="logo-tile"><img src="{% static 'img/brand/vishakha-mark.png' %}" alt=""></span><span class="logo-words"><b>Shiksha</b><small>{% translate "by Vishakha" %}</small></span></a>
     <div class="auth-copy">
       <h1>{% translate "Learn the right way. Every shift." %}</h1>
       <p>{% translate "Plant SOPs, step-by-step training, quizzes and certificates — in English, हिन्दी and ગુજરાતી." %}</p>
@@ -22,7 +23,8 @@
         <li>{% icon 'award' %}{% translate "Earn certificates as you complete modules" %}</li>
       </ul>
     </div>
-    {% include "_scene.html" %}<img class="auth-mascot" data-depth="14" src="{% static 'img/brand/vivi.png' %}" alt="">
+    <div class="auth-bubble">{% translate "Namaste! Sign in with your company email or Employee ID." %}</div>
+    <img class="auth-mascot" src="{% static 'img/brand/mascot-640.webp' %}" alt="">
     <div class="auth-foot">© Vishakha Group · Project Shiksha</div>
   </section>
   <section class="auth-main">
@@ -31,7 +33,7 @@
       {% for code, name in LANGUAGE_CHOICES %}<button type="submit" name="language" value="{{ code }}" class="{% if code == LANGUAGE_CODE %}on{% endif %}" lang="{{ code }}">{{ name }}</button>{% endfor %}
     </form>
     <div class="auth-box">
-      <img class="logo-m" src="{% static 'img/brand/logo.png' %}" alt="Vishakha">
+      <span class="logo-m"><span class="logo-tile"><img src="{% static 'img/brand/vishakha-mark.png' %}" alt=""></span><span class="logo-words dark"><b>Shiksha</b><small>{% translate "by Vishakha" %}</small></span></span>
       {% for m in messages %}<div class="alert {{ m.level_tag }}">{% if m.level_tag == 'success' %}{% icon 'check-circle' %}{% elif m.level_tag == 'error' %}{% icon 'alert' %}{% else %}{% icon 'info' %}{% endif %}<div>{{ m }}</div></div>{% endfor %}
       {% block content %}{% endblock %}
     </div>

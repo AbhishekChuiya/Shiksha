@@ -34,7 +34,9 @@ def quiz_list(request):
     quizzes = (Quiz.objects.filter(module__plant=plant, is_active=True,
                                    module__status=Module.Status.PUBLISHED)
                .select_related("module").order_by("module__order", "module__title"))
-    rows = [{"quiz": q, **_quiz_state(request.user, q)} for q in quizzes.select_related("module__department")]
+    from apps.learning.duties import required_flags
+    _mods, qflags = required_flags(request.user, plant)
+    rows = [{"quiz": q, "duty": qflags.get(q.module_id), **_quiz_state(request.user, q)} for q in quizzes.select_related("module__department")]
     # categories = the module's department (Production, QC, Maintenance …)
     cats = {}
     for r in rows:

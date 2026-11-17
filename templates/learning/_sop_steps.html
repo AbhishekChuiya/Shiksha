@@ -63,9 +63,8 @@
       <div class="step-top">
         <span class="step-no">{% blocktranslate with i=step_index t=sop_total %}Step {{ i }} of {{ t }}{% endblocktranslate %}{% if step_done %}<span class="badge ok">{% icon 'check' %}{% translate "Done" %}</span>{% endif %}</span>
         <span class="row" style="gap:8px">
-          <button class="icon-btn" type="button" data-speak="#step-text" data-auto title="{% translate 'Read aloud — click again to pause' %}" aria-label="{% translate 'Read aloud' %}">{% icon 'speaker' %}</button>
+          <button class="icon-btn" type="button" data-speak="#step-text" data-auto title="{% translate 'Read aloud — tap again to stop' %}" aria-label="{% translate 'Read aloud' %}">{% icon 'speaker' %}</button>
           <button class="icon-btn txt-size" type="button" data-textsize title="{% translate 'Text size' %}" aria-label="{% translate 'Change text size' %}"><b>A</b><small>A</small></button>
-          <button class="icon-btn" type="button" data-speak-stop title="{% translate 'Stop' %}" aria-label="{% translate 'Stop reading' %}">{% icon 'stop' %}</button>
         </span>
       </div>
       <p class="step-body" id="step-text">{{ step.display_text }}</p>

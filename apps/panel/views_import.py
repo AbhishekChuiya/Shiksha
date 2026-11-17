@@ -30,7 +30,7 @@ COLUMNS = {
         ("plant", False, "Plant name. Leave empty to use the plant you pick on this page"), ("category", False, "Filter chip, e.g. Extrusion"),
         ("summary", False, "One-line description shown on the card"), ("overview", False, "Longer description"),
         ("objectives", False, "Learning objectives separated by | (pipe)"), ("est_minutes", False, "Time in minutes (a whole number)"),
-        ("library", False, "production or department"), ("status", False, "published, draft or archived (new modules start as draft)"),
+        ("library", False, "production or department"), ("required", False, "yes if every learner must complete it (no = optional)"), ("due_date", False, "Last day to complete a required module, like 2026-12-31"), ("status", False, "published, draft or archived (new modules start as draft)"),
         ("title_hi / summary_hi / overview_hi / objectives_hi / category_hi", False, "The same text in Hindi"), ("…_gu (title_gu, summary_gu …)", False, "The same text in Gujarati"), ("slug", False, "Leave empty — made automatically. Fill it only to update an existing module"),
     ],
     "steps": [
@@ -96,12 +96,12 @@ def _sample(kind):
                  "गुजरात", "सोलर एनकैप्सुलेंट फ़िल्में", "प्लांट के बारे में कुछ पंक्तियाँ।", "प्रोडक्शन, क्यूसी, मेंटेनेंस",
                  "ગુજરાત", "સોલાર એન્કેપ્સ્યુલન્ટ ફિલ્મો", "પ્લાન્ટ વિશે થોડી લીટીઓ.", "પ્રોડક્શન, ક્યુસી, મેન્ટેનન્સ"]]
     elif kind == "modules":
-        head = ["title", "department", "plant", "category", "summary", "overview", "purpose", "objectives", "est_minutes", "library", "status",
+        head = ["title", "department", "plant", "category", "summary", "overview", "purpose", "objectives", "est_minutes", "library", "status", "required", "due_date",
                 "title_hi", "summary_hi", "title_gu", "summary_gu"]
         rows = [["Homogenizing", "Production", pname, "Homogenizing", "Heating and cooling billets before extrusion.", "Covers the furnace cycle and cooling.",
-                 "Condition billets for a clean extrusion.", "Explain the cycle|Check temperatures|Record the log", 25, "production", "draft",
+                 "Condition billets for a clean extrusion.", "Explain the cycle|Check temperatures|Record the log", 25, "production", "draft", "yes", "2026-12-31",
                  "होमोजेनाइज़िंग", "एक्सट्रूज़न से पहले बिलेट को गर्म और ठंडा करना।", "હોમોજેનાઇઝિંગ", "એક્સ્ટ્રુઝન પહેલાં બિલેટને ગરમ અને ઠંડા કરવા."],
-                ["Preventive Maintenance", "Maintenance", pname, "Preventive Maintenance", "Planned servicing of machines.", "", "", "", 15, "department", "draft", "", "", "", ""]]
+                ["Preventive Maintenance", "Maintenance", pname, "Preventive Maintenance", "Planned servicing of machines.", "", "", "", 15, "department", "draft", "no", "", "", "", "", ""]]
     elif kind == "steps":
         head = ["module", "sop", "text", "text_hi", "text_gu"]
         rows = [[m1, "SOP 1 — Start-up", "Inspect the furnace internally after cleaning.", "सफ़ाई के बाद फ़र्नेस का आंतरिक निरीक्षण करें।", "સફાઈ પછી ફર્નેસનું આંતરિક નિરીક્ષણ કરો."],

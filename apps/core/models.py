@@ -23,3 +23,32 @@ class AuditLog(models.Model):
         return cls.objects.create(actor=actor, action=action,
                                   object_type=obj._meta.label if obj is not None else "", object_id=str(obj.pk) if obj is not None else "",
                                   detail=detail)
+
+
+class Notification(models.Model):
+    """One message in a user's notification bell. `kind` + `data` are turned into text when shown, so it follows the reader's language;
+    announcements written by an admin keep their own title/body."""
+
+    class Kind(models.TextChoices):
+        ASSIGNED = "assigned", "Required item assigned"
+        DUE_SOON = "due_soon", "Due soon"
+        OVERDUE = "overdue", "Overdue"
+        CERTIFICATE = "certificate", "Certificate issued"
+        ANNOUNCEMENT = "announcement", "Announcement"
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="notifications")
+    kind = models.CharField(max_length=20, choices=Kind.choices)
+    data = models.JSONField(default=dict, blank=True)          # e.g. {"what": "module", "name": "Ageing", "due": "2026-11-20"}
+    title = models.CharField(max_length=160, blank=True)       # announcements only
+    body = models.TextField(blank=True)
+    url = models.CharField(max_length=300, blank=True)
+    key = models.CharField(max_length=120, blank=True, db_index=True)   # stops the same alert being created twice
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+        indexes = [models.Index(fields=["user", "is_read"])]
+
+    def __str__(self):
+        return f"{self.user} · {self.kind}"

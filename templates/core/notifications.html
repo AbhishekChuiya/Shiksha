@@ -1,0 +1,18 @@
+{% extends "base.html" %}{% load i18n shiksha %}
+{% block title %}{% translate "Notifications" %}{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>{% translate "Notifications" %}</h1><p>{% translate "Reminders about required modules and quizzes, certificates and news from your admin." %}</p></div>
+  {% if unread %}<form method="post" action="{% url 'core:notifications_read_all' %}">{% csrf_token %}<button class="btn secondary">{% icon 'check' %}{% translate "Mark all as read" %}</button></form>{% endif %}</div>
+{% if items %}
+<div class="card notif-list">
+  {% for i in items %}
+  <a class="bell-item notif-row {% if not i.n.is_read %}unread{% endif %}" href="{% url 'core:notification_open' i.n.pk %}">
+    <span class="bi-ico k-{{ i.n.kind }}">{% if i.n.kind == 'certificate' %}{% icon 'award' %}{% elif i.n.kind == 'overdue' %}{% icon 'alert' %}{% elif i.n.kind == 'due_soon' %}{% icon 'clock' %}{% elif i.n.kind == 'announcement' %}{% icon 'megaphone' %}{% else %}{% icon 'calendar' %}{% endif %}</span>
+    <span class="bi-text"><b>{{ i.title }}</b>{% if i.body %}<small>{{ i.body }}</small>{% endif %}<em>{{ i.n.created_at|timesince }}</em></span>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card empty">{% icon 'bell' %}<h3>{% translate "You are all caught up." %}</h3><p class="muted">{% translate "New reminders will show up here." %}</p></div>
+{% endif %}
+{% endblock %}

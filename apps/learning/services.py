@@ -22,7 +22,7 @@ def refresh_completion(progress):
         return False
     quiz = getattr(module, "quiz", None)
     best = None
-    if quiz is not None and quiz.is_active:
+    if quiz is not None and quiz.is_active and quiz.questions.exists():
         best = (Attempt.objects.filter(quiz=quiz, user=progress.user, passed=True)
                 .order_by("-score_percent").first())
         if best is None:
@@ -30,7 +30,10 @@ def refresh_completion(progress):
     if progress.completed_at is None:
         progress.completed_at = timezone.now()
         progress.save(update_fields=["completed_at"])
-    Certificate.objects.get_or_create(
+    cert, created = Certificate.objects.get_or_create(
         user=progress.user, module=module,
         defaults={"attempt": best, "score_percent": best.score_percent if best else None})
+    if created:
+        from apps.core.notify import certificate_issued
+        certificate_issued(cert)
     return True

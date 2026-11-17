@@ -138,10 +138,10 @@ class ReadAloudAndErrorTests(TestCase):
         self.assertIn('data-speak="#plant-read"', html)
         self.assertIn('id="plant-read"', html)
 
-    def test_every_read_aloud_page_has_the_stop_script_and_buttons(self):
+    def test_speaker_button_toggles_and_no_stop_buttons(self):
         js = open("static/js/shiksha.js", encoding="utf8").read()
-        self.assertIn("addStopButtons", js)
-        self.assertIn("data-speak-stop", js)
+        self.assertNotIn("addStopButtons", js)                       # no separate Stop button any more
+        self.assertIn("if (current === btn) { stop(); return; }", js)  # tapping the speaker again stops
 
     def test_error_pages_are_friendly(self):
         from django.test import override_settings
@@ -288,24 +288,23 @@ class SuperuserLoginAndSignupTests(TestCase):
         self.assertNotIn(">First name<", html)
 
 
-class ThreeDLookTests(TestCase):
+class ThemeTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         call_command("seed_demo", stdout=io.StringIO())
 
-    def test_3d_scene_on_login_and_dashboard(self):
-        self.assertContains(self.client.get(reverse("accounts:login")), 'class="scene"')
+    def test_new_theme_file_is_loaded_everywhere(self):
+        self.assertRegex(self.client.get(reverse("accounts:login")).content.decode(), r"theme-v3\.css\?v=\d+")
         self.client.force_login(User.objects.get(employee_id="test_user"))
         html = self.client.get(reverse("core:dashboard")).content.decode()
-        self.assertIn('class="scene"', html)
-        self.assertIn("tilt-soft", html)
+        self.assertRegex(html, r"theme-v3\.css\?v=\d+")
+        for needle in ("logo-tile", "plant-chip", "side-tip", "side-scroll", "hero-mascot", "Sora", "user-role", "fab-ring"):
+            self.assertIn(needle, html)
+        self.assertNotIn("side-profile", html)
 
-    def test_tilt_respects_reduced_motion_and_touch(self):
-        js = open("static/js/shiksha.js", encoding="utf8").read()
-        self.assertIn("(hover: hover) and (pointer: fine)", js)
-        self.assertIn("if (reduced", js)
-        css = open("static/css/shiksha.css", encoding="utf8").read()
-        self.assertIn("prefers-reduced-motion: reduce) { .cube", css)
+    def test_sign_in_page_has_mascot_and_bubble(self):
+        html = self.client.get(reverse("accounts:login")).content.decode()
+        self.assertIn("auth-bubble", html); self.assertIn("mascot-640.webp", html)
 
     def test_voice_note_is_shown_once_per_device(self):
         js = open("static/js/shiksha.js", encoding="utf8").read()
@@ -316,11 +315,6 @@ class HeroLayoutAndCacheTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         call_command("seed_demo", stdout=io.StringIO())
-
-    def test_scene_is_absolutely_positioned_inline_so_it_never_shifts_the_hero_grid(self):
-        self.client.force_login(User.objects.get(employee_id="test_user"))
-        html = self.client.get(reverse("core:dashboard")).content.decode()
-        self.assertIn('class="scene" aria-hidden="true" style="position:absolute', html)
 
     def test_assets_are_cache_busted(self):
         html = self.client.get(reverse("accounts:login")).content.decode()

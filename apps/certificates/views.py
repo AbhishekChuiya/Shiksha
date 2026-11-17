@@ -7,6 +7,7 @@ from django.urls import reverse
 
 from .models import Certificate
 from .pdf import build_certificate_pdf
+from .signature import qr_svg, signers, svg_path
 
 
 def _own_or_admin(request, code):
@@ -26,7 +27,8 @@ def certificate_list(request):
 def certificate_detail(request, code):
     cert = _own_or_admin(request, code)
     verify_url = request.build_absolute_uri(reverse("certificates:verify", args=[cert.code]))
-    return render(request, "certificates/detail.html", {"cert": cert, "verify_url": verify_url})
+    sigs = [{**s, "path": svg_path(s["name"] or s["title"])} for s in signers(cert)]
+    return render(request, "certificates/detail.html", {"cert": cert, "verify_url": verify_url, "signers": sigs, "qr": qr_svg(verify_url)})
 
 
 @login_required

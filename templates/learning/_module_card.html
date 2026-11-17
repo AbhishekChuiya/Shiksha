@@ -2,14 +2,14 @@
 <article class="mod-card{% if extra > 0 %} extra{% endif %}">
   <a class="mod-cover" href="{{ m.get_absolute_url }}" tabindex="-1" aria-hidden="true" {% if m.cover %}style="background-image:url('{{ m.cover.url }}')"{% endif %}>
     <span class="tag">{{ m.display_category|default:m.department.display_name }}</span>
-    <span class="status">{% if p.completed_at %}<span class="badge ok">{% icon 'check' %}{% translate "Completed" %}</span>{% elif p.steps_done %}<span class="badge info">{% translate "In progress" %}</span>{% endif %}</span>
+    <span class="status">{% if m.duty and not m.duty.done %}<span class="badge req {{ m.duty.status }}">{% icon 'alert' %}{% if m.duty.status == 'overdue' %}{% translate "Overdue" %}{% elif m.duty.due %}{% translate "Due" %} {{ m.duty.due|date:"j M" }}{% else %}{% translate "Required" %}{% endif %}</span>{% endif %}{% if p.completed_at %}<span class="badge ok">{% icon 'check' %}{% translate "Completed" %}</span>{% elif p.steps_done %}<span class="badge info">{% translate "In progress" %}</span>{% endif %}</span>
   </a>
   <div class="mod-body">
     <h3><a href="{{ m.get_absolute_url }}">{{ m.display_title }}</a></h3><p>{{ m.display_summary }}</p>
     <div class="mod-foot">
       <div class="meta"><span>{% icon 'file' %}{{ m.steps.all|length }} {% translate "steps" %}</span><span>{% icon 'clock' %}{{ m.est_minutes }} {% translate "min" %}</span></div>
       <div class="prog-line"><div class="bar {% if p.completed_at %}ok{% endif %}"><i style="width:{{ p.percent|default:0 }}%"></i></div>{{ p.percent|default:0 }}%</div>
-      <a class="btn {% if p.completed_at %}secondary{% endif %}" href="{{ m.get_absolute_url }}">{% if p.completed_at %}{% icon 'refresh' %}{% translate "Review" %}{% elif p.steps_done %}{% icon 'play' %}{% translate "Continue" %}{% else %}{% icon 'play' %}{% translate "Start" %}{% endif %}</a>
+      {% if p.completed_at %}<a class="btn secondary" href="{{ m.get_absolute_url }}">{% icon 'refresh' %}{% translate "Review" %}</a>{% elif p.steps_done %}<a class="btn" href="{{ m.get_absolute_url }}">{% icon 'play' %}{% translate "Continue" %}</a>{% endif %}
     </div>
   </div>
 </article>

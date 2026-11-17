@@ -384,6 +384,31 @@ def report_export(request, kind):
 
 # ----------------------------------------------------------------------------- help
 @admin_required
+def announce(request):
+    """Send a message to every learner's notification bell (everyone, or the people of one plant)."""
+    from apps.core.models import Notification
+    plants = Plant.objects.filter(is_active=True).order_by("order", "name")
+    if request.method == "POST":
+        title, body, link = (request.POST.get(k, "").strip() for k in ("title", "body", "url"))
+        audience = request.POST.get("audience", "all")
+        if not title:
+            messages.error(request, "Write a short title for the message.")
+        elif link and not link.startswith("/"):
+            messages.error(request, "A link must start with / — for example /modules/ — or be left empty.")
+        else:
+            users = User.objects.filter(is_active=True)
+            if audience.isdigit():
+                plant = get_object_or_404(Plant, pk=audience)
+                users = users.filter(Q(plants__isnull=True) | Q(plants=plant)).distinct()
+            Notification.objects.bulk_create([Notification(user=u, kind=Notification.Kind.ANNOUNCEMENT, title=title[:160], body=body, url=link[:300]) for u in users])
+            audit(request, "announcement.send", None, count=users.count(), title=title)
+            messages.success(request, f"Sent to {users.count()} people. They will see it in their notification bell.")
+            return redirect("panel:announce")
+    sent = (Notification.objects.filter(kind=Notification.Kind.ANNOUNCEMENT).values("title", "created_at__date").annotate(n=Count("id")).order_by("-created_at__date")[:8])
+    return render_panel(request, "panel/announce.html", page_title="Send a notification", plants=plants, sent=sent)
+
+
+@admin_required
 def help_page(request):
     return render_panel(request, "panel/help.html", page_title="How to use this panel")
 

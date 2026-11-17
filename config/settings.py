@@ -24,7 +24,7 @@ def env_list(name, default=""):
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-only-insecure-key-change-me")
 DEBUG = env_bool("DJANGO_DEBUG", True)
-ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1, 192.168.21.155, 192.168.1.2")
+ALLOWED_HOSTS = env_list("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1")
 CSRF_TRUSTED_ORIGINS = env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 
 INSTALLED_APPS = [
@@ -184,3 +184,9 @@ EMAIL_TIMEOUT = int(os.environ.get("EMAIL_TIMEOUT", "40"))  # seconds — a dead
 
 # Optional absolute URL of the logo shown at the top of e-mails (needs a public URL, e.g. https://shiksha.vishakha.com/static/img/brand/logo.png)
 EMAIL_LOGO_URL = os.environ.get("EMAIL_LOGO_URL", "")
+
+
+# Certificates: who "signs" them (shown under a signature). Names are optional — set them in .env, e.g. CERT_HR_HEAD_NAME="Priya Shah".
+CERT_HR_HEAD_NAME = os.environ.get("CERT_HR_HEAD_NAME", "")
+CERT_HR_HEAD_TITLE = os.environ.get("CERT_HR_HEAD_TITLE", "Head – Human Resources")
+CERT_HOD_NAME = os.environ.get("CERT_HOD_NAME", "")

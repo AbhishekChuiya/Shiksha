@@ -137,7 +137,7 @@ class DiscussionTests(TestCase):
         self.client.force_login(self.u2)
         html = self.client.get(reverse("discussion:feed")).content.decode()
         self.assertIn("How do I check the furnace lining?", html)
-        self.assertIn(reverse("discussion:feed"), self.client.get(reverse("core:dashboard")).content.decode())
+        self.assertNotIn(reverse("discussion:feed"), self.client.get(reverse("core:dashboard")).content.decode())   # hidden from the menu for now
 
     def test_module_tagged_posts_show_in_their_module_tab_and_in_global_feed(self):
         self.client.force_login(self.u1)

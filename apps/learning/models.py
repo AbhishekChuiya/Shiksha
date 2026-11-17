@@ -52,6 +52,8 @@ class Module(models.Model):
                                      on_delete=models.SET_NULL, related_name="modules",
                                      help_text="Approved SOP this module teaches")
     status = models.CharField(max_length=12, choices=Status.choices, default=Status.PUBLISHED)
+    is_mandatory = models.BooleanField("required", default=False, help_text="Every learner of this plant must complete it")
+    due_date = models.DateField(null=True, blank=True, help_text="Last day to complete a required module")
     order = models.PositiveSmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -403,3 +405,15 @@ class ModuleProgress(models.Model):
     def percent(self):
         total = self.steps_total
         return round(100 * self.steps_done / total) if total else 0
+
+
+class StudyDay(models.Model):
+    """Learning time per learner, module and day (fed by the module page's 30-second heartbeat) — drives the analytics page."""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="study_days")
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, related_name="study_days")
+    day = models.DateField()
+    seconds = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = [("user", "module", "day")]
+        indexes = [models.Index(fields=["user", "day"])]

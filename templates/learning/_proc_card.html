@@ -1,0 +1,17 @@
+{% load i18n shiksha %}
+<article class="proc-card{% if p.completed_at %} is-done{% elif p.steps_done %} is-live{% endif %}">
+  <a class="pc-link" href="{{ m.get_absolute_url }}">
+    <span class="pc-num">{{ n }}</span>
+    <span class="pc-ico">{% if p.completed_at %}{% icon 'check' %}{% else %}{% icon m.title|stage_icon %}{% endif %}</span>
+    <span class="pc-main"><strong>{{ m.display_title }}</strong><span class="pc-sum">{{ m.display_summary }}</span></span>
+  </a>
+  {% if m.duty and not m.duty.done %}<span class="badge req pc-req {{ m.duty.status }}">{% icon 'alert' %}{% if m.duty.status == 'overdue' %}{% translate "Overdue" %}{% elif m.duty.due %}{% translate "Due" %} {{ m.duty.due|date:"j M" }}{% else %}{% translate "Required" %}{% endif %}</span>{% endif %}
+  <div class="pc-meta">
+    {% with sc=m.sops.all|length %}{% if sc %}<span>{% icon 'file' %}{% blocktranslate count n=sc %}{{ n }} SOP{% plural %}{{ n }} SOPs{% endblocktranslate %}</span>{% endif %}{% endwith %}
+    <span>{{ m.steps.all|length }} {% translate "steps" %}</span><span>{{ m.est_minutes }} {% translate "min" %}</span>
+  </div>
+  <div class="pc-foot">
+    <div class="bar {% if p.completed_at %}ok{% endif %}"><i style="width:{{ p.percent|default:0 }}%"></i></div>
+    <span class="pc-cta">{% if p.completed_at %}{% translate "Review" %}{% elif p.steps_done %}{% translate "Continue" %}{% else %}{% translate "Start" %}{% endif %}{% icon 'chevron-right' %}</span>
+  </div>
+</article>

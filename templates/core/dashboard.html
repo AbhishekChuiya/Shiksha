@@ -1,11 +1,11 @@
-{% extends "base.html" %}{% load i18n shiksha %}
+{% extends "base.html" %}{% load i18n shiksha static %}
 {% block title %}{% translate "Dashboard" %}{% endblock %}
 {% block content %}
-<section class="hero tilt-soft">
-  {% include "_scene.html" %}
-  <div style="position:relative;z-index:1">
+<section class="hero">
+  <img class="hero-mascot" src="{% static 'img/brand/mascot-640.webp' %}" alt="">
+  <div class="hero-text" style="position:relative;z-index:1">
     <span class="eyebrow">{% icon 'building' %}{{ current_plant.name }}</span>
-    <h1>{% trans greeting %}, {{ user.first_name|default:user.email }} <span class="wave" aria-hidden="true">👋</span></h1>
+    <h1>{% trans greeting %}, <span class="nw">{{ user.first_name|default:user.email }}&nbsp;<span class="wave" aria-hidden="true">👋</span></span></h1>
     {% if resume %}
     <p class="hero-sub">{% translate "Continue where you left off" %}</p>
     <div class="hero-resume"><strong>{{ resume.module.display_title }}</strong>
@@ -19,13 +19,62 @@
   <div class="ring" style="--p: {{ overall_percent }}"><div><div><strong>{{ overall_percent }}%</strong><span class="tiny">{% translate "modules done" %}</span></div></div></div>
 </section>
 
-
+{% if duties %}
+<section class="card duty-card" aria-labelledby="duty-h">
+  <div class="duty-head"><span class="duty-ico">{% icon 'alert' %}</span>
+    <div><h2 id="duty-h">{% translate "Needs your attention" %}</h2><p class="muted">{% blocktranslate count n=duties|length %}You have {{ n }} required item to finish.{% plural %}You have {{ n }} required items to finish.{% endblocktranslate %}</p></div></div>
+  <ul class="duty-list">
+    {% for d in duties|slice:":6" %}
+    <li class="duty {{ d.status }}">
+      <span class="duty-kind">{% if d.kind == 'module' %}{% icon 'layers' %}{% else %}{% icon 'gauge' %}{% endif %}</span>
+      <div class="duty-main"><strong>{{ d.module.display_title }}</strong>
+        <small>{% if d.kind == 'module' %}{% translate "Required module" %}{% else %}{% translate "Required quiz" %}{% endif %}{% if d.due %} · {% translate "Due" %} {{ d.due|date:"j M Y" }}{% endif %}</small></div>
+      {% if d.status == 'overdue' %}<span class="badge danger">{% translate "Overdue" %}</span>{% elif d.status == 'due_soon' %}<span class="badge warn">{% translate "Due soon" %}</span>{% else %}<span class="badge info">{% translate "Pending" %}</span>{% endif %}
+      <a class="btn sm {% if d.status != 'overdue' %}secondary{% endif %}" href="{{ d.url }}">{% if d.kind == 'module' %}{% translate "Open module" %}{% else %}{% translate "Take quiz" %}{% endif %}{% icon 'arrow-right' %}</a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% if duties|length > 6 %}<p class="duty-more">{% blocktranslate with n=duties|length|add:"-6" %}and {{ n }} more…{% endblocktranslate %}</p>{% endif %}
+</section>
+{% endif %}
 
 <div class="grid g4 hscroll stats" style="margin-top:18px">
-  <div class="card stat"><div class="ico">{% icon 'clock' %}</div><div><strong>{{ learning_minutes|minutes_label }}</strong><span>{% translate "Learning time" %}</span></div></div>
-  <div class="card stat"><div class="ico amber">{% icon 'award' %}</div><div><strong>{{ certificate_count }}</strong><span>{% translate "Certificates" %}</span></div></div>
-  <div class="card stat"><div class="ico blue">{% icon 'gauge' %}</div><div><strong>{% if avg_best_score is not None %}{{ avg_best_score }}%{% else %}—{% endif %}</strong><span>{% translate "Avg best score" %}</span></div></div>
-  <div class="card stat"><div class="ico green">{% icon 'check-circle' %}</div><div><strong>{{ completed_modules }}<small class="muted" style="font-size:.9rem;font-weight:600"> / {{ total_modules }}</small></strong><span>{% translate "Modules completed" %}</span></div></div>
+  <a class="card stat hover" href="{% url 'core:progress' %}#time"><div class="ico">{% icon 'clock' %}</div><div><strong>{{ learning_minutes|minutes_label }}</strong><span>{% translate "Learning time" %}</span></div><em class="stat-go">{% icon 'arrow-right' %}</em></a>
+  <a class="card stat hover" href="{% url 'certificates:list' %}"><div class="ico amber">{% icon 'award' %}</div><div><strong>{{ certificate_count }}</strong><span>{% translate "Certificates" %}</span></div><em class="stat-go">{% icon 'arrow-right' %}</em></a>
+  <a class="card stat hover" href="{% url 'core:progress' %}#scores"><div class="ico blue">{% icon 'gauge' %}</div><div><strong>{% if avg_best_score is not None %}{{ avg_best_score }}%{% else %}—{% endif %}</strong><span>{% translate "Avg best score" %}</span></div><em class="stat-go">{% icon 'arrow-right' %}</em></a>
+  <a class="card stat hover" href="{% url 'core:progress' %}#modules"><div class="ico green">{% icon 'check-circle' %}</div><div><strong>{{ completed_modules }}<small class="muted" style="font-size:.9rem;font-weight:600"> / {{ total_modules }}</small></strong><span>{% translate "Modules completed" %}</span></div><em class="stat-go">{% icon 'arrow-right' %}</em></a>
+</div>
+
+
+{% if journey %}
+<section class="card pj" aria-labelledby="pj-h">
+  <div class="pj-head"><div><h2 id="pj-h">{% translate "Your plant journey" %}</h2><p class="muted">{% blocktranslate with p=current_plant.name %}Processes in the order material flows through {{ p }}.{% endblocktranslate %}</p></div>
+    <a class="btn secondary sm" href="{% url 'core:plant_overview' %}">{% icon 'building' %}{% translate "Open my plant" %}</a></div>
+  <ol class="pj-track">
+    {% for st in journey %}
+    <li class="pj-step {{ st.state }}">
+      {% if st.url %}<a href="{{ st.url }}" title="{{ st.module.display_title }}">{% else %}<span class="pj-off" title="{% translate 'Module coming soon' %}">{% endif %}
+        <span class="pj-dot">{% if st.state == 'done' %}{% icon 'check' %}{% else %}{% icon st.icon %}{% endif %}</span><b>{{ st.name }}</b>
+      {% if st.url %}</a>{% else %}</span>{% endif %}
+    </li>
+    {% endfor %}
+  </ol>
+</section>
+{% endif %}
+
+<div class="section-title">{% translate "At a glance" %}</div>
+<div class="grid g3 info-cards">
+  <section class="card info-card"><h3>{% icon 'bell' %}{% translate "Latest updates" %}</h3>
+    {% for i in notif_recent|slice:":3" %}<a class="info-row" href="{% url 'core:notification_open' i.n.pk %}"><b>{{ i.title }}</b>{% if i.body %}<small>{{ i.body|truncatechars:70 }}</small>{% endif %}</a>
+    {% empty %}<p class="muted">{% translate "You are all caught up." %}</p>{% endfor %}
+    <a class="info-link" href="{% url 'core:notifications' %}">{% translate "See all notifications" %}{% icon 'arrow-right' %}</a></section>
+  <section class="card info-card"><h3>{% icon 'award' %}{% translate "Your certificates" %}</h3>
+    {% for c in recent_certs %}<a class="info-row" href="{{ c.get_absolute_url }}"><b>{{ c.module.display_title }}</b><small>{{ c.issued_at|date:"j M Y" }}{% if c.score_percent is not None %} · {{ c.score_percent }}%{% endif %}</small></a>
+    {% empty %}<p class="muted">{% translate "Finish a module and its quiz to earn your first certificate." %}</p>{% endfor %}
+    <a class="info-link" href="{% url 'certificates:list' %}">{% translate "View all" %}{% icon 'arrow-right' %}</a></section>
+  <section class="card info-card"><h3>{% icon 'building' %}{{ current_plant.name }}</h3>
+    <div class="facts"><div><strong>{{ plant_facts.departments }}</strong><small>{% translate "Departments" %}</small></div><div><strong>{{ plant_facts.modules }}</strong><small>{% translate "Modules" %}</small></div><div><strong>{{ plant_facts.sops }}</strong><small>{% translate "SOPs" %}</small></div></div>
+    <a class="info-link" href="{% url 'core:plant_overview' %}">{% translate "Plant overview" %}{% icon 'arrow-right' %}</a></section>
 </div>
 
 {% if charts.has_data %}
@@ -43,7 +92,7 @@
 <div class="section-title">{% translate "What would you like to do?" %}</div>
 <div class="quick quick-big">
   <a class="q-red" href="{% url 'learning:module_list' %}"><span class="ico">{% icon 'layers' %}</span><b>{% translate "Learn" %}</b><small>{% translate "Open training modules" %}</small></a>
-  <a class="q-blue" href="{% url 'sops:list' %}"><span class="ico">{% icon 'file' %}</span><b>{% translate "My SOPs" %}</b><small>{% translate "Read work instructions" %}</small></a>
+  <a class="q-blue" href="{% url 'knowledge:home' %}"><span class="ico">{% icon 'folder' %}</span><b>{% translate "Knowledge Base" %}</b><small>{% translate "Read work instructions" %}</small></a>
   <a class="q-amber" href="{% url 'quizzes:list' %}"><span class="ico">{% icon 'gauge' %}</span><b>{% translate "Take quiz" %}</b><small>{% translate "Test what you learned" %}</small></a>
   <a class="q-green" href="{% url 'certificates:list' %}"><span class="ico">{% icon 'award' %}</span><b>{% translate "Certificates" %}</b><small>{% translate "Download your certificates" %}</small></a>
   <a class="q-rose" href="{% url 'incidents:create' %}"><span class="ico">{% icon 'alert' %}</span><b>{% translate "Report incident" %}</b><small>{% translate "Tell us about a safety issue" %}</small></a>
@@ -68,9 +117,9 @@
   {% for m in recommended %}
   <article class="mod-card">
     <div class="mod-cover" {% if m.cover %}style="background-image:url('{{ m.cover.url }}')"{% endif %}><span class="tag">{{ m.department.display_name }}</span></div>
-    <div class="mod-body"><h3>{{ m.display_title }}</h3><p>{{ m.display_summary }}</p>
+    <div class="mod-body"><h3><a href="{{ m.get_absolute_url }}">{{ m.display_title }}</a></h3><p>{{ m.display_summary }}</p>
       <div class="mod-foot"><div class="meta"><span>{% icon 'file' %}{{ m.steps.count }} {% translate "steps" %}</span><span>{% icon 'clock' %}{{ m.est_minutes }} {% translate "min" %}</span></div>
-      <a class="btn" href="{{ m.get_absolute_url }}">{% icon 'play' %}{% translate "Start" %}</a></div></div>
+      <a class="btn" href="{{ m.get_absolute_url }}">{% icon 'play' %}{% translate "Start learning" %}</a></div></div>
   </article>
   {% endfor %}
 </div>

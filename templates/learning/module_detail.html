@@ -8,12 +8,14 @@
 <div class="card" id="mod-head" data-heartbeat="{% url 'learning:heartbeat' module.slug %}" data-csrf="{{ csrf_token }}">
   <div class="mod-head">
     <div class="grow">
-      <div class="row wrap"><span class="pill">{{ module.department.display_name }}</span>{% if progress.completed_at %}<span class="badge ok">{% icon 'check' %}{% translate "Completed" %}</span>{% endif %}</div>
+      <div class="row wrap"><span class="pill">{{ module.department.display_name }}</span>{% if progress.completed_at %}<span class="badge ok">{% icon 'check' %}{% translate "Completed" %}</span>{% endif %}
+        {% if duty.module %}<span class="badge req {{ duty.module.status }}">{% icon 'alert' %}{% translate "Required" %}{% if duty.module.due %} · {% translate "Due" %} {{ duty.module.due|date:"j M" }}{% endif %}{% if duty.module.status == 'overdue' %} · {% translate "Overdue" %}{% endif %}</span>{% endif %}
+        {% if duty.quiz %}<span class="badge req {{ duty.quiz.status }}">{% icon 'gauge' %}{% translate "Quiz required" %}{% if duty.quiz.due %} · {% translate "Due" %} {{ duty.quiz.due|date:"j M" }}{% endif %}{% if duty.quiz.status == 'overdue' %} · {% translate "Overdue" %}{% endif %}</span>{% endif %}</div>
       <h1>{{ module.display_title }}</h1>
       <div class="meta" style="margin-top:10px"><span>{% icon 'file' %}{{ steps_total }} {% translate "steps" %}</span><span>{% icon 'clock' %}{{ module.est_minutes }} {% translate "min" %}</span>{% if module.instructor %}<span>{% icon 'user' %}{{ module.instructor }}</span>{% endif %}</div>
     </div>
     <div class="row head-actions" style="gap:18px">
-      {% if tab != "sops" %}<a class="btn lg head-cta" href="{{ cta_url }}">{% if cta_key == "quiz" %}{% icon 'gauge' %}{% translate "Take the quiz" %}{% elif cta_key == "review" %}{% icon 'refresh' %}{% translate "Review this module" %}{% elif cta_key == "continue" %}{% icon 'play' %}{% translate "Continue learning" %}{% else %}{% icon 'play' %}{% translate "Start learning" %}{% endif %}</a>{% endif %}
+      {% if tab != "sops" and cta_key != "start" %}<a class="btn lg head-cta" href="{{ cta_url }}">{% if cta_key == "quiz" %}{% icon 'gauge' %}{% translate "Take the quiz" %}{% elif cta_key == "review" %}{% icon 'refresh' %}{% translate "Review this module" %}{% elif cta_key == "continue" %}{% icon 'play' %}{% translate "Continue learning" %}{% else %}{% icon 'play' %}{% translate "Start learning" %}{% endif %}</a>{% endif %}
       <a class="btn subtle" href="{% url 'incidents:create' %}?module={{ module.slug }}">{% icon 'flag-alt' %}{% translate "Report an issue" %}</a>
       <div class="ring" style="--p:{{ progress.percent }}"><div><div><strong>{{ progress.percent }}%</strong></div></div></div>
     </div>
@@ -27,7 +29,6 @@
   <a class="{% if tab == 'sops' %}on{% endif %}" href="{{ base }}?tab=sops">{% translate "SOP steps" %}<span class="n">{{ steps_done }}/{{ steps_total }}</span></a>
   {% if quiz %}<a class="{% if tab == 'quiz' %}on{% endif %}" href="{{ base }}?tab=quiz">{% translate "Quiz" %}{% if not quiz_unlocked %}{% icon 'lock' %}{% endif %}</a>{% endif %}
   <a class="{% if tab == 'problems' %}on{% endif %}" href="{{ base }}?tab=problems">{% translate "Problems & solutions" %}<span class="n">{{ problem_count }}</span></a>
-  <a class="{% if tab == 'discussion' %}on{% endif %}" href="{{ base }}?tab=discussion">{% translate "Discussion" %}</a>
 </nav>
 
 {% if tab == "overview" %}

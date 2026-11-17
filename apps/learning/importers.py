@@ -109,6 +109,20 @@ def _unique_slug(plant, title):
 
 
 LIBRARY_WORDS = {"production": "production", "production sops": "production", "department": "department", "department sops": "department"}
+YES_WORDS = {"yes", "y", "true", "1", "required"}
+NO_WORDS = {"no", "n", "false", "0", "optional"}
+
+
+def _parse_date(text):
+    import datetime
+    for fmt in ("%Y-%m-%d", "%d-%m-%Y", "%d/%m/%Y"):
+        try:
+            return datetime.datetime.strptime(text.split(" ")[0], fmt).date()
+        except ValueError:
+            continue
+    return None
+
+
 STATUS_WORDS = {"published": "published", "publish": "published", "live": "published", "draft": "draft", "archived": "archived"}
 
 
@@ -145,6 +159,15 @@ def import_modules(rows, default_plant=None):
         if mins and not mins.isdigit():
             errors.append(f"Row {n}: est_minutes must be a whole number")
             continue
+        req_raw = (r.get("required") or r.get("mandatory") or "").strip().lower()
+        if req_raw and req_raw not in YES_WORDS | NO_WORDS:
+            errors.append(f"Row {n}: required must be yes or no")
+            continue
+        due_raw = (r.get("due_date") or "").strip()
+        due = _parse_date(due_raw) if due_raw else None
+        if due_raw and due is None:
+            errors.append(f"Row {n}: due_date must look like 2026-12-31")
+            continue
         is_new = module is None
         if is_new:
             module = Module(plant=plant, slug=slug or _unique_slug(plant, title), status="draft", order=Module.objects.filter(plant=plant).count())
@@ -164,6 +187,10 @@ def import_modules(rows, default_plant=None):
             module.status = status
         if library:
             module.library = library
+        if req_raw:
+            module.is_mandatory = req_raw in YES_WORDS
+        if due_raw:
+            module.due_date = due
         if module.category and module.department_id:
             module.process = Process.objects.get_or_create(department=module.department, name=module.category)[0]
         module.save()

@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import F, Q
 from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
@@ -17,7 +17,7 @@ from apps.core.access import check_plant_access, require_plant
 from apps.core.models import AuditLog
 from apps.plants.models import Department
 
-from .models import DiscussionPost, Module, ModuleSOP, SOPAcknowledgement, SOPStep
+from .models import DiscussionPost, Module, ModuleProgress, ModuleSOP, StudyDay, SOPAcknowledgement, SOPStep
 from .services import get_progress, refresh_completion
 
 TABS = ["overview", "videos", "sops", "quiz", "problems", "discussion"]
@@ -45,7 +45,7 @@ def _celebration(request, module):
     """One-shot 'well done' popup data, set by the view that completed something."""
     kind = request.session.pop("celebrate", None)
     if kind == "steps":
-        has_quiz = hasattr(module, "quiz") and module.quiz.is_active
+        has_quiz = hasattr(module, "quiz") and module.quiz.is_active and module.quiz.questions.exists()
         return {"kind": "steps", "title": _("All steps complete!"),
                 "text": _("Great work. The quiz is now unlocked.") if has_quiz else _("Great work."),
                 "cta_label": _("Take the quiz") if has_quiz else "",
@@ -85,63 +85,125 @@ def guideline_groups(guidelines):
     return out
 
 
+def _tag_required(mods, user, plant):
+    """Put `duty` ({due, status, done}) on the required modules, so cards can show a Required / Due badge."""
+    from .duties import required_flags
+    flags, _quiz = required_flags(user, plant)
+    for m in mods:
+        m.duty = flags.get(m.pk)
+    return mods
+
+
+def _module_duty(user, module, quiz):
+    """Required-module / required-quiz notes for the module header (only the ones still to do)."""
+    from apps.quizzes.models import Attempt
+    from .duties import status_for
+    out = {}
+    if module.is_mandatory and not ModuleProgress.objects.filter(user=user, module=module, completed_at__isnull=False).exists():
+        out["module"] = {"due": module.due_date, "status": status_for(module.due_date)}
+    if quiz is not None and quiz.is_active and quiz.is_mandatory and not Attempt.objects.filter(user=user, quiz=quiz, passed=True).exists():
+        out["quiz"] = {"due": quiz.due_date, "status": status_for(quiz.due_date)}
+    return out
+
+
+NO_CATEGORY = "__none__"
+STATUS_CHOICES = [("required", _l("Required")), ("todo", _l("Not started")), ("progress", _l("In progress")), ("done", _l("Completed"))]
+
+
 @login_required
 def module_list(request):
     plant = require_plant(request)
     all_mods = Module.objects.filter(plant=plant, status=Module.Status.PUBLISHED)
-    qs = (all_mods.select_related("department").prefetch_related("steps")
-          .order_by("department__order", "department__name", "order", "title"))
+    qs = (all_mods.select_related("department").prefetch_related("steps", "sops")
+          .order_by("order", "department__order", "title"))
     dept = request.GET.get("dept") or ""
     library = request.GET.get("library") or ""
     category = request.GET.get("category") or ""
+    status = request.GET.get("status") or ""
     q = (request.GET.get("q") or "").strip()
-    grid = request.GET.get("view") == "grid"
-    if dept.isdigit():
-        qs = qs.filter(department_id=dept)
-    else:
+    grid = True      # one flat, numbered card list (flow order) on every device
+    progress = {p.module_id: p for p in request.user.module_progress
+                .filter(module__plant=plant).prefetch_related("completed_steps")}
+    done_ids = {i for i, p in progress.items() if p.completed_at}
+    prog_ids = {i for i, p in progress.items() if not p.completed_at and p.steps_done}
+    req_ids = set(all_mods.filter(is_mandatory=True).values_list("pk", flat=True)) - done_ids
+    if status not in dict(STATUS_CHOICES):
+        status = ""
+    if library not in dict(Module.Library.choices):
+        library = ""
+    if not dept.isdigit():
         dept = ""
-    if library:
-        qs = qs.filter(library=library)
-    if category:
-        qs = qs.filter(category=category)
+
+    # Filters narrow step by step: type (Production / Department SOPs) → department → category → status.
+    # Every row below shows counts for what is left after the rows above it.
+    scope = all_mods.filter(library=library) if library else all_mods
+    dept_scope = scope
+    if dept:
+        scope = scope.filter(department_id=dept)
+    cat_scope = scope
+    if category == NO_CATEGORY:
+        scope = scope.filter(category="")
+    elif category:
+        scope = scope.filter(category=category)
+    scope_ids = set(scope.values_list("pk", flat=True))
+    qs = qs.filter(pk__in=scope_ids)
+    if status == "todo":
+        qs = qs.exclude(pk__in=done_ids | prog_ids)
+    elif status:
+        qs = qs.filter(pk__in={"required": req_ids, "progress": prog_ids, "done": done_ids}[status])
     if q:
         qs = qs.filter(Q(title__icontains=q) | Q(title_hi__icontains=q) | Q(summary__icontains=q)
                        | Q(summary_hi__icontains=q) | Q(category__icontains=q) | Q(category_hi__icontains=q))
 
     def url(**over):
         """Current filters + overrides, as a link. Empty values are dropped; paging resets."""
-        params = {"dept": dept, "library": library, "category": category, "q": q, "view": "grid" if grid else ""}
+        params = {"dept": dept, "library": library, "category": category, "status": status, "q": q, "view": "grid" if grid else ""}
         params.update(over)
         qstr = urlencode({k: v for k, v in params.items() if v})
         return "?" + qstr if qstr else request.path
 
-    progress = {p.module_id: p for p in request.user.module_progress
-                .filter(module__plant=plant).prefetch_related("completed_steps")}
     total = qs.count()
+    n_all = scope.count()
+    depts = list(Department.objects.filter(plant=plant, modules__in=dept_scope).distinct())
+    dept_count = {d.pk: dept_scope.filter(department=d).count() for d in depts}
+    cats, uncategorised = {}, 0
+    for m in cat_scope.select_related("department").order_by("department__order", "department__name", "order", "title"):     # chips follow the order modules appear in
+        if not m.category:
+            uncategorised += 1
+            continue
+        row = cats.setdefault(m.category, [m.display_category, 0])
+        row[1] += 1
+    if uncategorised:
+        cats[NO_CATEGORY] = [_("Uncategorised"), uncategorised]
+    n_status = {"": n_all, "required": len(req_ids & scope_ids), "todo": len(scope_ids - done_ids - prog_ids),
+                "progress": len(prog_ids & scope_ids), "done": len(done_ids & scope_ids)}
     ctx = {
-        "count": total, "grid": grid, "q": q,
-        "sel": {"dept": dept, "library": library, "category": category},
-        "dept_chips": [(_("All"), url(dept=""), not dept)] + [
-            (d.display_name, url(dept=str(d.pk)), dept == str(d.pk))
-            for d in Department.objects.filter(plant=plant, modules__in=all_mods).distinct()],
-        "lib_chips": [(_("All"), url(library=""), not library)] + [
-            (label, url(library=val), library == val) for val, label in Module.Library.choices],
-        "cat_chips": [(_("All"), url(category=""), not category)] + [
-            (label, url(category=val), category == val) for val, label in _category_chips(all_mods)],
+        "count": total, "grid": grid, "q": q, "status": status,
+        "sel": {"dept": dept, "library": library, "category": category, "status": status},
+        "lib_tabs": [(_("All"), url(library="", dept="", category=""), not library, all_mods.count())] + [
+            (label, url(library=val, dept="", category=""), library == val, all_mods.filter(library=val).count())
+            for val, label in Module.Library.choices],
+        "dept_tabs": [(_("All"), url(dept="", category=""), not dept, dept_scope.count())] + [
+            (d.display_name, url(dept=str(d.pk), category=""), dept == str(d.pk), dept_count[d.pk]) for d in depts],
+        "cat_chips": [(_("All"), url(category=""), not category, cat_scope.count())] + [
+            (label, url(category=val), category == val, n) for val, (label, n) in cats.items()],
+        "status_chips": [(_("All"), url(status=""), not status, n_status[""], "")] + [
+            (label, url(status=key), status == key, n_status[key], key) for key, label in STATUS_CHOICES],
         "grid_url": url(view="grid"), "rows_url": url(view=""),
-        "has_filters": bool(dept or library or category or q),
+        "has_filters": bool(dept or library or category or status or q),
         "clear_url": request.path + ("?view=grid" if grid else ""),
         "current_dept": Department.objects.filter(pk=dept, plant=plant).first() if dept else None,
     }
     if grid:
         page = Paginator(qs, PAGE_SIZE).get_page(request.GET.get("page"))
         ctx["page_obj"] = page
-        ctx["cards"] = [{"module": m, "progress": progress.get(m.id)} for m in page]
+        _tag_required(page.object_list, request.user, plant)
+        ctx["cards"] = [{"module": m, "progress": progress.get(m.id), "n": page.start_index() + i} for i, m in enumerate(page)]
         ctx["prev_url"] = url(page=page.previous_page_number()) if page.has_previous() else ""
         ctx["next_url"] = url(page=page.next_page_number()) if page.has_next() else ""
     else:
         sections = []
-        for m in qs:
+        for m in _tag_required(list(qs), request.user, plant):
             if not sections or sections[-1]["dept"].pk != m.department_id:
                 sections.append({"dept": m.department, "cards": [], "view_all": url(dept=str(m.department_id), view="grid")})
             sections[-1]["cards"].append({"module": m, "progress": progress.get(m.id)})
@@ -167,7 +229,7 @@ def module_detail(request, slug):
         "celebrate": _celebration(request, module),
         "module": module, "tab": tab, "progress": progress,
         "steps_total": len(steps), "steps_done": len(done_ids),
-        "quiz": quiz if quiz and quiz.is_active else None,
+        "quiz": quiz if quiz and quiz.is_active and quiz.questions.exists() else None,
         "quiz_unlocked": (not quiz) or (not quiz.requires_all_steps) or progress.all_steps_done,
         "problem_count": module.problems.count(),
         "video_count": module.videos.count(),
@@ -179,11 +241,14 @@ def module_detail(request, slug):
     safety_done = bool(progress.safety_ack_at)
     steps_done_all = bool(steps) and len(done_ids) == len(steps)
     finished = bool(progress.completed_at)
+    # The quiz step is always shown (every module is meant to have one). Until the admin has added questions it reads "coming soon" and does not block the certificate.
     flags = [("safety", safety_done), ("steps", steps_done_all)] + ([("quiz", quiz_passed)] if quiz_on else []) + [("cert", finished)]
     journey, found = {}, False
     for key, done in flags:
         journey[key] = "done" if done else ("todo" if found else "now")
         found = found or not done
+    if not quiz_on:
+        journey["quiz"] = "soon"
     if finished:
         cta = ("review", "?tab=sops")
     elif steps_done_all and quiz_on and not quiz_passed:
@@ -192,7 +257,7 @@ def module_detail(request, slug):
         cta = ("continue", "?tab=sops")
     else:
         cta = ("start", "?tab=sops")
-    ctx.update(journey=journey, cta_key=cta[0], cta_url=cta[1], quiz_passed=quiz_passed)
+    ctx.update(journey=journey, cta_key=cta[0], cta_url=cta[1], quiz_passed=quiz_passed, duty=_module_duty(request.user, module, quiz))
     if tab == "overview":
         gallery = [{"url": module.cover.url, "caption": module.display_title}] if module.cover else []
         gallery += [{"url": im.image.url, "caption": im.display_caption} for im in module.images.all()]
@@ -306,6 +371,8 @@ def heartbeat(request, slug):
     progress.seconds_spent += 30
     progress.last_seen_at = timezone.now()
     progress.save(update_fields=["seconds_spent", "last_seen_at"])
+    day, _created = StudyDay.objects.get_or_create(user=request.user, module=module, day=timezone.localdate())
+    StudyDay.objects.filter(pk=day.pk).update(seconds=F("seconds") + 30)
     return JsonResponse({"ok": True})
 
 

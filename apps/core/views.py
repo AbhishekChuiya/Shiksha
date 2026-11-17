@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 
+from .analytics import learner_analytics
 from .charts import learner_charts
 from django.db.models import Q, Sum
 from django.http import JsonResponse
@@ -10,12 +11,16 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from apps.certificates.models import Certificate
+from apps.learning.duties import pending_duties
 from apps.learning.models import Module, ModuleProgress, VideoLesson
+from apps.plants.journey_view import build_journey
 from apps.plants.models import Plant
 from apps.quizzes.models import Attempt
 from apps.sops.models import SOPDocument
 
 from .access import require_plant
+from .models import Notification
+from .notify import text_for
 from .middleware import SESSION_KEY, VIEW_AS_KEY
 
 
@@ -68,6 +73,10 @@ def dashboard(request):
         "in_progress": in_progress[1:5],
         "recommended": recommended,
         "charts": _safe(learner_charts, request.user, plant),
+        "duties": pending_duties(request.user, plant),
+        "journey": build_journey(request.user, plant),
+        "recent_certs": Certificate.objects.filter(user=request.user, module__plant=plant).select_related("module")[:3],
+        "plant_facts": {"departments": plant.departments.count(), "modules": total, "sops": plant.sops.count()},
     })
 
 
@@ -79,6 +88,7 @@ def plant_overview(request):
         "departments": plant.departments.prefetch_related("processes"),
         "module_count": plant.modules.filter(status=Module.Status.PUBLISHED).count(),
         "sop_count": plant.sops.count(),
+        "videos": plant.videos.all(),
     })
 
 
@@ -158,3 +168,34 @@ def set_view_mode(request):
     else:
         request.session.pop(VIEW_AS_KEY, None)
     return redirect(_safe_next(request))
+
+
+@login_required
+def notifications(request):
+    items = [{"n": n, "title": text_for(n)[0], "body": text_for(n)[1]} for n in Notification.objects.filter(user=request.user)[:60]]
+    return render(request, "core/notifications.html", {"items": items, "unread": sum(1 for i in items if not i["n"].is_read)})
+
+
+@login_required
+def notification_open(request, pk):
+    n = get_object_or_404(Notification, pk=pk, user=request.user)
+    if not n.is_read:
+        n.is_read = True
+        n.save(update_fields=["is_read"])
+    if n.url and url_has_allowed_host_and_scheme(n.url, {request.get_host()}):
+        return redirect(n.url)
+    return redirect("core:notifications")
+
+
+@login_required
+@require_POST
+def notifications_read_all(request):
+    Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+    return redirect(_safe_next(request, "core:notifications"))
+
+
+@login_required
+def progress(request):
+    """My progress: learning time, quiz scores and module progress, with charts (opened from the dashboard cards)."""
+    plant = require_plant(request)
+    return render(request, "core/progress.html", {"a": learner_analytics(request.user, plant), "focus": request.GET.get("focus", "")})

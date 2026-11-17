@@ -46,6 +46,59 @@ class PlantPhoto(models.Model):
     display_caption = property(lambda self: localized(self, "caption"))
 
 
+class PlantVideo(models.Model):
+    """A video about the plant (a YouTube/Vimeo/CDN link, or an uploaded file) shown on the Plant Overview page."""
+    plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name="videos")
+    title = models.CharField(max_length=160)
+    title_hi = models.CharField("title (Hindi)", max_length=160, blank=True)
+    title_gu = models.CharField("title (Gujarati)", max_length=160, blank=True)
+    url = models.URLField(blank=True, help_text="YouTube / Vimeo / direct link. Used if no file is uploaded.")
+    file = models.FileField(upload_to="plants/videos/", blank=True)
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return self.title
+
+    display_title = property(lambda self: localized(self, "title"))
+
+    @property
+    def embed_url(self):
+        u = self.url
+        if "youtu.be/" in u:
+            return "https://www.youtube.com/embed/" + u.split("youtu.be/")[1].split("?")[0]
+        if "youtube.com/watch" in u and "v=" in u:
+            return "https://www.youtube.com/embed/" + u.split("v=")[1].split("&")[0]
+        if "vimeo.com/" in u:
+            return "https://player.vimeo.com/video/" + u.rstrip("/").split("/")[-1]
+        return ""
+
+    @property
+    def source(self):
+        return self.file.url if self.file else self.url
+
+
+class PlantStage(models.Model):
+    """One step of the plant journey shown on the learner dashboard (e.g. Gate Entry → Lab Testing → Extrusion …)."""
+    plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name="stages")
+    name = models.CharField(max_length=80)
+    name_hi = models.CharField("name (Hindi)", max_length=80, blank=True)
+    name_gu = models.CharField("name (Gujarati)", max_length=80, blank=True)
+    module = models.ForeignKey("learning.Module", null=True, blank=True, on_delete=models.SET_NULL, related_name="+",
+                               help_text="Leave empty to link by name automatically")
+    order = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        ordering = ["order", "id"]
+
+    def __str__(self):
+        return f"{self.plant.name}: {self.name}"
+
+    display_name = property(lambda self: localized(self, "name"))
+
+
 class Department(models.Model):
     plant = models.ForeignKey(Plant, on_delete=models.CASCADE, related_name="departments")
     name = models.CharField(max_length=80)

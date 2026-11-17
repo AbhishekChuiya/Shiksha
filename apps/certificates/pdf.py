@@ -11,6 +11,8 @@ from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase.pdfmetrics import stringWidth
 from reportlab.pdfgen import canvas
 
+from .signature import draw_pdf, signers
+
 GOLD = HexColor("#B8963E")
 WINE = HexColor("#8A0C22")
 INK = HexColor("#2A1A1A")
@@ -26,6 +28,7 @@ def _fit(text, font, size, max_width, min_size=16):
 
 def _latin(text):
     """Built-in PDF fonts only cover Latin; replace anything else so no empty boxes appear."""
+    text = text.replace("–", "-").replace("—", "-").replace("’", "'").replace("“", '"').replace("”", '"')
     return text.encode("latin-1", "replace").decode("latin-1")
 
 
@@ -96,28 +99,66 @@ def build_certificate_pdf(cert, verify_url):
     c.setFont("Times-Roman", 14)
     c.drawCentredString(W / 2, H - 374, _latin(where))
 
-    # footer: date | seal text | QR
-    y = 78
+    # footer: date | HR signature | seal | HoD signature | QR
+    y = 92
     c.setStrokeColor(GOLD)
     c.setLineWidth(0.8)
-    c.line(80, y + 22, 280, y + 22)
     c.setFillColor(INK)
-    c.setFont("Helvetica-Bold", 11)
-    c.drawString(80, y + 6, cert.issued_at.strftime("%d %B %Y"))
+    c.setFont("Helvetica-Bold", 10.5)
+    c.drawString(74, y + 18, cert.issued_at.strftime("%d %B %Y"))
     c.setFillColor(SOFT)
-    c.setFont("Helvetica", 9)
-    c.drawString(80, y - 8, "Date of issue")
+    c.setFont("Helvetica", 8.5)
+    c.drawString(74, y + 5, "Date of issue")
+    c.setFont("Helvetica", 8)
+    c.drawString(74, y - 8, f"Certificate ID: {cert.short_code}")
 
-    c.setFont("Helvetica", 9)
-    c.drawCentredString(W / 2, y + 6, f"Certificate ID: {cert.short_code}")
-    c.drawCentredString(W / 2, y - 8, "Scan the code to verify this certificate")
+    ink = HexColor("#1D2A5B")
+    centres = (292, 552)
+    for cx, sg in zip(centres, signers(cert)):
+        c.setStrokeColor(ink)
+        c.setLineWidth(1.3)
+        draw_pdf(c, sg["name"] or sg["title"], cx - 75, y + 14)
+        c.setStrokeColor(GOLD)
+        c.setLineWidth(0.8)
+        c.line(cx - 90, y + 12, cx + 90, y + 12)
+        yy = y - 1
+        if sg["name"]:
+            c.setFillColor(INK)
+            c.setFont("Helvetica-Bold", 10)
+            c.drawCentredString(cx, yy, _latin(sg["name"]))
+            yy -= 12
+        c.setFillColor(SOFT)
+        c.setFont("Helvetica", 8.5)
+        c.drawCentredString(cx, yy, _latin(sg["title"]))
+
+    # gold seal between the two signatures
+    sx, sy = (centres[0] + centres[1]) / 2, y + 22
+    c.setFillColor(HexColor("#D9B44F"))
+    c.circle(sx, sy, 30, stroke=0, fill=1)
+    c.setStrokeColor(HexColor("#FFF3C4"))
+    c.setLineWidth(2)
+    c.circle(sx, sy, 26, stroke=1, fill=0)
+    c.setStrokeColor(WINE)
+    c.setLineWidth(0.8)
+    c.circle(sx, sy, 23, stroke=1, fill=0)
+    c.setStrokeColor(WINE)
+    c.setLineWidth(3)
+    c.setLineCap(1)
+    c.line(sx - 10, sy + 3, sx - 3, sy - 4)
+    c.line(sx - 3, sy - 4, sx + 11, sy + 11)
+    c.setFillColor(WINE)
+    c.setFont("Helvetica-Bold", 4.6)
+    c.drawCentredString(sx, sy - 17, "VERIFIED LEARNER")
 
     widget = qr.QrCodeWidget(verify_url)
     x0, y0, x1, y1 = widget.getBounds()
-    box = 64
+    box = 62
     d = Drawing(box, box, transform=[box / (x1 - x0), 0, 0, box / (y1 - y0), 0, 0])
     d.add(widget)
-    renderPDF.draw(d, c, W - 80 - box, y - 14)
+    renderPDF.draw(d, c, W - 74 - box, y - 6)
+    c.setFillColor(SOFT)
+    c.setFont("Helvetica", 7.5)
+    c.drawCentredString(W - 74 - box / 2, y - 16, "Scan to verify")
 
     c.showPage()
     c.save()

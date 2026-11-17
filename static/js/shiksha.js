@@ -69,7 +69,7 @@
     error: '<svg class="i" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>',
     info: '<svg class="i" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>'
   };
-  function toast(level, text) {
+  function toast(level, text, ms) {
     var box = $("#toasts"); if (!box) return;
     var kind = level === "error" ? "error" : level === "success" ? "success" : level === "warning" ? "warning" : "info";
     var t = document.createElement("div");
@@ -78,7 +78,7 @@
     t.querySelector(".t-body").textContent = text;
     function kill() { t.classList.add("leaving"); setTimeout(function () { t.remove(); }, 260); }
     t.querySelector(".t-x").addEventListener("click", kill);
-    box.appendChild(t); setTimeout(kill, kind === "error" ? 8000 : 5000);
+    box.appendChild(t); setTimeout(kill, ms || (kind === "error" ? 8000 : 5000));
   }
   window.shikshaToast = toast;
   $$("[data-flash]").forEach(function (m) { toast(m.getAttribute("data-level"), m.textContent.trim()); m.remove(); });
@@ -225,25 +225,11 @@
     if (level === "info") { if (store.get("shiksha-note-" + key)) return; store.set("shiksha-note-" + key, "1"); }
     toast(level, msg);
   }
-  function markStop(on) { $$("[data-speak-stop]").forEach(function (b) { b.classList.toggle("active", !!on && b.parentNode && b.parentNode.contains(current)); }); }
+  function markStop() {}
   function stop() { token++; if (synth) synth.cancel(); if (current) current.classList.remove("playing"); current = null; markStop(false); }
-  // Every read-aloud button gets a Stop button beside it (added automatically, so no screen can forget it).
-  var STOP_SVG = '<svg class="i" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>';
-  function addStopButtons() {
-    $$("[data-speak]").forEach(function (btn) {
-      var host = btn.parentNode; if (!host || host.querySelector("[data-speak-stop]")) return;
-      var b = document.createElement("button"); b.type = "button"; b.setAttribute("data-speak-stop", "");
-      var small = /\bsm\b/.test(btn.className), icon = btn.classList.contains("icon-btn");
-      b.className = "speak-stop " + (icon ? "icon-btn" : "btn secondary" + (small ? " sm" : ""));
-      var label = t("stop", "Stop"); b.title = label; b.setAttribute("aria-label", label);
-      b.innerHTML = STOP_SVG + (icon ? "" : "<span>" + label + "</span>");
-      btn.insertAdjacentElement("afterend", b);
-    });
-  }
-  addStopButtons();
   function speak(btn) {
     if (!synth) { toast("error", t("noTts", "Read-aloud is not supported on this browser.")); return; }
-    if (current === btn) { if (synth.paused) { synth.resume(); btn.classList.add("playing"); } else { synth.pause(); btn.classList.remove("playing"); } return; }
+    if (current === btn) { stop(); return; }                  // tapping the speaker again stops reading
     stop();
     var target = $(btn.getAttribute("data-speak")); if (!target) return;
     var text = target.innerText.trim(); if (!text) return;
@@ -274,7 +260,6 @@
   }
   document.addEventListener("click", function (e) {
     var sp = e.target.closest && e.target.closest("[data-speak]"); if (sp) { speak(sp); return; }
-    if (e.target.closest && e.target.closest("[data-speak-stop]")) stop();
   });
   window.addEventListener("beforeunload", stop);
   function initAutoread(fresh) {
@@ -405,7 +390,6 @@
   // =====================================================================
   var SWAP = ["mod-head", "mod-tabs", "sop-area"], busy = false;
   function swapFrom(doc) {
-    setTimeout(addStopButtons, 0);
     SWAP.forEach(function (id) { var o = document.getElementById(id), n = doc.getElementById(id); if (o && n) o.replaceWith(document.adoptNode(n)); });
   }
   function ensureStepVisible() {
@@ -418,7 +402,7 @@
     var p = $("#sop-area .sop-progress"); if (!p || window.__prevDone == null) return;
     var done = parseInt(p.dataset.done, 10), total = parseInt(p.dataset.total, 10), left = total - done;
     if (done > window.__prevDone && left > 0 && !$("#celebrate-src")) {
-      var msg = t(left <= 2 ? "almost" : "cheer", "").replace("{n}", left); if (msg) toast("success", msg);
+      var msg = t(left <= 2 ? "almost" : "cheer", "").replace("{n}", left); if (msg) toast("success", msg, 2200);
       if (navigator.vibrate) { try { navigator.vibrate(18); } catch (e) {} }
     }
   }

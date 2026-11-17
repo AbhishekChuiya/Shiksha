@@ -117,14 +117,14 @@ class ModuleForm(PanelForm):
     class Meta:
         model = Module
         fields = ["title", "title_hi", "title_gu", "plant", "department", "process", "category", "category_hi", "category_gu", "library", "summary", "summary_hi", "summary_gu",
-                  "overview", "overview_hi", "overview_gu", "purpose", "purpose_hi", "purpose_gu", "objectives", "objectives_hi", "objectives_gu", "cover", "est_minutes", "instructor", "sop_document", "status", "order", "slug"]
+                  "overview", "overview_hi", "overview_gu", "purpose", "purpose_hi", "purpose_gu", "objectives", "objectives_hi", "objectives_gu", "cover", "est_minutes", "instructor", "sop_document", "status", "is_mandatory", "due_date", "order", "slug"]
         labels = {"title": "Module title", "est_minutes": "Estimated time (minutes)", "sop_document": "Linked SOP", "cover": "Cover photo",
-                  "library": "Library", "category": "Category (filter chip)", "status": "Status", "order": "Position in lists", "slug": "Web address name"}
+                  "library": "Library", "is_mandatory": "Required for every learner", "due_date": "Complete by (date)", "category": "Category (filter chip)", "status": "Status", "order": "Position in lists", "slug": "Web address name"}
         help_texts = {"title": "e.g. Melt & Cast", "summary": "One or two lines shown on the module card.", "overview": "Shown on the Overview tab. Press Enter twice for a new paragraph.",
                       "objectives": "One learning objective per line.", "cover": "Shown on the module card and at the top of the Overview tab.",
-                      "status": "Draft = hidden from learners. Published = visible.", "slug": "Leave blank to create it from the title.",
+                      "status": "Draft = hidden from learners. Published = visible.", "is_mandatory": "Learners see a Required badge and an alert on their dashboard until they finish it.", "due_date": "Optional. Learners are reminded as the date gets close, and told when it has passed.", "slug": "Leave blank to create it from the title.",
                       "category": "Learners can filter by this, e.g. Extrusion.", "order": "Lower numbers appear first inside a department."}
-        widgets = {"overview": forms.Textarea(attrs={"rows": 7}), "overview_hi": forms.Textarea(attrs={"rows": 7}), "overview_gu": forms.Textarea(attrs={"rows": 7}), "objectives": forms.Textarea(attrs={"rows": 4}),
+        widgets = {"due_date": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"), "overview": forms.Textarea(attrs={"rows": 7}), "overview_hi": forms.Textarea(attrs={"rows": 7}), "overview_gu": forms.Textarea(attrs={"rows": 7}), "objectives": forms.Textarea(attrs={"rows": 4}),
                    "objectives_hi": forms.Textarea(attrs={"rows": 4}), "objectives_gu": forms.Textarea(attrs={"rows": 4}), "purpose": forms.Textarea(attrs={"rows": 3}), "purpose_hi": forms.Textarea(attrs={"rows": 3}), "purpose_gu": forms.Textarea(attrs={"rows": 3}), "summary": forms.Textarea(attrs={"rows": 2}), "summary_hi": forms.Textarea(attrs={"rows": 2}), "summary_gu": forms.Textarea(attrs={"rows": 2})}
 
     def __init__(self, *a, **kw):
@@ -158,11 +158,12 @@ class ModuleForm(PanelForm):
 class QuizSettingsForm(forms.ModelForm):
     class Meta:
         model = Quiz
-        fields = ["title", "pass_percent", "questions_per_attempt", "time_limit_minutes", "max_attempts", "shuffle_questions", "shuffle_choices", "requires_all_steps", "is_active"]
-        labels = {"title": "Quiz title (optional)", "pass_percent": "Pass mark (%)", "questions_per_attempt": "Questions per attempt",
+        fields = ["title", "pass_percent", "questions_per_attempt", "time_limit_minutes", "max_attempts", "shuffle_questions", "shuffle_choices", "requires_all_steps", "is_mandatory", "due_date", "is_active"]
+        widgets = {"due_date": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d")}
+        labels = {"is_mandatory": "Required for every learner", "due_date": "Pass by (date)", "title": "Quiz title (optional)", "pass_percent": "Pass mark (%)", "questions_per_attempt": "Questions per attempt",
                   "time_limit_minutes": "Time limit (minutes)", "max_attempts": "Maximum attempts", "shuffle_questions": "Change question order every attempt",
                   "shuffle_choices": "Shuffle answer options every attempt", "requires_all_steps": "Learner must finish all SOP steps first", "is_active": "Quiz is active"}
-        help_texts = {"questions_per_attempt": "Leave blank to ask every question. If you set a smaller number, questions the learner has not seen recently are chosen first.",
+        help_texts = {"is_mandatory": "Shown as Required with an alert on the learner dashboard until it is passed.", "due_date": "Optional. Learners are reminded as it gets close.", "questions_per_attempt": "Leave blank to ask every question. If you set a smaller number, questions the learner has not seen recently are chosen first.",
                       "time_limit_minutes": "Leave blank for no time limit.", "max_attempts": "Leave blank for unlimited attempts."}
 
     def clean_pass_percent(self):

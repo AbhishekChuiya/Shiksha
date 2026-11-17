@@ -86,12 +86,12 @@ class V3Tests(TestCase):
         self.assertNotContains(r, "Preview as learner")
 
     # ---- UI structure ----
-    def test_modules_grouped_into_swipe_sections(self):
+    def test_modules_are_one_numbered_card_list(self):
         self.client.force_login(self.learner)
         r = self.client.get(reverse("learning:module_list"))
-        self.assertContains(r, "mod-section")
-        self.assertContains(r, "hscroll")
-        self.assertEqual([s["dept"].name for s in r.context["sections"]], ["Production", "QC", "Maintenance"])
+        self.assertContains(r, "proc-grid")
+        self.assertContains(r, "pc-num")
+        self.assertEqual([c["n"] for c in r.context["cards"]], list(range(1, len(r.context["cards"]) + 1)))
 
     def test_bottom_nav_marks_current_page(self):
         self.client.force_login(self.learner)

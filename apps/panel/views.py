@@ -22,7 +22,7 @@ from apps.learning.importers import ImportError_, import_quiz, import_steps
 from apps.learning.tables import TableError, read_table
 from apps.learning.models import (DiscussionPost, Module, ModuleEscalation, ModuleImage, ModuleProgress, ModuleRecord, ModuleRole, ModuleSOP, ProblemSolution,
                                   SafetyGuideline, SOPStep, VideoLesson)
-from apps.plants.models import Department, Plant, PlantPhoto, Process
+from apps.plants.models import Department, Plant, PlantPhoto, PlantStage, PlantVideo, Process
 from apps.quizzes.models import Attempt, Choice, Question, Quiz
 from apps.sops.models import SOPDocument
 
@@ -123,7 +123,7 @@ def plant_list(request):
     return render_panel(request, "panel/plant_list.html", page_title="Plants", plants=qs, q=q)
 
 
-PLANT_TABS = [("details", "Details"), ("gallery", "Photos"), ("structure", "Departments & processes")]
+PLANT_TABS = [("details", "Details"), ("gallery", "Photos & videos"), ("journey", "Plant journey"), ("structure", "Departments & processes")]
 
 
 @admin_required
@@ -144,11 +144,24 @@ def plant_edit(request, pk=None, tab="details"):
                                         ("Hindi (optional)", ["location_hi", "tagline_hi", "about_hi"]), ("Gujarati (optional)", ["location_gu", "tagline_gu", "about_gu"]), ("Settings", ["is_active", "order", "code"])])
         return render_panel(request, "panel/plant_edit.html", **ctx)
 
-    if tab == "gallery":
+    if tab == "journey":
+        mods = [("", "Automatic — match by name")] + [(m.pk, m.title) for m in Module.objects.filter(plant=plant).order_by("order", "title")]
+        eds = [Editor("stages", PlantStage, [F("name", "Process name", required=True), F("module", "Linked module", "select", fk=True, choices=mods),
+                                             F("name_hi", "Name (Hindi)", hindi=True), F("name_gu", "Name (Gujarati)", gujarati=True)],
+                      {"plant": plant}, title="Plant journey", noun="process",
+                      info="These processes appear in this order on every learner's dashboard (\u201cYour plant journey\u201d). Tapping one opens its module. "
+                           "Leave \u201cLinked module\u201d on Automatic and Shiksha finds the module with the same name; a process with no module is shown greyed out.",
+                      empty_hint="No processes yet — add the steps of your plant in the order material flows, e.g. Gate Entry, Lab Testing, Extrusion.")]
+    elif tab == "gallery":
         eds = [Editor("photos", PlantPhoto, [F("image", "Photo", "image", required=True), F("caption", "Caption"), F("caption_hi", "Caption (Hindi)", hindi=True)],
                       {"plant": plant}, title="Plant photos", noun="photo",
                       info="These appear in the Photo gallery on the Plant Overview page. Learners can tap a photo to enlarge it. Drag order = up/down arrows.",
-                      empty_hint="No photos yet — add some to bring the Plant Overview page to life.")]
+                      empty_hint="No photos yet — add some to bring the Plant Overview page to life."),
+               Editor("videos", PlantVideo, [F("title", "Video title", required=True), F("url", "Video link (YouTube, Vimeo or a direct link)"), F("file", "…or upload a video file", "file"),
+                                             F("title_hi", "Title (Hindi)", hindi=True), F("title_gu", "Title (Gujarati)", gujarati=True)],
+                      {"plant": plant}, title="Plant videos", noun="video",
+                      info="Videos appear on the Plant Overview page. Paste a YouTube or Vimeo link, or upload a file. Big files are better as a link.",
+                      empty_hint="No videos yet — paste a YouTube link or upload a video.")]
     else:
         depts = list(plant.departments.order_by("order", "id"))
         eds = [Editor("depts", Department, [F("name", "Department name", required=True), F("name_hi", "Name (Hindi)", hindi=True)], {"plant": plant},
@@ -286,7 +299,7 @@ def module_edit(request, pk=None, tab="details"):
         ctx.update(form=form, groups=[("Basics", ["title", "plant", "department", "process", "category", "library", "est_minutes", "instructor"]),
                                         ("Cover photo", ["cover"]), ("What learners read", ["summary", "overview", "objectives", "purpose"]),
                                         ("Hindi (optional)", ["title_hi", "category_hi", "summary_hi", "overview_hi", "objectives_hi", "purpose_hi"]), ("Gujarati (optional)", ["title_gu", "category_gu", "summary_gu", "overview_gu", "objectives_gu", "purpose_gu"]),
-                                        ("Publishing", ["status", "sop_document", "order", "slug"])])
+                                        ("Required training", ["is_mandatory", "due_date"]), ("Publishing", ["status", "sop_document", "order", "slug"])])
         return render_panel(request, "panel/module_edit.html", **ctx)
 
     if tab == "quiz":

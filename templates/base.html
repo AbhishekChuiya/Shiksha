@@ -7,13 +7,14 @@
   <script>(function(){var t="light";try{t=localStorage.getItem("shiksha-theme")||"light";}catch(e){}document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light");})();</script>
   {% include "_favicons.html" %}
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Gujarati:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="{% static 'css/shiksha.css' %}?v={{ ASSET_V }}">
+  <link rel="stylesheet" href="{% static 'css/theme-v3.css' %}?v={{ ASSET_V }}">
   {% block head %}{% endblock %}
 </head>
 <body class="{% if view_as_learner %}has-viewbar{% endif %}">
 <div class="app" id="app">
-  <script>try{if(localStorage.getItem("shiksha-collapsed"))document.getElementById("app").classList.add("collapsed");}catch(e){}</script>
+  <script>try{var _w=window.innerWidth;if(localStorage.getItem("shiksha-collapsed")||(_w>800&&_w<=1100))document.getElementById("app").classList.add("collapsed");}catch(e){}</script>
   <div class="scrim" data-nav-close></div>
 
   <aside class="sidebar" aria-label="{% translate 'Main navigation' %}">
@@ -21,22 +22,23 @@
       <a class="brand-link" href="{% url 'core:dashboard' %}" aria-label="{% translate 'Project Shiksha — home' %}">
         <img class="brand-wordmark" src="{% static 'img/brand/logo-white.png' %}" alt="Vishakha">
         <img class="brand-mark" src="{% static 'img/brand/logo-mark.png' %}" alt="Vishakha">
-        <span class="brand-tag">{% block brand_tag %}Shiksha · LMS{% endblock %}</span>
+        <span class="logo-tile"><img src="{% static 'img/brand/vishakha-mark.png' %}" alt=""></span>
+        <span class="logo-words"><b>Shiksha</b><small>{% translate "by Vishakha" %}</small></span>
       </a>
       <button class="icon-ghost collapse-btn" data-collapse aria-label="{% translate 'Collapse menu' %}">{% icon 'chevron-left' %}</button>
     </div>
+    {% block brand_badge %}{% endblock %}
 
+    <div class="side-scroll" id="side-scroll">
     {% block sidebar_nav %}
     <nav class="nav">
       <a href="{% url 'core:dashboard' %}" data-tip="{% translate 'Dashboard' %}" class="{% nav_active '/' %}">{% icon 'home' %}<span>{% translate "Dashboard" %}</span></a>
       <a href="{% url 'core:plant_overview' %}" data-tip="{% translate 'Plant Overview' %}" class="{% nav_active '/plant' %}">{% icon 'building' %}<span>{% translate "Plant Overview" %}</span></a>
       <div class="nav-label">{% translate "Learn" %}</div>
       <a href="{% url 'learning:module_list' %}" data-tip="{% translate 'Learning Modules' %}" class="{% nav_active '/modules' %}">{% icon 'layers' %}<span>{% translate "Learning Modules" %}</span></a>
-      <a href="{% url 'sops:list' %}" data-tip="{% translate 'SOP Library' %}" class="{% nav_active '/sops' %}">{% icon 'file' %}<span>{% translate "SOP Library" %}</span></a>
       <a href="{% url 'knowledge:home' %}" data-tip="{% translate 'Knowledge Base' %}" class="{% nav_active '/knowledge' %}">{% icon 'folder' %}<span>{% translate "Knowledge Base" %}</span></a>
       <a href="{% url 'quizzes:list' %}" data-tip="{% translate 'Quizzes' %}" class="{% nav_active '/quizzes' %}">{% icon 'gauge' %}<span>{% translate "Quizzes" %}</span></a>
       <a href="{% url 'certificates:list' %}" data-tip="{% translate 'Certificates' %}" class="{% nav_active '/certificates' %}">{% icon 'award' %}<span>{% translate "Certificates" %}</span></a>
-      <a href="{% url 'discussion:feed' %}" data-tip="{% translate 'Discussion' %}" class="{% nav_active '/discussion' %}">{% icon 'chat' %}<span>{% translate "Discussion" %}</span></a>
       <div class="nav-label">{% translate "Support" %}</div>
       <a href="{% url 'incidents:list' %}" data-tip="{% translate 'Incidents' %}" class="{% nav_active '/incidents' %}">{% icon 'alert' %}<span>{% translate "Incidents" %}</span></a>
       <a href="{% url 'core:coming_soon' 'ai-assistant' %}" data-tip="Vishakha AI" class="is-soon {% nav_active '/soon/ai-assistant' %}"><img class="nav-vivi" src="{% static 'img/brand/vivi-sm.png' %}" alt=""><span>Vishakha AI</span><em class="soon">{% translate "Soon" %}</em></a>
@@ -48,8 +50,15 @@
     </nav>
     {% endblock %}
 
+    {% block side_tip %}<div class="side-tip"><img src="{% static 'img/brand/mascot-320.webp' %}" alt=""><p>{% translate "Tip: tap the speaker on any SOP step and I will read it out in your language." %}</p></div>{% endblock %}
+    </div>
+    <script>try{var _s=document.getElementById("side-scroll"),_y=sessionStorage.getItem("shiksha-side-y");if(_y)_s.scrollTop=+_y;var _a=_s.querySelector("a.active");if(_a&&!_y){_s.scrollTop=Math.max(0,_a.offsetTop-120);}window.addEventListener("load",function(){if(_y)_s.scrollTop=+_y;});_s.addEventListener("scroll",function(){sessionStorage.setItem("shiksha-side-y",_s.scrollTop)},{passive:true});}catch(e){}</script>
     <div class="side-foot">
-      <nav class="nav"><a href="{% url 'accounts:account' %}" data-tip="{% translate 'My account' %}" class="{% nav_active '/accounts/me' %}">{% icon 'user' %}<span>{% translate "My account" %}</span></a></nav>
+      {% if can_toggle_view %}
+      <form method="post" action="{% url 'core:view_mode' %}" class="side-switch">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}">
+        {% if view_as_learner %}<button name="mode" value="admin" data-tip="{% translate 'Back to admin view' %}">{% icon 'repeat' %}<span>{% translate "Back to admin view" %}</span></button>
+        {% else %}<button name="mode" value="learner" data-tip="{% translate 'Preview as learner' %}">{% icon 'repeat' %}<span>{% translate "Preview as learner" %}</span></button>{% endif %}</form>
+      {% endif %}
       <div class="version">Shiksha {{ APP_VERSION }}</div>
     </div>
   </aside>
@@ -61,7 +70,7 @@
     {% endif %}
     <header class="topbar">
       <button class="icon-btn mobile-only" data-nav-toggle aria-label="{% translate 'Open menu' %}">{% icon 'menu' %}</button>
-      <a class="top-logo" href="{% url 'core:dashboard' %}" aria-label="{% translate 'Project Shiksha — home' %}"><img class="lt" src="{% static 'img/brand/logo.png' %}" alt="Vishakha"><img class="dk" src="{% static 'img/brand/logo-white.png' %}" alt="Vishakha"></a>
+      <a class="top-logo" href="{% url 'core:dashboard' %}" aria-label="{% translate 'Project Shiksha — home' %}"><span class="logo-tile sm"><img src="{% static 'img/brand/vishakha-mark.png' %}" alt="Vishakha"></span></a>
 
       {% block top_search %}
       <form class="search" action="{% url 'core:search' %}" method="get" role="search" data-search data-suggest="{% url 'core:suggest' %}" autocomplete="off">
@@ -75,7 +84,7 @@
 
       {% if available_plants %}
       <div class="dd">
-        <button type="button" class="dd-btn" title="{% translate 'Switch plant' %}">{% icon 'building' %}<span class="lbl">{{ current_plant.name|default:_("Select plant") }}</span>{% icon 'chevron-down' 'chev' %}</button>
+        <button type="button" class="dd-btn plant-chip" title="{% translate 'Switch plant' %}"><span class="pc-name lbl">{{ current_plant.name|default:_("Select plant") }}</span><span class="pc-online"><i></i>{% translate "Online" %}</span>{% icon 'chevron-down' 'chev' %}</button>
         <form class="dd-menu" method="post" action="{% url 'core:set_plant' %}">{% csrf_token %}
           <input type="hidden" name="next" value="{{ request.get_full_path }}">
           <div class="dd-label">{% translate "Your plants" %}</div>
@@ -87,7 +96,7 @@
       {% endif %}
 
       <div class="dd">
-        <button type="button" class="dd-btn" title="{% translate 'Language' %}">{% icon 'globe' %}<span class="lbl">{% if LANG == 'hi' %}हिन्दी{% elif LANG == 'gu' %}ગુજરાતી{% else %}English{% endif %}</span>{% icon 'chevron-down' 'chev' %}</button>
+        <button type="button" class="dd-btn lang-btn" title="{% translate 'Language' %}" aria-label="{% translate 'Language' %}">{% icon 'languages' %}<span class="lbl">{{ LANG|upper }}</span></button>
         <form class="dd-menu" method="post" action="{% url 'set_language' %}" style="min-width:190px">{% csrf_token %}
           <input type="hidden" name="next" value="{{ request.get_full_path }}">
           {% for code, name in LANGUAGE_CHOICES %}
@@ -96,12 +105,27 @@
         </form>
       </div>
 
+      <div class="dd">
+        <button type="button" class="dd-btn bell-btn" aria-label="{% translate 'Notifications' %}" title="{% translate 'Notifications' %}">{% icon 'bell' %}{% if notif_unread %}<span class="bell-n">{% if notif_unread > 9 %}9+{% else %}{{ notif_unread }}{% endif %}</span>{% endif %}</button>
+        <div class="dd-menu bell-menu">
+          <div class="bell-head"><strong>{% translate "Notifications" %}</strong>
+            {% if notif_unread %}<form method="post" action="{% url 'core:notifications_read_all' %}">{% csrf_token %}<input type="hidden" name="next" value="{{ request.get_full_path }}"><button class="bell-mark">{% translate "Mark all as read" %}</button></form>{% endif %}</div>
+          {% for i in notif_recent %}
+          <a class="bell-item {% if not i.n.is_read %}unread{% endif %}" href="{% url 'core:notification_open' i.n.pk %}">
+            <span class="bi-ico k-{{ i.n.kind }}">{% if i.n.kind == 'certificate' %}{% icon 'award' %}{% elif i.n.kind == 'overdue' %}{% icon 'alert' %}{% elif i.n.kind == 'due_soon' %}{% icon 'clock' %}{% elif i.n.kind == 'announcement' %}{% icon 'megaphone' %}{% else %}{% icon 'calendar' %}{% endif %}</span>
+            <span class="bi-text"><b>{{ i.title }}</b>{% if i.body %}<small>{{ i.body|truncatechars:90 }}</small>{% endif %}<em>{{ i.n.created_at|timesince }}</em></span>
+          </a>
+          {% empty %}<p class="bell-empty">{% icon 'bell' %}{% translate "You are all caught up." %}</p>{% endfor %}
+          <a class="bell-all" href="{% url 'core:notifications' %}">{% translate "See all notifications" %}{% icon 'arrow-right' %}</a>
+        </div>
+      </div>
+
       <button class="icon-btn theme-btn" data-theme-toggle aria-label="{% translate 'Toggle dark mode' %}" title="{% translate 'Dark / light mode' %}">{% icon 'moon' 'moon' %}{% icon 'sun' 'sun' %}</button>
 
       <div class="dd">
         <button type="button" class="dd-btn plain" aria-label="{% translate 'Account menu' %}">
           {% include "_avatar.html" with u=user %}
-          <span class="user-meta"><div class="user-name">{{ user.get_full_name|default:user.email }}</div><div class="user-role">{{ user.get_role_display }}</div></span>
+          <span class="user-meta"><span class="user-name">{{ user.get_full_name|default:user.email }}</span><span class="user-role">{{ user.get_role_display }}</span></span>
           {% icon 'chevron-down' 'chev' %}
         </button>
         <div class="dd-menu" style="min-width:260px">
@@ -132,12 +156,12 @@
 
 <div class="toasts" id="toasts" aria-live="polite">{% for m in messages %}<span hidden data-flash data-level="{{ m.level_tag }}">{{ m }}</span>{% endfor %}</div>
 
-{% block fab %}<a class="fab" href="{% url 'core:coming_soon' 'ai-assistant' %}" data-label="{% translate 'Ask Vishakha AI' %}" aria-label="{% translate 'AI Assistant' %}"><img src="{% static 'img/brand/vivi-sm.png' %}" alt=""></a>{% endblock %}
+{% block fab %}<a class="fab" href="{% url 'core:coming_soon' 'ai-assistant' %}" data-label="{% translate 'Ask Vishakha AI' %}" aria-label="{% translate 'AI Assistant' %}"><span class="fab-ring"><img src="{% static 'img/brand/mascot-320.webp' %}" alt=""></span><span class="fab-text">Vishakha AI</span></a>{% endblock %}
 
 {% block bottom_nav %}<nav class="bottom-nav" aria-label="{% translate 'Quick navigation' %}">
   <a href="{% url 'core:dashboard' %}" class="{% nav_active '/' %}"><span class="bn-ico">{% icon 'home' %}</span>{% translate "Home" %}</a>
   <a href="{% url 'learning:module_list' %}" class="{% nav_active '/modules' %}"><span class="bn-ico">{% icon 'layers' %}</span>{% translate "Modules" %}</a>
-  <a href="{% url 'sops:list' %}" class="{% nav_active '/sops' %}"><span class="bn-ico">{% icon 'file' %}</span>{% translate "SOPs" %}</a>
+  <a href="{% url 'knowledge:home' %}" class="{% nav_active '/knowledge' %}"><span class="bn-ico">{% icon 'folder' %}</span>{% translate "Knowledge" %}</a>
   <a href="{% url 'quizzes:list' %}" class="{% nav_active '/quizzes' %}"><span class="bn-ico">{% icon 'gauge' %}</span>{% translate "Quizzes" %}</a>
   <button type="button" data-nav-toggle><span class="bn-ico">{% icon 'grid' %}</span>{% translate "More" %}</button>
 </nav>{% endblock %}

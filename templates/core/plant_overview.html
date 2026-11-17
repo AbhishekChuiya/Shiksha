@@ -13,6 +13,11 @@
       <div id="plant-read" class="prose" style="margin-top:12px"><p style="font-weight:600">{{ plant.name }}{% if plant.display_tagline %}. {{ plant.display_tagline }}{% endif %}</p>{{ plant.display_about|linebreaks }}</div></div>
     {% if plant.photos.exists %}<div class="card"><h3>{% translate "Photo gallery" %}</h3>
       <div class="photo-grid">{% for ph in plant.photos.all %}<figure style="margin:0"><a href="{{ ph.image.url }}" data-lightbox="plant" data-caption="{{ ph.display_caption }}"><img src="{{ ph.image.url }}" alt="{{ ph.display_caption }}" loading="lazy"></a>{% if ph.display_caption %}<figcaption class="small muted">{{ ph.display_caption }}</figcaption>{% endif %}</figure>{% endfor %}</div></div>{% endif %}
+    {% if videos %}<div class="card"><h3>{% translate "Plant videos" %}</h3>
+      <div class="plant-videos">{% for v in videos %}<figure>
+        {% if v.embed_url and not v.file %}<div class="vid-frame"><iframe src="{{ v.embed_url }}" title="{{ v.display_title }}" allowfullscreen loading="lazy"></iframe></div>
+        {% elif v.source %}<video controls preload="metadata" src="{{ v.source }}"></video>{% endif %}
+        <figcaption>{{ v.display_title }}</figcaption></figure>{% endfor %}</div></div>{% endif %}
   </div>
   <div class="stack">
     <div class="card details"><h3>{% translate "At a glance" %}</h3><dl>
@@ -20,10 +25,6 @@
       <dt>{% translate "Departments" %}</dt><dd>{{ departments|length }}</dd>
       <dt>{% translate "Learning modules" %}</dt><dd>{{ module_count }}</dd>
       <dt>{% translate "SOPs" %}</dt><dd>{{ sop_count }}</dd></dl></div>
-    <div class="card"><h3>{% translate "Departments & processes" %}</h3>
-      {% for d in departments %}<p style="margin:14px 0 8px"><strong>{{ d.display_name }}</strong></p>
-        <div class="chips">{% for pr in d.processes.all %}<span class="badge grey">{{ pr.display_name }}</span>{% empty %}<span class="muted small">—</span>{% endfor %}</div>
-      {% empty %}<p class="muted">{% translate "No departments configured yet." %}</p>{% endfor %}</div>
   </div>
 </div>
 {% endblock %}

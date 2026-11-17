@@ -900,7 +900,7 @@ msgstr "क्विज़ परिणाम"
 msgid "Read aloud"
 msgstr "पढ़कर सुनाएँ"
 
-msgid "Read aloud — click again to pause"
+msgid "Read aloud — tap again to stop"
 msgstr "पढ़कर सुनाएँ — रोकने के लिए फिर दबाएँ"
 
 msgid "Read question aloud"
@@ -1747,6 +1747,268 @@ msgstr ""
 "इस प्लांट में सभी के लिए एक साझा जगह — प्रश्न पूछें, सुझाव साझा करें और "
 "एक-दूसरे से सीखें।"
 
+msgid "by Vishakha"
+msgstr "विशाखा की ओर से"
+
+msgid "Online"
+msgstr "ऑनलाइन"
+
+msgid ""
+"Tip: tap the speaker on any SOP step and I will read it out in your "
+"language."
+msgstr ""
+"सुझाव: किसी भी एसओपी चरण पर स्पीकर दबाएँ, मैं उसे आपकी भाषा में पढ़कर "
+"सुनाऊँगी।"
+
+msgid "Namaste! Sign in with your company email or Employee ID."
+msgstr "नमस्ते! अपने कंपनी ईमेल या कर्मचारी आईडी से साइन इन करें।"
+
+msgid "Certificate ready: %(name)s"
+msgstr "प्रमाणपत्र तैयार: %(name)s"
+
+msgid "Well done! You can download it now."
+msgstr "शाबाश! अब आप इसे डाउनलोड कर सकते हैं।"
+
+msgid "New required module: %(name)s"
+msgstr "नया अनिवार्य मॉड्यूल: %(name)s"
+
+msgid "New required quiz: %(name)s"
+msgstr "नई अनिवार्य क्विज़: %(name)s"
+
+msgid "Please complete it by %(date)s."
+msgstr "कृपया इसे %(date)s तक पूरा करें।"
+
+msgid "Please complete it as soon as you can."
+msgstr "कृपया इसे जल्द से जल्द पूरा करें।"
+
+msgid "Due soon: %(name)s"
+msgstr "जल्द देय: %(name)s"
+
+msgid "Quiz due soon: %(name)s"
+msgstr "क्विज़ जल्द देय: %(name)s"
+
+msgid "Due on %(date)s."
+msgstr "अंतिम तिथि %(date)s।"
+
+msgid "Overdue: %(name)s"
+msgstr "समय सीमा पार: %(name)s"
+
+msgid "Quiz overdue: %(name)s"
+msgstr "क्विज़ की समय सीमा पार: %(name)s"
+
+msgid "This was due on %(date)s. Please complete it now."
+msgstr "इसकी अंतिम तिथि %(date)s थी। कृपया अभी पूरा करें।"
+
+msgid "Notifications"
+msgstr "सूचनाएँ"
+
+msgid "Mark all as read"
+msgstr "सभी को पढ़ा हुआ चिह्नित करें"
+
+msgid "You are all caught up."
+msgstr "आप सब कुछ देख चुके हैं।"
+
+msgid "See all notifications"
+msgstr "सभी सूचनाएँ देखें"
+
+msgid "Required"
+msgstr "अनिवार्य"
+
+msgid "Overdue since"
+msgstr "समय सीमा पार, तिथि"
+
+msgid "Due"
+msgstr "अंतिम तिथि"
+
+msgid "Overdue"
+msgstr "समय सीमा पार"
+
+msgid "Quiz required"
+msgstr "क्विज़ अनिवार्य"
+
+msgid "More filters"
+msgstr "और फ़िल्टर"
+
+msgid "Show"
+msgstr "दिखाएँ"
+
+msgid "Needs your attention"
+msgstr "आपके ध्यान की ज़रूरत है"
+
+msgid "Required module"
+msgstr "अनिवार्य मॉड्यूल"
+
+msgid "Required quiz"
+msgstr "अनिवार्य क्विज़"
+
+msgid "Due soon"
+msgstr "जल्द देय"
+
+msgid "Pending"
+msgstr "लंबित"
+
+msgid "Latest updates"
+msgstr "ताज़ा अपडेट"
+
+msgid "Your certificates"
+msgstr "आपके प्रमाणपत्र"
+
+msgid "Finish a module and its quiz to earn your first certificate."
+msgstr "अपना पहला प्रमाणपत्र पाने के लिए एक मॉड्यूल और उसकी क्विज़ पूरी करें।"
+
+msgid "Plant overview"
+msgstr "प्लांट अवलोकन"
+
+msgid "and %(n)s more…"
+msgstr "और %(n)s…"
+
+msgid ""
+"Reminders about required modules and quizzes, certificates and news from "
+"your admin."
+msgstr ""
+"अनिवार्य मॉड्यूल और क्विज़ के रिमाइंडर, प्रमाणपत्र और एडमिन की ओर से समाचार।"
+
+msgid "New reminders will show up here."
+msgstr "नए रिमाइंडर यहाँ दिखेंगे।"
+
+msgid "Knowledge"
+msgstr "ज्ञान"
+
+msgid "Uncategorised"
+msgstr "अन्य"
+
+msgid "Quiz coming soon"
+msgstr "क्विज़ जल्द आ रही है"
+
+msgid "Plant videos"
+msgstr "प्लांट के वीडियो"
+
+msgid "Learning"
+msgstr "सीखना"
+
+msgid ""
+"Every process of your plant, in flow order. Open one, follow the SOPs step "
+"by step, pass the quiz and earn your certificate."
+msgstr ""
+"आपके प्लांट की हर प्रक्रिया, प्रवाह के क्रम में। एक खोलें, एसओपी चरण दर चरण "
+"पढ़ें, क्विज़ पास करें और प्रमाणपत्र पाएँ।"
+
+msgid "All types"
+msgstr "सभी प्रकार"
+
+msgid "All categories"
+msgstr "सभी श्रेणियाँ"
+
+msgid "Search processes…"
+msgstr "प्रक्रियाएँ खोजें…"
+
+msgid "Your plant journey"
+msgstr "आपकी प्लांट यात्रा"
+
+msgid "Open my plant"
+msgstr "मेरा प्लांट खोलें"
+
+msgid "Module coming soon"
+msgstr "मॉड्यूल जल्द आ रहा है"
+
+msgid "Processes in the order material flows through %(p)s."
+msgstr "%(p)s में सामग्री जिस क्रम में बहती है, उसी क्रम में प्रक्रियाएँ।"
+
+msgid "My progress"
+msgstr "मेरी प्रगति"
+
+msgid "Your learning time, quiz scores and module progress in"
+msgstr "आपका सीखने का समय, क्विज़ स्कोर और मॉड्यूल प्रगति —"
+
+msgid "Sections"
+msgstr "अनुभाग"
+
+msgid "Total"
+msgstr "कुल"
+
+msgid "Last 7 days"
+msgstr "पिछले 7 दिन"
+
+msgid "Active days (last 7)"
+msgstr "सक्रिय दिन (पिछले 7)"
+
+msgid "Average on an active day"
+msgstr "सक्रिय दिन का औसत"
+
+msgid "Minutes per day"
+msgstr "प्रति दिन मिनट"
+
+msgid "The last 14 days"
+msgstr "पिछले 14 दिन"
+
+msgid "Open a module and your learning time will appear here."
+msgstr "कोई मॉड्यूल खोलें, आपका सीखने का समय यहाँ दिखेगा।"
+
+msgid "Where your time went"
+msgstr "आपका समय कहाँ गया"
+
+msgid "By department and by module"
+msgstr "विभाग और मॉड्यूल के अनुसार"
+
+msgid "Most-studied modules"
+msgstr "सबसे ज़्यादा पढ़े गए मॉड्यूल"
+
+msgid "No study time yet."
+msgstr "अभी तक कोई अध्ययन समय नहीं।"
+
+msgid "Average best score"
+msgstr "औसत सर्वश्रेष्ठ स्कोर"
+
+msgid "Quizzes passed"
+msgstr "पास की गई क्विज़"
+
+msgid "Pass rate"
+msgstr "पास दर"
+
+msgid "Attempts"
+msgstr "प्रयास"
+
+msgid "Best score per module"
+msgstr "प्रति मॉड्यूल सर्वश्रेष्ठ स्कोर"
+
+msgid "Retakes never lower your best score"
+msgstr "दोबारा देने से आपका सर्वश्रेष्ठ स्कोर कभी कम नहीं होता"
+
+msgid "Your latest attempts"
+msgstr "आपके नवीनतम प्रयास"
+
+msgid "Newest first"
+msgstr "नए पहले"
+
+msgid "No attempts yet."
+msgstr "अभी तक कोई प्रयास नहीं।"
+
+msgid "Worth another try"
+msgstr "एक बार फिर कोशिश करें"
+
+msgid "Your lowest quiz results — a retake can only raise your best score."
+msgstr ""
+"आपके सबसे कम क्विज़ परिणाम — दोबारा देने से सर्वश्रेष्ठ स्कोर केवल बढ़ सकता "
+"है।"
+
+msgid "Required still to do"
+msgstr "अनिवार्य, अभी बाकी"
+
+msgid "Completion by department"
+msgstr "विभाग के अनुसार पूर्णता"
+
+msgid "Modules you have finished"
+msgstr "आपके पूरे किए गए मॉड्यूल"
+
+msgid "No modules yet."
+msgstr "अभी कोई मॉड्यूल नहीं।"
+
+msgid "Open learning modules"
+msgstr "लर्निंग मॉड्यूल खोलें"
+
+msgid "Best scores"
+msgstr "सर्वश्रेष्ठ स्कोर"
+
 msgid "Go to step number"
 msgstr "चरण संख्या पर जाएँ"
 
@@ -1896,6 +2158,21 @@ msgstr "नव॰"
 
 msgid "dec"
 msgstr "दिस॰"
+
+msgid "%(n)s required item is waiting for you."
+msgid_plural "%(n)s required items are waiting for you."
+msgstr[0] "%(n)s अनिवार्य आइटम आपकी प्रतीक्षा में है।"
+msgstr[1] "%(n)s अनिवार्य आइटम आपकी प्रतीक्षा में हैं।"
+
+msgid "%(n)s SOP"
+msgid_plural "%(n)s SOPs"
+msgstr[0] "%(n)s एसओपी"
+msgstr[1] "%(n)s एसओपी"
+
+msgid "You have %(n)s required item to finish."
+msgid_plural "You have %(n)s required items to finish."
+msgstr[0] "आपके पास पूरा करने के लिए %(n)s अनिवार्य आइटम है।"
+msgstr[1] "आपके पास पूरा करने के लिए %(n)s अनिवार्य आइटम हैं।"
 
 msgid "%(n)s result for “%(q)s” in %(current_plant)s"
 msgid_plural "%(n)s results for “%(q)s” in %(current_plant)s"

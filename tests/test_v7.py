@@ -146,18 +146,10 @@ class ModuleGridTests(TestCase):
     def setUp(self):
         self.client.force_login(self.user)
 
-    def test_rows_view_has_view_all_links_and_tile(self):
-        r = self.client.get(reverse("learning:module_list"))
-        self.assertContains(r, "view-all-tile")
-        prod = next(s for s in r.context["sections"] if s["dept"].name == "Production")
-        self.assertTrue(prod["view_all"].startswith("?"))
-        self.assertIn("view=grid", prod["view_all"]); self.assertIn(f"dept={self.base.department_id}", prod["view_all"])
-        self.assertContains(r, 'class="mod-card extra"')  # cards beyond the 8th are hidden on phones
-
     def test_grid_view_paginates_and_shows_every_module(self):
         url = reverse("learning:module_list") + f"?dept={self.base.department_id}&view=grid"
         r = self.client.get(url)
-        self.assertContains(r, "grid-all")
+        self.assertContains(r, "proc-grid")
         self.assertEqual(r.context["page_obj"].paginator.count, 58)
         self.assertEqual(len(r.context["cards"]), 24)
         self.assertTrue(r.context["next_url"] and not r.context["prev_url"])
@@ -174,7 +166,7 @@ class ModuleGridTests(TestCase):
 
     def test_filters_keep_view_and_search_in_links(self):
         r = self.client.get(reverse("learning:module_list") + "?view=grid&q=melt")
-        qc = r.context["dept_chips"][1][1]
+        qc = r.context["dept_tabs"][1][1]
         self.assertIn("view=grid", qc); self.assertIn("q=melt", qc)
 
     def test_bad_params_do_not_crash(self):

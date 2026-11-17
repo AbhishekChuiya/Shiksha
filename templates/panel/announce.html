@@ -1,0 +1,19 @@
+{% extends "panel/base.html" %}{% load shiksha panel %}
+{% block content %}
+<div class="pn-head"><div><h1>Send a notification</h1><p class="muted">Write a short message. It appears in the notification bell of every learner you choose. Reminders about required modules and quizzes are sent automatically.</p></div></div>
+<div class="split">
+  <form class="card" method="post">{% csrf_token %}
+    <div class="pn-field"><label for="a-aud">Who should get it?</label>
+      <select id="a-aud" name="audience"><option value="all">Everyone</option>{% for p in plants %}<option value="{{ p.pk }}">Only people at {{ p.name }}</option>{% endfor %}</select></div>
+    <div class="pn-field"><label for="a-title">Title<i class="req">*</i></label><input id="a-title" name="title" maxlength="160" required placeholder="e.g. Safety stand-down on Friday"></div>
+    <div class="pn-field wide"><label for="a-body">Message (optional)</label><textarea id="a-body" name="body" rows="4" placeholder="A line or two with what people need to know."></textarea></div>
+    <div class="pn-field"><label for="a-url">Open this page when tapped (optional)</label><input id="a-url" name="url" placeholder="/modules/" ><small class="muted">Start with /, for example /quizzes/. Leave empty to just show the message.</small></div>
+    <button class="btn lg" type="submit">{% icon 'megaphone' %}Send notification</button>
+  </form>
+  <section class="card"><h3>Recently sent</h3>
+    {% for s in sent %}<div class="pn-q"><div class="grow"><strong>{{ s.title }}</strong><div class="small muted">{{ s.created_at__date|date:"j M Y" }} · {{ s.n }} people</div></div></div>
+    {% empty %}<div class="ed-empty">Nothing sent yet.</div>{% endfor %}
+    <p class="muted small" style="margin-top:12px">Tip: mark a module or quiz as <b>Required</b> (with a date) and learners are reminded automatically — no need to write a message.</p>
+  </section>
+</div>
+{% endblock %}

@@ -20,6 +20,8 @@ class Quiz(models.Model):
     shuffle_questions = models.BooleanField(default=True, help_text="New question order on every attempt")
     shuffle_choices = models.BooleanField(default=True, help_text="New answer-option order on every attempt")
     is_active = models.BooleanField(default=True)
+    is_mandatory = models.BooleanField("required", default=False, help_text="Every learner must pass this quiz")
+    due_date = models.DateField(null=True, blank=True, help_text="Last day to pass a required quiz")
 
     class Meta:
         verbose_name_plural = "quizzes"
